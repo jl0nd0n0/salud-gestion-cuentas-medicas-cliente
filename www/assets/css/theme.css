@@ -1,3 +1,21 @@
+.table-primary {
+    --bs-table-bg: #F4F3F8;
+    --bs-table-border-color: #F4F3F8;
+}
+
+
+tr.bg-table-row-1 td {
+    background-color: #fff;
+}
+
+tr.bg-table-row-zebra-1 td {
+    background-color: #f9f9f9;
+}
+
+tr.bg-table-row-zebra-2 td {
+    background-color: #f1f1f1;
+}
+
 .card {
     --bs-card-cap-bg: #fff;
     --bs-card-cap-color: #575962;

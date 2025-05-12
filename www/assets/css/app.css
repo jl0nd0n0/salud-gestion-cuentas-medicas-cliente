@@ -422,3 +422,7 @@ a {
 .text-sm{
     font-size: 12px;
 }
+
+.container-1, .container-1 .card {
+    vertical-align: top;
+}
