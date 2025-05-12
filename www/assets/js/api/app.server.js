@@ -575,7 +575,7 @@ app.server = {
                 //FIXME: se debe trabajar con la misma vista de monitor, al implementar
                 // hay que optimizar los recursos
                 {
-                    url: "x=monitor&k=monitorRobotArmado",
+                    url: "x=cuentasMedicas&k=monitorRobotArmado",
                     index: "robot-armado",
                     callback: fxCallback
                 }

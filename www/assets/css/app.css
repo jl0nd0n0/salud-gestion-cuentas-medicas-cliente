@@ -261,10 +261,6 @@ tr.bg-opacity-0025 td {
     white-space: nowrap;
 }
 
-.card-header{
-    color: #000;
-    background-color: #e3e3e3;
-}
 .chat-container {
     max-width: 650px;
     margin: 20px auto;

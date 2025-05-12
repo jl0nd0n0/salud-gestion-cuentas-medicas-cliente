@@ -9,65 +9,108 @@ app.monitor = {
         let data = nata.localStorage.getItem("robot-armado");
         
         console.log(data);
-        console.log(data.monitor);
-        console.log(data.generacion);
 
-        let dataMonitor = data.monitor;
-        let dataGeneracion = data.generacion;
+        const tableTemplate = `
+            <div class="card mt-4 ml-5">
+                <div class="card-header">
+                    <div class="icon-title">${iconProcess}</div>  Control Armado Cuentas Médicas - Diario
+                </div>
+                <div class="card-body">
+                    <div class="">
+                        <style>
+                            .table-robot-armado-cuenta {
+                                table-layout: fixed;
+                                width: 930px;
+                            }
 
-        let tableTemplate = `
-            <div class="d-flex flex-column justify-content-center align-items-center">
-                <h6 class="my-3">Monitor estado soportes</h6>
-                <table class="table table-hover table-bordered" style="font-size: 0.9rem; width: auto;">
-                    <thead class="table-primary">
-                        <tr>
-                            <th class="text-center">Prioridad</th>
-                            <th class="text-center">Soporte</th>
-                            <th class="text-center">Pendiente</th>
-                            <th class="text-center">Generado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                            .table-robot-armado-cuenta-detail {
+                                table-layout: fixed;
+                                width: 930px;
+                            }
+
+                            .table-robot-armado-cuenta-detail tr th {
+                                font-size: 11px
+                            }
+                        </style>
+                        
                         {{~it.detail: d:id}}
+                        <table class="table table-bordered table-sm table-robot-armado-cuenta">
+                            <colgroup>
+                                <col width="50"></col>
+                                <col width="350"></col>
+                                <col width="200"></col>
+                                <col width="140"></col>
+                                <col width="240"></col>
+                            </colgroup>
+                            <thead class="table-primary">
+                                <tr>
+                                    <th class="text-center">Radicar</th>
+                                    <th class="text-center">Factura</th>
+                                    <th class="text-center">Fecha</th>
+                                    <th class="text-center">Valor</th>
+                                    <th class="text-center">Paciente</th>
+                                    <th class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                        <td class="text-center">
+                                            <div class="rounded-circle bg-danger d-inline-block"
+                                                style="width: 25px; height: 25px;"></div>
+                                        </td>
+                                        <td class="text-start fw-bold">{{=d.f}}</td>
+                                        <td class="text-center">{{=d.fe}}</td>
+                                        <td class="text-end">
+                                            $ {{=numberDecimal.format( d.v )}}
+                                        </td>
+                                        <td colspan="2" class="text-center">{{=d.p}}</td>
+                                    </tr>                                
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-sm table-robot-armado-cuenta-detail">
+                            <colgroup>
+                                <col width="400"></col>
+                                <col width="200"></col>
+                                <col width="140"></col>
+                                <col width="120"></col>
+                                <col width="120"></col>
+                            </colgroup>
+                            <thead class="table-primary">
+                                <tr>
+                                    <th class="text-center">Grupo</th>
+                                    <th class="text-center">Soporte</th>
+                                    <th class="text-center">Armado</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-center">Descripción</th>
+                                </tr>
+                            </thead>
+                            {{~d.d: dd:idd}}
                             <tr>
-                                <td class="text-center fw-bold">{{=d.p}}</td>
-                                <td class="text-center">{{=d.s}}</td>
-                                <td class="text-center">{{=d.pe}}</td>
-                                <td class="text-center">{{=d.g}}</td>
+                                <td class="text-start">{{=dd.g}}</td>
+                                <td class="text-start">{{=dd.s}}</td>
+                                <td class="text-center">
+                                    {{? dd.ge == "0"}}
+                                    <div class="rounded-circle bg-danger d-inline-block"
+                                        style="width: 25px; height: 25px;"></div>
+                                    {{??}}
+                                     <div class="rounded-circle bg-success d-inline-block"
+                                                style="width: 25px; height: 25px;"></div>
+                                    {{?}}
+                                </td>
+                                <td class="text-start">{{=dd.o}}</td>
+                                <td class="text-start">{{=dd.n}}</td>
                             </tr>
+                            {{~}}                                
+                            </tbody>
+                        </table>
                         {{~}}
-                    </tbody>
-                </table>
 
-                <h6 class="mt-5 mb-3">Monitor generación factura IND645678</h6>
-                <table class="table table-hover table-bordered" style="font-size: 0.9rem; width: auto;">
-                    <thead class="table-primary">
-                        <tr>
-                            <th class="text-center">Factura</th>
-                            <th class="text-center">Grupo</th>
-                            <th class="text-center">Soporte</th>
-                            <th class="text-center">Estado Generación</th>
-                            <th class="text-center">Observación</th>
-                            <th class="text-center">Notas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{~it.detailArmado: d:id}}
-                            <tr>
-                                <td class="text-center fw-bold">{{=d.f}}</td>
-                                <td class="">{{=d.g}}</td>
-                                <td class="">{{=d.s}}</td>
-                                <td class="text-center">{{=d.ge}}</td>
-                                <td class="">{{=d.o}}</td>
-                                <td class="">{{=d.n}}</td>
-                            </tr>
-                        {{~}}
-                    </tbody>
-                </table>
+                    </div>
+                </div>
             </div>
         `;
 
-        const html = doT.template(tableTemplate)({detail: dataMonitor, detailArmado: dataGeneracion});
+        const html = doT.template(tableTemplate)({detail: data});
 
         // const html = compiledTemplate(data); 
 

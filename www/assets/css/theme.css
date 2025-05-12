@@ -1,9 +1,28 @@
+.card {
+    --bs-card-cap-bg: #fff;
+    --bs-card-cap-color: #575962;
+}
+
+.card-header {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.icon-title {
+    display: inline-block;
+}
+
+.icon-title svg {
+    width: 30x;
+    height: 30px;
+}
+
 :root {
     --color-primary: #5EB7F8;
 }
 
 body {
-    font-family: "Poppins", serif;
+    font-family: Roboto;
     font-weight: 300;
     font-style: normal;
     background-color: #F2F3F8;
@@ -11,6 +30,10 @@ body {
 
 #containerLogin {
     background-color: #fff;
+}
+
+.bg-success {
+    background-color: #C5E1A5!important;
 }
 
 .table {
@@ -294,7 +317,7 @@ h4 {
 }
 
 h3 {
-    font-size: 20px;
+    font-size: 1.3rem;
 }
 
 h4 {
@@ -354,11 +377,6 @@ h1 {
 
 .list-group {
     --bs-list-group-disabled-color: #eee;
-}
-
-.card-header {
-    font-weight: bold;
-    position: relative;
 }
 
 .pos-absolute-t0-r0 {
