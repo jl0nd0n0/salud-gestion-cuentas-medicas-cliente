@@ -12,7 +12,11 @@ app.monitor = {
             return record.f == "IND646213"
         }));
 
-        const processedData = data.map(item => {
+        let dataDetalle = data.detalles;
+        let dataResumen = data.resumen;
+        let dataResumenRegistros = data.resumenRegistros;
+
+        const processedData = dataDetalle.map(item => {
             const allOk = item.d.every(dd => dd.ge !== "0");
             return {
                 ...item,
@@ -160,7 +164,6 @@ app.monitor = {
             session.jets = new Jets({
                 searchTag: "#txtSearch",
                 contentTag: "#searchTarget",
-                // Filtrar por cada bloque completo
                 rowSelector: ".search-group"
             });
         } else {
@@ -171,8 +174,14 @@ app.monitor = {
             // Initialize the echarts instance based on the prepared dom
             const myChart = echarts.init(document.getElementById('chart1'));
 
+            const chartData = dataResumen.map(item => ({
+                value: parseFloat(item.v),
+                name: item.e
+            }));
+
             // Specify the configuration items and data for the chart
             const option = {
+                color: ['#f8d7da', '#C5E1A5'],
                 tooltip: {
                     trigger: 'item'
                 },
@@ -182,7 +191,7 @@ app.monitor = {
                 },
                 series: [
                     {
-                        name: 'Access From',
+                        name: 'Facturas',
                         type: 'pie',
                         radius: ['40%', '70%'],
                         avoidLabelOverlap: false,
@@ -205,31 +214,13 @@ app.monitor = {
                         labelLine: {
                             show: false
                         },
-                        data: [
-                            { value: 411, name: 'Pendientes Soportes' },
-                            { value: 76, name: 'Listas Radicar' }
-                        ]
+                        data: chartData
                     }
                 ]
             };
 
             // Display the chart using the configuration items and data just specified.
             myChart.setOption(option);
-
-            const data = [
-                {
-                    d: "Faltan Soportes",
-                    c: 76,
-                    p: 76 / 487,
-                    v: 173568748
-                },
-                {
-                    d: "Armadas por Radicar",
-                    c: 411,
-                    p: 411 / 487,
-                    v: 210692600 - 173568748
-                }
-            ];
 
             const template = `
                 <style>
@@ -242,7 +233,7 @@ app.monitor = {
                     }
                 </style>
                 
-                <table class="table table-bordered table-sm table-consolidado">
+                <table class="table table-bordered table-sm table-consolidado mb-3">
                     <colgroup>
                         <col width="50"></col>
                         <col width="150"></col>
@@ -254,7 +245,7 @@ app.monitor = {
                         <tr>
                             <th class="text-center">Radicar</th>
                             <th class="text-center">Estado</th>
-                            <th class="text-end">Cantidad</th>
+                            <th class="text-end">Cantidad Facturas</th>
                             <th class="text-end">Valor Total</th>
                             <th class="text-end">%</th>
                         </tr>
@@ -263,7 +254,7 @@ app.monitor = {
                         {{~it.detail: d:id}}
                         <tr class="bg-table-row-1">
                             <td class="text-center">
-                                {{? d.d == "Armadas por Radicar"}}
+                                {{? d.e == "Listas para radicar"}}
                                 <div class="rounded-circle bg-success d-inline-block"
                                     style="width: 25px; height: 25px;"></div>
                                 {{??}}
@@ -271,17 +262,55 @@ app.monitor = {
                                     style="width: 25px; height: 25px;"></div>
                                 {{?}}                                
                             </td>                            
-                            <td class="text-start fw-bold">{{=d.d}}</td>
+                            <td class="text-start fw-bold">{{=d.e}}</td>
                             <td class="text-end">{{=d.c}}</td>
                             <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
-                            <td class="text-end">{{=percent.format( d.p )}}</td>
+                            <td class="text-end">{{=d.p}}%</td>
+                        </tr>
+                        {{~}}                           
+                    </tbody>
+                </table>
+
+                <style>
+                    #tableResumenRegistros{
+                        margin-top: 1rem !important;
+                    }
+
+                    .table-consolidado {
+                        table-layout: fixed;
+                        width: 480px;
+                    }
+                    .table-consolidado tr th {
+                        font-size: 11px
+                    }
+                </style>
+                
+                <table id="tableResumenRegistros" class="table table-bordered table-sm table-consolidado">
+                    <colgroup>
+                        <col width="150"></col>
+                        <col width="120"></col>
+                        <col width="120"></col>
+                    </colgroup>
+                    <thead class="table-primary">
+                        <tr>
+                            <th class="text-center">Total Facturas</th>
+                            <th class="text-center">Pendiente Soportes</th>
+                            <th class="text-center">Soportes Generados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{~it.datailRegistro: d:id}}
+                        <tr class="bg-table-row-1">                     
+                            <td>{{=d.tf}}</td>
+                            <td>{{=d.tsp}}</td>
+                            <td>{{=d.tsg}}</td>
                         </tr>
                         {{~}}                           
                     </tbody>
                 </table>
             `;
 
-            const html = doT.template(template)({ detail: data });
+            const html = doT.template(template)({ detail: dataResumen, datailRegistro: dataResumenRegistros });
             const box1 = document.getElementById("box1");
             if (box1) {
                 box1.innerHTML = html;
@@ -290,6 +319,8 @@ app.monitor = {
             }
         };
         fxRenderChart();
+
+
     }
 };
 
