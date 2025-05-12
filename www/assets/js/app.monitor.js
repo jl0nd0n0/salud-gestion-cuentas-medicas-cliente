@@ -9,9 +9,15 @@ app.monitor = {
         let data = nata.localStorage.getItem("robot-armado");
         
         console.log(data);
+        console.log(data.monitor);
+        console.log(data.generacion);
 
-       let tableTemplate = `
-            <div class="d-flex justify-content-center">
+        let dataMonitor = data.monitor;
+        let dataGeneracion = data.generacion;
+
+        let tableTemplate = `
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <h6 class="my-3">Monitor estado soportes</h6>
                 <table class="table table-hover table-bordered" style="font-size: 0.9rem; width: auto;">
                     <thead class="table-primary">
                         <tr>
@@ -22,12 +28,38 @@ app.monitor = {
                         </tr>
                     </thead>
                     <tbody>
-                        {{~it :i:index}}
+                        {{~it.detail: d:id}}
                             <tr>
-                                <td class="text-center fw-bold">{{=i.p}}</td>
-                                <td class="text-center">{{=i.s}}</td>
-                                <td class="text-center">{{=i.pe}}</td>
-                                <td class="text-center">{{=i.g}}</td>
+                                <td class="text-center fw-bold">{{=d.p}}</td>
+                                <td class="text-center">{{=d.s}}</td>
+                                <td class="text-center">{{=d.pe}}</td>
+                                <td class="text-center">{{=d.g}}</td>
+                            </tr>
+                        {{~}}
+                    </tbody>
+                </table>
+
+                <h6 class="mt-5 mb-3">Monitor generación factura IND645678</h6>
+                <table class="table table-hover table-bordered" style="font-size: 0.9rem; width: auto;">
+                    <thead class="table-primary">
+                        <tr>
+                            <th class="text-center">Factura</th>
+                            <th class="text-center">Grupo</th>
+                            <th class="text-center">Soporte</th>
+                            <th class="text-center">Estado Generación</th>
+                            <th class="text-center">Observación</th>
+                            <th class="text-center">Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{~it.detailArmado: d:id}}
+                            <tr>
+                                <td class="text-center fw-bold">{{=d.f}}</td>
+                                <td class="">{{=d.g}}</td>
+                                <td class="">{{=d.s}}</td>
+                                <td class="text-center">{{=d.ge}}</td>
+                                <td class="">{{=d.o}}</td>
+                                <td class="">{{=d.n}}</td>
                             </tr>
                         {{~}}
                     </tbody>
@@ -35,11 +67,9 @@ app.monitor = {
             </div>
         `;
 
+        const html = doT.template(tableTemplate)({detail: dataMonitor, detailArmado: dataGeneracion});
 
-
-        const compiledTemplate = doT.template(tableTemplate);
-
-        const html = compiledTemplate(data); 
+        // const html = compiledTemplate(data); 
 
         const container = document.getElementById("container");
 

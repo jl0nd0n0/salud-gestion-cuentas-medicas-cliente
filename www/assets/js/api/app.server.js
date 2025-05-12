@@ -148,12 +148,124 @@ app.server = {
             `;
             //console.log(idPerfil);
             app.server.data.notificaciones();
-            if (idPerfil == 1) {
+            if (idPerfil == 0) {
                 app.server.data.administradorGet();
             }
+            else if (idPerfil == 1) {
+                app.server.data.administradorGet();
+            }
+            // rol para usuarios de documentacion
+            else if (idPerfil == 2) {
+                app.server.data.administradorGet();
+                // app.server.data.documentacionDescargaSoportesGet();
+            }
+            else if (idPerfil == 3) {
+                htmlMenu = `
+                    <li class="submenu">
+                        <button type="button" class="btn btn-menu d-inline-block button-circle">
+                            <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12,3L20,9V21H15V14H9V21H4V9L12,3Z"></path></svg>
+                        </button>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    Cartera
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            SOAT
+                                        </a>
+                                        <ul>
+                                            <li>
+                                                <a href="javascript:void(0);"
+                                                    onclick="app.cartera.soat.index()">
+                                                    Consolidada
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:void(0);"
+                                                    onclick="app.cartera.soat.asegurador()">
+                                                    Por Asegurador
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                `;
+                //app.server.data.documentacionDescargaSoportesGet();
+                app.server.data.gerenteGet();
+            }
+            else if (idPerfil == 5) {
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 6) {
+                //alert("paso 01");
+                app.server.data.clienteGet();
+            }
+            else if (idPerfil == 8) {
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 9) {
+                //alert("paso 01");
+                app.server.data.radicarGet();
+            }
+            else if (idPerfil == 10) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 11) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 12) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 14) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 15) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 16) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 17) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 18) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 19) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 20) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 24) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 25) {
+                //alert("paso 01");
+                app.server.data.administradorGet();
+            }
+            else if (idPerfil == 29) {
+                //alert("paso 01");
+                app.server.data.radicarRobotGet();
+            }
             else {
-                console.error("No se ha definido el perfil de usuario");
-                return false;
+                app.server.data.administradorGet();
             }
 
             let htmlMenuBase = `
@@ -453,8 +565,7 @@ app.server = {
             const fxCallback = function () {
                 ++contador;
                 console.log(contador);
-                alert(contador);
-                if (contador == 2) {                    
+                if (contador == 1) {                    
                     app.monitor.index();
                     document.querySelector("#loader").style.display = "none";
                 }
@@ -463,28 +574,9 @@ app.server = {
             const params = [
                 //FIXME: se debe trabajar con la misma vista de monitor, al implementar
                 // hay que optimizar los recursos
-                
-                
-                {
-                    url: "x=soat&y=estadosGet",
-                    index: "soat-estados",
-                    callback: function () {
-                        document.querySelector("#iconNotificaciones").classList.remove("d-none");
-                        document.querySelector("#containerNotificaciones").innerHTML = "<nata-ui-todo></nata-ui-todo>";
-                    }
-                },
-                {
-                    url: "x=usuario&y=listar",
-                    index: "lista-usuarios"
-                },
                 {
                     url: "x=monitor&k=monitorRobotArmado",
                     index: "robot-armado",
-                    callback: fxCallback
-                },
-                {
-                    url: "x=auditoria&k=control",
-                    index: "control-auditoria",
                     callback: fxCallback
                 }
             ];
