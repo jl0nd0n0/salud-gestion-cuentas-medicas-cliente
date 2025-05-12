@@ -193,3 +193,11 @@
 .border-top-4px-fff {
     border-top: solid 4px #717171;
 }
+
+.min-width-450px {
+    min-width: 450px;
+}
+
+.min-height-500px {
+    height:500px;
+}
