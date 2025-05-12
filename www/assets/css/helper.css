@@ -201,3 +201,7 @@
 .min-height-500px {
     height:500px;
 }
+
+.border-right-none {
+    border-right: solid #fff;
+}

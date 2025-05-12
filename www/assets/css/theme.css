@@ -2,7 +2,6 @@
     --bs-border-radius: 10px;
 }
 
-
 .table-primary {
     --bs-table-bg: #F4F3F8;
     --bs-table-border-color: #F4F3F8;
@@ -24,6 +23,7 @@ tr.bg-table-row-zebra-2 td {
 .card {
     --bs-card-cap-bg: #fff;
     --bs-card-cap-color: #575962;
+    --bs-card-border-color: #F1F1F4;
 }
 
 .card-header {
@@ -48,7 +48,7 @@ body {
     font-family: Roboto;
     font-weight: 300;
     font-style: normal;
-    background-color: #F2F3F8;
+    background-color: #FCFCFC;
 }
 
 #containerLogin {

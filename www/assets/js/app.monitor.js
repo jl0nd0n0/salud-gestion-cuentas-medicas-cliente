@@ -7,8 +7,10 @@ app.monitor = {
 
         // Obtener datos del localStorage
         let data = nata.localStorage.getItem("robot-armado");
-        
         console.log(data);
+        console.log(data.filter(function (record) {
+            return record.f == "IND646213"
+        }));
 
         const processedData = data.map(item => {
             const allOk = item.d.every(dd => dd.ge !== "0");
@@ -79,7 +81,7 @@ app.monitor = {
                                     </thead>
                                     <tbody>
                                             <tr class="bg-table-row-1">
-                                                <td class="text-center">
+                                                <td class="text-center border-right-none">
                                                     {{? d.radicarOK }}
                                                         <div class="rounded-circle bg-success d-inline-block" style="width: 25px; height: 25px;"></div>
                                                     {{??}}
