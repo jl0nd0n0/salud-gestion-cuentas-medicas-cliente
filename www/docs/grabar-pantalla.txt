@@ -1,0 +1,109 @@
+[pagina 1]
+<text>
+Instala <b>OBS Studio</b>, puedes  buscar en google:<br>
+"download <b>OBS Studio</b>"<br>
+o <a href="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-29.1.3-Full-Installer-x64.exe" target="new_">descargar directamente</a><br>
+<small><b>Si lo descargas directamente, ten en cuenta que puede estar desactualizado.</b></small><br><br>
+<b>Asegurate de instalarlo en español</b>
+</text>
+<text>
+    Abre la aplicación <b>OBS Studio</b>
+</text>
+	<button type="button"
+			class="btn btn-primary btn-siguiente center min-width-100px">></button>
+[/pagina 1]
+
+[pagina 2]
+	<text>
+	En la sección de controles, -> ajustes<br><br>
+	<img class="img-docs center" src="docs/img-01.jpg" alt="">
+	</text>
+	<div class="w-100 text-center py-3">
+		<button type="button"
+			class="btn btn-primary btn-anterior min-width-100px me-1 d-inline-block"><
+		</button>
+		
+		<button type="button"
+			class="btn btn-primary btn-siguiente min-width-100px d-inline-block">>
+		</button>
+	</div>
+[/pagina 2]
+
+[pagina 3]
+	<text>
+	Ajustes -> Salida -> Ruta de grabación: <b>"C:/archivos/videos"</b><br><br>
+	<img src="docs/img-02.jpg" alt="">
+	</text>
+	<div class="w-100 text-center py-3">
+		<button type="button"
+			class="btn btn-primary btn-anterior min-width-100px me-1 d-inline-block"><
+		</button>
+		
+		<button type="button"
+			class="btn btn-primary btn-siguiente min-width-100px d-inline-block">>
+		</button>
+	</div>
+[/pagina 3]
+
+[pagina 4]
+	<text>
+		Calidad de grabación: <b>Alta calidad, tamaño de archivo medio</b><br><br>
+		<img src="docs/img-03.jpg" alt="">
+	</text>
+	<div class="w-100 text-center py-3">
+		<button type="button"
+			class="btn btn-primary btn-anterior min-width-100px me-1 d-inline-block"><
+		</button>
+		
+		<button type="button"
+			class="btn btn-primary btn-siguiente min-width-100px d-inline-block">>
+		</button>
+	</div>
+[/pagina 4]
+
+
+[pagina 5]
+	<text>
+	Formato de grabación: <b>MPEG-4 (.mp4)</b><br><br>
+	<img src="docs/img-04.jpg" alt="">
+	</text>
+	
+	<div class="w-100 text-center py-3">
+		<button type="button"
+			class="btn btn-primary btn-anterior min-width-100px me-1 d-inline-block"><
+		</button>
+		
+		<button type="button"
+			class="btn btn-primary btn-siguiente min-width-100px d-inline-block">>
+		</button>
+	</div>
+[/pagina 5]
+
+[pagina 6]
+	<text>
+		Click en el botón Aceptar<br><br>
+		Para iniciar la grabación presiona: <b>Iniciar grabación</b><br><br>
+		<img src="docs/img-05.jpg" alt="">
+	</text>
+	<div class="w-100 text-center py-3">
+		<button type="button"
+			class="btn btn-primary btn-anterior min-width-100px me-1 d-inline-block"><
+		</button>
+		
+		<button type="button"
+			class="btn btn-primary btn-siguiente min-width-100px d-inline-block">>
+		</button>
+	</div>
+[/pagina 6]
+
+[pagina 7]
+	<text>
+	Para finalizar la grabación presiona: <b>Finalizar Grabación</b><br><br>
+	<img src="docs/img-06.jpg" alt="">
+	<br><br>El archivo de video será guardado en la carperta: "<b>C:/archivos/videos</b>"</br><br>
+	</text>
+	<div class="w-100 text-center py-3">
+		<button type="button"
+			class="btn btn-primary btn-anterior center min-width-100px"><</button>
+	</div>
+[/pagina 7]

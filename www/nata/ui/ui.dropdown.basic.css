@@ -1,0 +1,140 @@
+/* menu */
+.menu {
+    height: 100vh;
+    width: 100px;
+    background: #fff;
+}
+
+.menu .list-group-item {
+    border: none;
+}
+
+.menu .btn {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.menu .ui-dropdown-basic .mdi {
+    font-size: 25px;
+}
+
+.menu .ui-dropdown-basic-container .mdi {
+    font-size: 15px;
+}
+
+.menu .list-group-item:hover {
+    color: #22b9ff!important;
+    background: #f5f5f5;
+}
+
+.menu .ui-dropdown-basic,
+.menu .ui-dropdown-basic-submenu {
+    cursor: pointer;
+    position: relative;
+}
+
+.menu .ui-dropdown-basic:hover > .ui-dropdown-basic-container {
+    display: block;
+}
+
+/*
+.menu .ui-dropdown-basic:hover > .ui-dropdown-basic-container > .list-group {
+    background-color: red;
+}
+
+.menu .ui-dropdown-basic:hover > .ui-dropdown-basic-container > .list-group > .list-group-item {
+    background-color: pink;
+}
+*/
+
+.menu .ui-dropdown-basic > .ui-dropdown-basic-container > .list-group > .list-group-item:hover > .ui-dropdown-basic-container {
+    display: block;
+}
+
+.menu .ui-dropdown-basic > .ui-dropdown-basic-container > .list-group > .list-group-item > .ui-dropdown-basic-container > .list-group > .list-group-item:hover > .ui-dropdown-basic-container {
+    display: block;
+}
+
+.menu .ui-dropdown-basic-submenu:hover .ui-dropdown-basic-container-submenu {
+    display: block;
+}
+
+.menu a,
+.menu a:hover {
+    text-decoration: none;
+}
+
+.menu .ui-dropdown-basic i,
+.menu .ui-dropdown-basic a {
+    color: inherit!important;
+}
+
+.menu .ui-dropdown-basic-container {
+    display: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 275px;
+    z-index: 10;
+    position: absolute;
+    background: #fff;
+    border-radius: 5px;
+    left: 74px;
+    text-align: left;
+    top: 29px;
+    font-size: 14px;
+    animation: menu-fade-in .3s ease 1, move-up .3s ease-out 1;
+    vertical-align: middle;
+    color: #676c7b!important;
+}
+
+.menu .ui-dropdown-basic-container-submenu {
+    display: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 215px;
+    z-index: 10;
+    position: absolute;
+    background: #fff;
+    border-radius: 5px;
+    left: 195px;
+    text-align: left;
+    top: 1px;
+    font-size: 14px;
+    animation: menu-fade-in .3s ease 1, move-up .3s ease-out 1;
+    vertical-align: middle;
+    color: #676c7b!important;
+}
+
+@keyframes menu-fade-in {
+    from {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes menu-fade-in {
+    from {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes move-up {
+    from {
+        margin-top: 10px
+    }
+    to {
+        margin-top: 0
+    }
+}
+
+@-webkit-keyframes move-up {
+    from {
+        margin-top: 10px
+    }
+    to {
+        margin-top: 0
+    }
+}

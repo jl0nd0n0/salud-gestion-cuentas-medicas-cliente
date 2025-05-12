@@ -1,0 +1,14 @@
+[pagina 1]
+<div class="scroll-y px-3">
+	<h6>Radicar AXA Colpatria</h6>
+
+	<div class="w-100 text-center">
+			<img class="w-100 text-center" src="docs/colpatria-radicacion.png" alt="Radicacion Colpatria">
+	</div>
+
+	<div class="alert alert-primary" role="alert" style="color: black;">
+        <h6>¿Dónde radicar facturas AXA Colpatria?</h6>
+        Si se trata de una facturas por <b>accidente de tránsito (SOAT)</b>, el lugar correcto para radicar es: <a href="https://axa.claimonline.com.co/reception">Radicacion SOAT</a>.<br><br>
+        Cuando se trate de una factura que <b>no es accidente de tránsito</b> se debe tener en cuenta a que nit está facturado para radicarlo en la opción correcta, el lugar en donde está hablitada la opción de radicación es: <a href="https://activa-it.net/App_Customs/Externas/RadicacionLight/RadicacionLight.aspx">Radicacion NO SOAT</a>.<br>
+    </div>
+[/pagina 1]

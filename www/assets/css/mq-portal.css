@@ -1,0 +1,216 @@
+@media (max-width: 2560px) {
+	.laptop {
+		display: block!important;
+	}
+
+	.mobile {
+		display: none!important;
+	}
+
+	body {
+		 padding: 70px 141px;
+	}
+
+	.container {
+		padding: 3rem;
+		background: url(../images/background-block.svg);
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+	}
+
+	#containerText {
+		width: 50%;
+	}
+
+	.container-controls {
+		width: 100%;
+		text-align: center;
+	}
+
+    .image-logo {
+        height: 78px;
+        width: 235px;
+    }
+
+    #containerText h1 {
+        font-size: 5.5vw;
+    }
+
+	.img-doctora {
+		top: 16px;
+    	right: 167px;
+	}
+
+	.container-control-1 {
+		margin-bottom: 1rem;
+		margin-right: 1rem;
+		display: inline-block;
+	}
+
+	.container-control-2 {
+		margin-bottom: 1rem;
+		display: inline-block;
+	}
+
+	.banner h1 {
+    	color: #66988c;
+    	font-weight: 800;
+	}
+
+	#containerLoginForm {
+		padding: 50px;
+		bottom: 0;
+	}
+}
+
+/* laptops - pcs */
+@media (max-width: 1920px) {
+	#containerText {
+		padding: 120px 50px;
+	}
+}
+
+@media (max-width: 1680px) {}
+
+@media (max-width: 1440px) {}
+
+@media (max-width: 1366px) {
+	#containerText {
+		padding: 50px;
+	}
+}
+
+@media (max-width: 1200px) {
+	.img-doctora {
+		top: 16px;
+    	right: 105px;
+	}
+}
+
+@media (max-width: 1024px) {
+	.img-doctora {
+		top: 27px;
+    	right: 53px;
+	}
+}
+
+@media (max-width: 991px) {
+
+	.img-doctora {
+    	top: 45px;
+    	right: 24px;
+	}
+}
+
+@media (max-width: 800px) {
+
+	#containerText h1 {
+    	font-size: 6vw;
+		font-weight: 900;
+	}
+
+	.img-doctora {
+    	top: 120px;
+    	right: 24px;
+	}
+
+	.container {
+		padding: 39px;
+		background: url(../images/background-block-medium.svg);
+    	background-repeat: no-repeat;
+    	background-size: cover;
+    	background-position: center;
+	}
+
+	#containerText {
+		margin-top: 35px;
+    	padding: 5px;
+	}
+
+	.container-controls {
+		width: 250px;
+		margin: 0 auto;
+	}
+
+	.container-control-1 {
+		margin-right: auto;
+		margin-bottom: 1rem;
+		display: block;
+	}
+
+	.container-control-2 {
+		display: block;
+	}
+
+
+}
+
+/* breakpoint mobile */
+@media (max-width: 768px) {
+	.laptop {
+		display: none!important;
+	}
+
+	.mobile {
+		display: block!important;
+	}
+
+	body {
+		 padding: 0;
+	}
+
+	.container {
+		background: url(../images/background-forma.svg);
+    	background-repeat: no-repeat;
+    	background-size: cover;
+    	background-position: center;
+		padding: 10px;
+	}
+
+	#header {
+		background: #2873b6;
+		padding: 20px 10px;
+	}
+
+	.image-logo {
+		width: 100%;
+	}
+
+	#containerText {
+		margin: 0;
+    	padding: 10px;
+    	width: 100%;
+    	text-align: center;
+	}
+
+	.banner h1 {
+    	color: #fff;
+    	font-weight: 900;
+    	font-size: 14vw;
+	}
+
+	.img-doctora {
+    	top: 149px;
+    	right: 0;
+    	left: 0;
+	}
+
+	#containerLoginForm {
+		padding: 0;
+		bottom: 250px;
+	}
+
+}
+
+@media (max-width: 575px) {}
+
+@media (max-width: 480px) {}
+
+@media (max-width: 375px) {}
+
+@media (max-width: 360px) {}
+
+@media (max-width: 340px) {}
+
+@media (max-width: 320px) {}

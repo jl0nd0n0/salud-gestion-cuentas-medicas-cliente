@@ -1,0 +1,110 @@
+[pagina 1]
+<div class="px-3">
+    <h6>Bienvenido a tu asistente</h6>
+
+    <br>
+
+    <div class="d-flex">
+        <img id="imageRobot" class="image-robot mirror-horizontal me-3" src="assets/nata/ui/electra/robot.gif" alt="Electra">
+        <div>
+            <div class="alert alert-primary" role="alert" style="color: black;">
+                <p>
+                    Hola soy tu asistente <b>Artemisa</b>, estoy aquí para ayudarte en lo que necesites (radicar, consultar aseguradores, generar informes...).
+                </p>
+                <br>
+                <p>
+                    ¿En qué te puedo ayudar el día de hoy?
+                </p>
+            </div>
+            <button type="button" class="btn btn-primary w-100 btnOpciones">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                </svg>
+                &nbsp Click aquí
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector(".btnOpciones").addEventListener("click", function(){
+            console.log("btnOpciones.click");
+
+            axios.get(app.config.server.php1 + "x=asistente&y=asistenteGetOperaciones&ts=" + new Date().getTime())
+                .then(function(response){
+                    console.log(response);
+
+                    let template = `
+                        <ul class="list-group mt-n3">
+                            <div class="input-group input-group-sm mb-3">
+                                <input id="txtSearch" type="text"
+                                class="form-control w-1000 input-search" placeholder="Buscar ..." autocomplete="off">
+                            </div>
+                            {{~ it.detail: d:id}}
+                            <li class="list-group-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="{{=d.f}}" name="operation" value="{{=d.f}}">
+                                    <label class="operaciones form-check-label" for="{{=d.f}}">
+                                        {{=d.n}}
+                                    </label>
+                                </div>
+                            </li>
+                            {{~}}
+                        </ul>
+
+                        <div class="text-center mt-3">
+                            <button id="guardar-solicitud" class="btn btn-primary">Guardar</button>
+                        </div>
+                    `;
+
+                    let html = doT.template(template)({ detail: response.data });
+
+                    new nataUIDialog({
+                        html: html,
+                        width: 390,
+                        height: 480,
+                        title: `
+                            Operaciones disponibles
+                        `,
+                        events: {
+                            render: function () { },
+                            close: function () { },
+                        }
+                    });
+                    
+                    document.getElementById('txtSearch').addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase();
+                        const items = document.querySelectorAll('.operaciones');
+                
+                        items.forEach(item => {
+                            const label = item.textContent.toLowerCase();
+                    
+                            if (label.includes(searchTerm)) {
+                                item.parentElement.parentElement.style.display = '';
+                            } else {
+                                item.parentElement.parentElement.style.display = 'none';
+                            }
+                        });
+                    });
+
+                    document.querySelector('#guardar-solicitud').addEventListener('click', function() {
+                        console.log('guardar-solicitud.click');
+
+                        const selectedRadio = document.querySelector('input[name="operation"]:checked');
+                        if (selectedRadio) {
+                            const selectedId = selectedRadio.value;
+                            console.log(selectedId);
+
+                            app.asistente[selectedId]();
+                        } else {
+                            swal('Error', 'No se seleccionó ninguna operación.', 'error');
+                        }
+                    });
+    
+                })
+                .catch(function(error){
+                    console.error(error);
+                });
+        });
+    </script>
+</div>
+[/pagina 1]

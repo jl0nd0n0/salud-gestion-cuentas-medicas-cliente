@@ -1,0 +1,210 @@
+[pagina 1]
+<div class="container" style="max-height: 100%; display: flex; flex-direction: column; overflow: hidden;">
+    <h6>Validación XML</h6>
+
+    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+
+    <div class="w-100 d-flex justify-content-between" id="divXML" style="overflow: hidden;">
+        <div id="facturasXML" style="overflow-y: auto; overflow-x: hidden;"></div>
+        <div id="cargaXML" style="overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            contenedorExito.innerText = mensaje;
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeError").style.display = "none";
+
+            const botonSiguiente = document.getElementById("siguienteBtn");
+            if (botonSiguiente) {
+                botonSiguiente.click();
+            }
+        }
+
+
+        document.getElementById("loader").style.display = "block";
+
+        const dataXML = {
+            e : ${id},
+            a : ${asegurador}
+        };
+
+        axios.post(app.config.server.php1 + "x=cartera&y=validarFacturaXML&ts=" + (new Date).getTime(), dataXML)
+            .then(function(response){
+                console.log(response.data);
+                
+                document.getElementById("loader").style.display = "none";
+
+                if(response.data && response.data.length > 0){
+                    mostrarMensajeError("Faltan facturas por cargar");
+
+                    const options = {
+                        id: "tableFacturaXML",
+                        columns: [
+                            {
+                                title: "Numero Factura",
+                                width: "250",
+                                prop: "f",
+                                class: "text-center"
+                            }
+                        ],
+                        data: response.data
+                    };
+
+                    nata.sessionStorage.setItem("widget", options);
+
+                    const facturasXML = document.querySelector("#facturasXML");
+                    facturasXML.innerHTML = '<nata-ui-table></nata-ui-table>';
+
+                    const cargaXML = document.querySelector("#cargaXML");
+                    cargaXML.innerHTML = `
+                        <nata-ui-upload
+                        data-title="Subir XML"
+                        data-subtitle="Solo archivos con extensión zip"
+                        data-file-types="zip"
+                        data-url="https://homi.artemisaips.com/server/php/index.php?x=facturaDian&y=XMLUpload"
+                        data-etl=""
+                        data-consola=1
+                        ></nata-ui-upload>
+                    `;
+
+                    return;
+                }
+
+                mostrarMensajeExito("Todas las facturas XML están cargadas. Puede continuar");
+            })
+            .catch(function(error){
+                console.error(error);
+            });
+    </script>
+
+        <button type="button"
+            id="siguienteBtn"
+            style="display: none !important;"
+            class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+            onclick="fxPageRender(++page, text, ${id});">
+            Siguiente
+        </button>
+</div>
+[/pagina 1]
+[pagina 2]
+<div class="container" style="max-height: 100%; display: flex; flex-direction: column; overflow: hidden;">
+    <h6>Validación Soportes Homologados</h6>
+
+    <div id="mensajeError" class="alert alert-danger" style="display: none;">
+        Falta homologar tecnologías. &nbsp;&nbsp;
+        <a id="homologarLink" href="" target="_blank" style="display: none;">Descargar Archivo</a>
+    </div>
+
+    
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            const homologarLink = document.getElementById("homologarLink");
+            homologarLink.href = mensaje;
+            homologarLink.style.display = "inline";
+            homologarLink.textContent = "Descargar Archivo";
+            contenedorError.style.display = "block";
+        }
+
+        const dataXML = {
+            e : ${id},
+            a : ${asegurador}
+        };
+
+        axios.post(app.config.server.php1 + "x=cartera&y=validarHomologacion&ts=" + (new Date).getTime(), dataXML)
+            .then(function(response){
+                console.log(response);
+
+                const file = app.config.server.path + response.data[0].file;
+
+                mostrarMensajeError(file);
+            })
+            .catch(function(error){
+                console.error(error);
+            })
+    </script>
+
+    <button type="button"
+        id="siguienteBtn2"
+        class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+        onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+</div>
+[/pagina 2]
+[pagina 3]
+<div class="px-3">
+    <h6>Validación de soportes&nbsp;
+        <span class="text-end text-bg-danger pulse-red badge m-end-3 rounded-pill" id="totalSoportes">            
+        </span>
+    </h6>
+
+    <div id="soporteTable"></div>
+
+    <script>
+    document.querySelector("#loader").style.display = "block";
+
+    axios.get("https://cdn1.artemisaips.com/index.php?k=soporte&x=validarSoportesArmado&y=homi&z=" + ${id} + "&y=" + ${asegurador} + "&ts=" + new Date().getTime())
+        .then(function(response){
+            console.log(response.data);
+
+            document.querySelector("#loader").style.display = "none";
+
+            const options = {
+                        id: "tableSoportes",
+                        columns: [
+                            {
+                                title: "Mensaje",
+                                width: "250",
+                                prop: "m"
+                            },
+                            {
+                                title: "Número Factura",
+                                width: "130",
+                                prop: "nf"
+                            },
+                            {
+                                title: "Tipo Glosa",
+                                width: "120",
+                                prop: "tg"
+                            },
+                            {
+                                title: "Codigo",
+                                width: "130",
+                                prop: "c"
+                            },
+                            {
+                                title: "Descripción",
+
+                                width: "250",
+                                prop: "d"
+                            }
+                        ],
+                        data: response.data
+                    };
+
+                    nata.sessionStorage.setItem("widget", options);
+
+                    const soporteTable = document.querySelector("#soporteTable");
+                    soporteTable.innerHTML = '<nata-ui-table></nata-ui-table>';
+
+                    const totalSoportes = document.querySelector("#totalSoportes");
+                    totalSoportes.innerHTML = response.data.length;
+            
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+    </script> 
+</div>
+[/pagina 3]

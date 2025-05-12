@@ -1,0 +1,580 @@
+[pagina 1]
+<div class="scroll-y px-3">
+    <h6>Pasos para radicar</h6>
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>Los pasos para radicar por primera vez son los siguientes:</p>       
+        <ol>
+            <li>Validar Malla de furips</li>
+            <li>Generar furips</li>
+            <li>Validar carga XML</li>
+            <li>Validar armado facturas</li>
+            <li>Generar armado para radicación</li>
+        </ol>
+    </div>
+
+    <button type="button"
+    class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+    onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+</div>
+[/pagina 1]
+[pagina 2]
+<div class="scroll-y px-3">
+    <h6>Validar Malla de furips</h6>
+
+    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            contenedorExito.innerText = mensaje;
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeError").style.display = "none";
+        }
+
+        let lote = new Date().getTime();
+        sessionStorage.setItem("lote", lote);
+        document.getElementById("loader").style.display = "block";
+
+        let oData = [{ fc: 0 }];
+        let oData2 = [{ fc: 0 }];
+
+        axios.get(app.config.server.php1 + "x=furips&k=validar&l=" + ${id} + "&m=" + lote)
+            .then(function(response) {
+                document.getElementById("loader").style.display = "none";
+                const { polizaMal = [], malla = [], faltan = [] } = response.data;
+
+                oData[0].fc = malla.length;
+                oData2[0].fc = faltan.length;
+
+                if (polizaMal.length > 0) {
+                    const polizaMalF = polizaMal.map(item => item.f).join(", ");
+                    mostrarMensajeError(`En el estado se encuentran facturas no soat:\n\n${polizaMalF}`);
+                    return;
+                }
+
+                if (malla.length === 0 && faltan.length === 0) {
+                    mostrarMensajeExito("No hay errores en malla y los furips están completos");
+                    document.getElementById("siguienteBtn2").style.display = "block";
+                    document.querySelector("#furips").style.display = "none";
+                    return;
+                }
+
+                document.getElementById("radioMallaValidacion").checked = true;
+                document.querySelector("label[for='radioMallaValidacion']").innerHTML = `Validación por malla (${oData[0].fc})`;
+                document.querySelector("label[for='radioDatosFurips']").innerHTML = `Facturas sin datos en furips (${oData2[0].fc})`;
+
+                let options = {
+                    id: "tableValidacionFurips",
+                    title: "Furips 1",
+                    columns: [
+                        {
+                            title: "Número Factura",
+                            width: "150",
+                            prop: "f"
+                        },
+                        {
+                            title: "Campo",
+                            width: "100",
+                            prop: "c"
+                        },
+                        {
+                            title: "Campo Descripción",
+                            width: "200",
+                            prop: "cd"
+                        },
+                        {
+                            title: "Descripción Error",
+                            width: "450",
+                            prop: "d"
+                        },
+                        {
+                            title: "Valor",
+                            width: "150",
+                            prop: "v"
+                        }
+                    ],
+                    data: malla
+                };
+                
+                nata.sessionStorage.setItem("widget", options);
+
+                const tableContainer = document.getElementById("containerValidacion");
+                tableContainer.innerHTML = "<nata-ui-table></nata-ui-table>";
+
+                if (document.querySelector("#radioMallaValidacion") != null) {
+                    document.querySelector("#radioMallaValidacion").addEventListener("click", function () {
+                        console.log("#radioMallaValidacion.click");
+
+                        const options = {
+                            id: "tableValidacionFurips",
+                            columns: [
+                                {
+                                    title: "Número Factura",
+                                    width: "150",
+                                    prop: "f"
+                                },
+                                {
+                                    title: "Campo",
+                                    width: "100",
+                                    prop: "c"
+                                },
+                                {
+                                    title: "Campo Descripción",
+                                    width: "200",
+                                    prop: "cd"
+                                },
+                                {
+                                    title: "Descripción Error",
+                                    width: "450",
+                                    prop: "d"
+                                },
+                                {
+                                    title: "Valor",
+                                    width: "150",
+                                    prop: "v"
+                                }
+                            ],
+                            data: response.data.malla
+                        };
+                        nata.sessionStorage.setItem("widget", options);
+                        const element = document.querySelector("#containerValidacion");
+                        element.innerHTML = "";
+                        element.innerHTML = `
+                            <nata-ui-table></nata-ui-table>
+                        `;
+                    });
+                }
+
+                if (document.querySelector("#radioDatosFurips") != null) {
+                    document.querySelector("#radioDatosFurips").addEventListener("click", function () {
+                        console.log("#radioDatosFurips.click");
+
+                        const options = {
+                            id: "tableValidacionFurips",
+                            columns: [
+                                {
+                                    title: "Número Factura",
+                                    width: "150",
+                                    prop: "f"
+                                },
+                                {
+                                    title: "Identificación",
+                                    width: "200",
+                                    html: `
+                                        <input type="text" data-id="[id]" class="form-control form-control-sm documento-victima" placeholder="Ingresa el documento">
+                                    `,
+                                },
+                                {
+                                    title: "Asegurador",
+                                    width: "400",
+                                    prop: "a"
+                                },
+                                {
+                                    title: "",
+                                    width: "250",
+                                    html: `
+                                        <div class="btn-group">
+                                            <button type="button" data-id="[id]" class="btn btn-primary btn-sm btn-ver-factura">Ver Factura</button>
+                                            <!--<button type="button" data-id="[id]" class="btn btn-primary btn-sm btn-buscar-siras">Buscar Siras</button> -->
+                                        </div>
+                                    `,
+                                },
+                            ],
+                            data: response.data.faltan
+                        };
+                        
+                        nata.sessionStorage.setItem("widget", options);
+                        
+                        const element = document.querySelector("#containerValidacion");
+                        element.innerHTML = "";
+                        element.innerHTML = `
+                            <div class="w-100">
+                                <nata-ui-table></nata-ui-table>
+                            </div>
+                        `;
+                    });
+                }
+
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+    </script>
+
+    <div id="furips" class="w-100 scroll-x">
+        <div class="my-3 d-flex justify-content-between" role="group" aria-label="Basic radio toggle button group">
+            <div class="btn-group">
+                <input id="radioMallaValidacion" type="radio" class="btn-check" name="btnradio" autocomplete="off">
+                <label class="btn btn-outline-primary" for="radioMallaValidacion">Validación por malla (${oData[0].fc})</label>
+                <input id="radioDatosFurips" type="radio" class="btn-check" name="btnradio" autocomplete="off">
+                <label class="btn btn-outline-primary" for="radioDatosFurips">Facturas sin datos en furips (${oData2[0].fc})</label>
+            </div>
+        </div>
+        <div id="containerValidacion"></div>
+    </div>
+
+    <button type="button"
+        id="siguienteBtn2" 
+        class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3" 
+        style="display: none !important;" 
+        onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+</div>
+[/pagina 2]
+[pagina 3]
+<div class="scroll-y px-3">    
+    <button type="button"
+        id="siguienteBtn"
+        class="btn btn-primary btn-generar center min-width-250px my-2 py-3">
+        Generar Furips
+    </button>
+
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>Ten presentar que al <b>Generar Furips</b> esto puede tardar según la cantidad que se tenga que procesar.
+        Al terminar la descarga se abrirá en una nueva pestaña, si la descarga no inicia valida los permisos de la página.</p>
+    </div>
+
+    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            contenedorExito.innerText = mensaje;
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeError").style.display = "none";
+        }
+
+        document.getElementById("siguienteBtn").addEventListener("click", function() {
+            document.getElementById("loader").style.display = "block";
+
+            let lote = sessionStorage.getItem("lote");
+
+            axios.get(app.config.server.php1 + "x=furips&y=generarFuripsLote_v1&z=" + lote)
+                .then(function(response){
+                    console.log(response.data);
+
+                    document.getElementById("loader").style.display = "none";
+
+                    mostrarMensajeExito("Furips generado correctamente.");
+                    document.getElementById("siguienteBtn3").style.display = "block";
+
+                    const file = app.config.server.path + "server/php/" + response.data;                    
+                    window.open(file, "_blank");
+                })
+                .catch(function(error){
+                    document.getElementById("loader").style.display = "none";
+                    console.log(error.response.data);
+                    mostrarMensajeError("Error al generar Furips: " + error.response.data);
+                }); 
+        });
+    </script>
+
+    <button type="button"
+        id="siguienteBtn3"
+        class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+        style="display: none !important;"
+        onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+</div>
+[/pagina 3]
+[pagina 4]
+<div class="scroll-y px-3">  
+    <h6>Validación XML</h6>
+
+    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            contenedorExito.innerText = mensaje;
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeError").style.display = "none";
+        }
+
+        const dataXML = {
+            e : ${id}
+        };
+
+        document.getElementById("loader").style.display = "block";
+
+        axios.post(app.config.server.php1 + "x=cartera&y=validarFacturaXML&ts=" + (new Date).getTime(), dataXML)
+            .then((function(response) {
+                console.log(response.data);
+
+                if(response.data.length == 0){
+                    document.getElementById("loader").style.display = "none";
+                    mostrarMensajeExito("Todas las facturas tiene el XML cargado.");
+                    document.getElementById("siguienteBtn3").style.display = "block";
+                    return;
+                }
+                else{
+                    document.getElementById("loader").style.display = "none";
+
+                    const options = {
+                        id: "tableFacturaXML",
+                        columns: [
+                            {
+                                title: "Numero Factura",
+                                width: "250",
+                                prop: "nf"
+                            }
+                        ],
+                        data: response.data
+                    };
+
+                    nata.sessionStorage.setItem("widget", options);
+
+                    const tableContainer = document.createElement("div");
+                    tableContainer.className = "w-100 d-flex justify-content-center text-center";
+                    tableContainer.innerHTML = "<nata-ui-table></nata-ui-table>";
+                    document.querySelector(".scroll-y.px-3").appendChild(tableContainer);
+                    document.getElementById("cargarBtn").style.display = "block";
+                }
+
+            })).catch((function(error) {
+                console.log(error);
+            }));
+    </script>
+
+    
+
+    <div class="w-100 my-2 d-flex">
+        <button type="button"
+            id="siguienteBtn3"
+            style="display: none !important;"
+            class="btn btn-primary btn-siguiente-plus center min-width-250px my-2 py-3"
+            onclick="fxPageRender(++page, text, ${id});">
+            Siguiente
+        </button>
+
+        <button type="button"
+            id="cargarBtn"
+            style="display: none !important;"
+            class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+            onclick="fxPageRender(++page, text, ${id});">
+            Cargar XML
+        </button>
+    </div>
+
+</div>
+[/pagina 4]
+[pagina 5]
+<div class="scroll-y px-3">
+    <h6>Cargar detalles de factura</h6>
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>Para realizar el cargue de factura XML, se debe realizar la carga en un <b>zip</b> con los archivos xml.
+        <br><b>Nota: </b> No debe haber archivos comprimidos dentro del zip, esto provocará el fallo en la carga.</p>
+    </div>
+
+    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;">
+        <a id="exitoLink" href="" target="_blank" style="display: none;">Descargar Archivo</a>
+    </div>
+
+    <div class="w-100 my-2">
+        <nata-ui-upload
+        data-title="Subir XML"
+        data-subtitle="Solo archivos con extensión zip"
+        data-file-types="zip"
+        data-url="https://homi.artemisaips.com/server/php/index.php?x=facturaDian&y=XMLUpload"
+        data-etl=""
+        data-consola=1
+        ></nata-ui-upload>
+    </div>
+
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            const exitoLink = document.getElementById("exitoLink");
+            exitoLink.href = mensaje;
+            exitoLink.style.display = "inline";
+            exitoLink.textContent = "Descargar Archivo";
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeError").style.display = "none";
+        }
+    </script>
+
+    <button type="button"
+        id="siguienteBtn4"
+        class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+        style="display: none !important;"
+        onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+</div>
+[/pagina 5]
+[pagina 6]
+<div class="scroll-y px-3">
+    <h6>Validación de soportes</h6>
+
+    <script>
+    axios.get("https://cdn1.artemisaips.com/index.php?k=soporte&x=armadoFacturas&y=homi&z=" + ${id} + "&ts=" + new Date().getTime())
+        .then(function(response){
+            console.log(response.data);
+
+            document.querySelector("#loader").style.display = "none";
+            
+            if(response.data.furips && response.data.furips.length > 0){
+                const options = {
+                    id: "tableFurips",
+                    columns: [
+                        {
+                            title: "Numero Factura",
+                            width: "250",
+                            prop: "nf"
+                        }
+                    ],
+                    data: response.data.furips
+                };
+
+                nata.sessionStorage.setItem("widget", options);
+                new nataUIDialog({
+                    html: `
+                            <div class="w-100 scroll-y d-flex justify-content-center text-center">
+                                <nata-ui-table></nata-ui-table>
+                            </div>
+                        `,
+                    title: `
+                            Facturas sin factura XML&nbsp;&nbsp;
+                            <span class="badge rounded-pill text-bg-primary">
+                                Estado: ${id} 
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="badge text-bg-danger pulse-red rounded-pill">
+                                ${response.data.furips.length}
+                            </span>
+                        `,
+                    height: 350,
+                    width: 450,
+                    events: {
+                        render: function () {},
+                        close: function () {},
+                    }
+                });
+    
+                return;
+            }
+
+            if (Array.isArray(response.data)) {
+                const sql = `
+                    SELECT
+                    FROM ?
+                    ORDER BY a 
+                `;
+
+                const oData = alasql(sql, [response.data]);
+
+                const options = {
+                    id: "tableErrorArmado",
+                    columns: [
+                        {
+                            title: "Mensaje Error",
+                            width: "350",
+                            prop: "m"
+                        },
+                        {
+                            title: "Factura",
+                            width: "150",
+                            prop: "nf",
+                        },
+                        {
+                            title: "Asegurador",
+                            width: "150",
+                            prop: "a"
+                        },
+                        {
+                            title: "Código",
+                            width: "150",
+                            prop: "c",
+                        },
+                        {
+                            title: "Descripción",
+                            width: "350",
+                            prop: "d"
+                        },
+                        {
+                            title: "Tipo Glosa",
+                            width: "100",
+                            prop: "tg",
+                            widget: {
+                                w: "badge",
+                                c: "text-bg-primary"
+                            }
+                        }
+                    ],
+                    data: oData
+                };
+
+                nata.sessionStorage.setItem("widget", options);
+        
+                new nataUIDialog({
+                    html: `
+                            <div class="w-100">
+                                <input id="txtSearch" type="text" class="form-control w-50 input-search" placeholder="Buscar ..." autocomplete="off">
+                                <nata-ui-table></nata-ui-table>
+                            </div>
+                        `,
+                    title: `
+                            Error en el armado &nbsp;&nbsp;
+                            <span class="badge rounded-pill text-bg-danger">
+                                ${response.data.length} Errores
+                            </span>
+                        `,
+                    events: {
+                        render: function () {
+                            session.jets = new Jets({
+                                searchTag: "#txtSearch", 
+                                contentTag: "#tableErrorArmado tbody"
+                            });     
+                        },
+                        close: function () {},
+                    }
+                });
+
+                return;
+            }
+            const file = app.config.server.cdnPathBaseFiles + response.data;
+            console.log(file);
+            window.open(file, "_blank");
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+    </script> 
+</div>
+[/pagina 6]

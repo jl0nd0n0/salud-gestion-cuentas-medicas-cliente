@@ -1,0 +1,12 @@
+[pagina 1]
+<div class="px-3">
+    <h6>Video de explicación</h6>
+
+    <div class="w-100 text-center">
+        <video width="600" height="300" controls autoplay class="d-inline-block">
+            <source src="docs/Capacitacion_Seguros_estado_radicacion.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+    </div>
+</div>
+[/pagina 1]

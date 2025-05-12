@@ -1,0 +1,2 @@
+// eslint-disable-next-line no-unused-vars
+window["afp"] = [{ "i": "1", "t": "Fondo de pensiones Colfondos" }, { "i": "5", "t": "Fondo de pensiones Colpensiones" }, { "i": "2", "t": "Fondo de pensiones Porvenir" }, { "i": "3", "t": "Fondo de pensiones Protecci\u00f3n" }, { "i": "4", "t": "Fondo de pensiones Skandia" }];

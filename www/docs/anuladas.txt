@@ -1,0 +1,57 @@
+[pagina 1]
+<text>
+Ingresar a Indigo<br>
+<ol>
+  <li>Ir a Vie RCM - Revenue Cycle Management</li>
+  <li>Facturación Salud</li>
+  <li>Lista de facturas</li>
+</ol>
+</text>
+<br>
+<img class="img-docs center" src="docs/anuladas-1.png" alt="">
+    <button type="button"
+		class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+		onclick="fxPageRender(++page, text);">Siguiente</button>
+[/pagina 1]
+[pagina 2]
+<text>
+    <ol>
+        <li>Seleccionar la fecha Inicial la mas vieja permitida en el aplicativo</li>
+        <li>Seleccionar la fecha final el dia actual</li>
+        <li>Seleccionar tipo de reporte: Resumido</li>
+        <li>Seleccionar estado: Anulado</li>
+    </ol>
+    <div class="alert alert-primary" role="alert">
+        En el apartado inferior al lado del boton de generar reporte se encuentra un boton de excel seleccionar 
+        esa opcion.
+    </div>
+    <img class="img-docs center" src="docs/anuladas-2.png" alt="">
+</text>
+<br>
+ <div class="d-flex flex-column align-items-center">
+    <button type="button"
+        class="btn btn-primary btn-siguiente min-width-200px my-2 py-3"
+        onclick="fxPageRender(++page, text);">Siguiente</button>
+    <button type="button"
+        class="btn btn-primary btn-anterior min-width-250px my-2 py-3"
+        onclick="fxPageRender(--page, text);">Anterior</button>
+</div>
+[/pagina 2]
+[pagina 3]
+<text>
+    <ol>
+        <li>En el archivo eliminar la columna observacion</li>
+        <li>Eliminar saltos de linea</li>
+        <li>Eliminar "</li>
+        <li>Eliminar ;</li>
+    </ol>
+    <div class="alert alert-primary" role="alert">
+        Guardar el archivo con el nombre: <b>temporal_informe_anuladas.xlsx</b>
+    </div>
+</text>
+    <button type="button"
+            class="btn btn-primary btn-anterior center min-width-250px my-2 p-3"
+            onclick="fxPageRender(--page, text);">anterior</button>
+    </div>
+[/pagina 3]
+

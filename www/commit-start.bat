@@ -1,0 +1,1 @@
+git init --initial-branch=main && git remote add origin git@gitlab.com:artem127/app.git && git add . && git commit -m "Initial commit" && git push -u origin main

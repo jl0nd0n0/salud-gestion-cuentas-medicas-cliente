@@ -1,0 +1,11 @@
+[pagina 1]
+<text>
+Ingresar al siguiente link<br>
+<a href="https://fundacionhomi-my.sharepoint.com/:x:/g/personal/coordinacioncentralefectivo_homifundacion_org_co/EelMs6QjtURKunQiMluRNgIB_12J1ssLn5X6tnY-oSE0MQ?e=4%3aeWew51&at=9" target="new_">Drive flujo Efectivo</a><br><br>
+Ingresar el correo de: <small><b>gerencia.salud@crescend.software</b></small><br>
+Ir al link del correo para obtener el codigo:
+<a href="https://crescend.software:2096/" target="new_">Correo Crescend</a><br>
+Usuario: <small><b>gerencia.salud@crescend.software</b></small><br>
+Contraseña: <small><b>ZQF@a7Xz1hKUsqgEpY</b></small><br><br>
+</text>
+[/pagina 1]

@@ -1,0 +1,34 @@
+[pagina 1]
+<ul class="list-group">
+    <li class="list-group-item">
+        Estado :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/Capacitacion_Seguros_estado_radicacion.mp4" target="new_">
+                        Capacitacion radicacion glosa estado
+                    </a>            
+                </li>
+            </ul> 
+    </li>
+    <li class="list-group-item">
+            SURAMERICANA :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/Capacitacion_SURA_radicacion.mp4" target="new_">
+                        Radicación SURAMERICANA
+                    </a>            
+                </li>
+            </ul> 
+    </li>
+    <li class="list-group-item">
+            MAPFRE :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/Instructivo_radicacion_Mapfre.mp4" target="new_">
+                        Radicación MAPFRE
+                    </a>            
+                </li>
+            </ul> 
+    </li>
+</ul>
+[/pagina 1]

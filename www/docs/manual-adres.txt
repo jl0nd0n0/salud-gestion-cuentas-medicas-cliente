@@ -1,0 +1,16 @@
+[pagina 1]
+<div class="scroll-y px-3">
+	<h6>Manual Plataforma Adres</h6>
+
+	<div class="w-100 text-center">
+		<embed src="assets/docs/manual-plataforma-adres.pdf" width="500" height="600" type="application/pdf">
+	</div>
+
+	<div class="alert alert-primary" role="alert" style="color: black;">
+		<h6>Credenciales</h6>
+        Link: <b>https://aplicaciones.adres.gov.co/SII_ECAT_WEB/reportes/Login.aspx</b><br/>
+		Usuario: <b>899999123</b><br/>
+		Contraseña: <b>EPS159.</b><br/>
+	</div>
+</div>
+[/pagina 1]

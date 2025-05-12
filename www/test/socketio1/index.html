@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cliente Socket.io</title>
+  </head>
+  <body>
+    <h1>Cliente Socket.io</h1>
+    <input type="text" id="mensaje" placeholder="Escribe un mensaje">
+    <button onclick="enviarMensaje()">Enviar</button>
+
+    <!-- Incluir Socket.io desde el servidor -->
+    <script src="socket.io.min.js"></script>
+    <script>
+	
+		const socket = io.connect('ws://localhost:3000', { transports : ['websocket'] });
+		//const socket = io.connect('http://localhost:3000');
+        socket.on('connect', function(data) {
+            socket.emit('join', 'Hello World from client');
+        });
+
+        socket.on('notify', function(message) {
+            console.log(message);
+        });
+	
+      // Escuchar mensajes del servidor
+      socket.on('mensaje-servidor', (data) => {
+        console.log('Mensaje del servidor:', data);
+      });
+
+      // Función para enviar mensaje al servidor
+      function enviarMensaje() {
+        const mensaje = document.getElementById('mensaje').value;
+        socket.emit('mensaje-cliente', mensaje);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+[pagina 1]
+<div class="px-3">
+	<div class="alert alert-primary" role="alert" style="color: black;">
+        <h6>¿Cómo solicitar una carta tope a Bolivar SOAT?</h6>
+        <p>Para obtener el certificado de agotamiento es posible a través de la aplicación ACTIVA IT como se indica en el siguiente manual pdf.</p>
+    </div>
+    <div class="mb-3 text-center">
+        <embed src="docs/manual-certificado-tope-activa.pdf" width="500" height="600" type="application/pdf">
+    </div>
+</div>
+[/pagina 1]

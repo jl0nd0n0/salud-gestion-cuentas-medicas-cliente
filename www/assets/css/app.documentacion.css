@@ -1,0 +1,9 @@
+text {
+    width: 100%;
+    display: block;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 9px;
+    line-height: 1.4rem;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,44 @@
+.ui-layout-laptop {
+    display: none;
+    height: 100vh;
+    grid-template-columns: 100px 1fr;
+}
+
+.grid-monitor {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 10px;
+    height: 100%;
+}
+
+.grid-monitor-body {
+    display: grid;
+    grid-template-rows: 34% 33% 33%;
+    grid-gap: 4px;
+    height: 100vh;
+}
+
+.grid-monitor-body-cols {
+    display: grid;
+    grid-template-columns: 530px 1fr;
+    grid-gap: 15px;
+    height: 100%;
+}
+
+.ui-layout-body {
+    display: grid;
+    grid-template-rows: 70px 1fr 50px;
+}
+
+.ui-layout-body #box1 {
+    overflow-x: hidden;
+    margin-bottom: 200px;
+    /*max-height: 89vh;*/
+    height: 100%;
+    overflow-y: auto;
+}
+
+.grid-internal {
+    display: grid;
+    grid-template-rows: 67px 1fr;
+}

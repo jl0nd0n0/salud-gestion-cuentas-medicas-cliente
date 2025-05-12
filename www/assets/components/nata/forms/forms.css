@@ -1,0 +1,117 @@
+.container-form {
+    vertical-align: top;
+    padding: 10px;
+}
+
+#ulSections .list-group-item {
+    font-size: 0.7rem;
+    padding: 11px 16px;
+}
+
+#ulSections .list-group-item.active {
+    background-color: var(--dark);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 8px 16px;
+}
+
+.forms {
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+}
+
+.forms label:not(.form-check-label) {
+    margin-bottom: 2px;
+    margin-top: 2px;
+    width: 100%;
+    font-size: 1rem!important;
+    font-weight: 500;
+    display: block;
+    color: var(--color-placeholder);
+}
+
+.forms input,
+.forms select,
+.forms textarea {
+    font-size: 13px;
+    color: #606060;
+    margin-top: 0;
+}
+
+.list-form-sections .inactive {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.form-floating > label {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--color-placeholder);
+}
+
+.forms-sections .list-group-item.active {
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
+    color: #757575;
+}
+
+/* fix */
+.icon {
+    height: 20px;
+    width: 20px;
+}
+
+.forms-footer {
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    background: #fff;
+}
+
+.container-icon-divipola {
+    display: inline-block;
+}
+
+.form-control-1 {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.input-group>.form-control-1 {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.form-control-1:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+}
+
+.form-control:valid, .form-select:valid, .form-control-1:valid {
+    background: #fff;
+}
+
+.invalid {
+    background: #fcf4f4!important;
+    border-color:#efd7d7!important;
+}
+

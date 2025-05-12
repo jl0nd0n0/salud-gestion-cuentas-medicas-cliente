@@ -1,0 +1,135 @@
+.nata-ui-menu {
+    /* flex-    irection: column; */
+    margin: 10px 0;
+    padding: 0;
+    /* display: flex; */
+    align-items: center;
+    /* justify-content: center; */
+}
+.nata-ui-menu ul {
+    border-radius: 5px;
+    list-style: none;
+    border: solid 1px #ddd;
+    background: #fff;
+}
+
+.nata-ui-menu ul li,
+.nata-ui-menu ul li a {
+    text-align: left;
+    opacity: 0.8;
+    color: #212121;
+    cursor: pointer;
+    transition: 200ms;
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+.nata-ui-menu ul li:hover,
+.nata-ui-menu ul li a:hover {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 200ms;
+}
+
+.nata-ui-menu ul li a,
+.nata-ui-menu ul li a a {
+    /* display: flex; */
+    /* align-items: center; */
+    /*height: 100%;*/
+    width: 100%;
+}
+.nata-ui-menu ul li {
+    font-size: 13px;
+    padding: 10px 36px 10px 20px;
+}
+
+.nata-ui-menu ul li::before {
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid #212121;
+    content: "";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.nata-ui-menu ul .link::before {
+    padding-right: 0;
+    display: none;
+}
+
+.nata-ui-menu > ul {
+    flex-direction: column;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    border: transparent;
+    border-radius: 5px;
+    /* background: #f9f9f9; */
+}
+
+.nata-ui-menu > ul > li {
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    border: solid 1px #ccc;
+    padding: 5px;
+    min-width: 60px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+
+.nata-ui-menu > ul li {
+    position: relative;
+}
+
+.nata-ui-menu > ul li ul {
+    top: -2%;
+    left: 100%;
+    visibility: hidden;
+    opacity: 0;
+    padding: 0;
+    min-width: 160px;
+    position: absolute;
+    /* top: calc(var(--nata-ui-menu-height) + 5px); */
+    /* left: 100%; */
+    transform: translateX(0);
+    transition: 200ms;
+    transition-delay: 200ms;
+}
+.nata-ui-menu > ul li ul li {
+    margin: 0;
+    padding: 8px 40px 8px 16px;
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content: flex-start; */
+    /*height: 30px;*/
+}
+.nata-ui-menu > ul li ul li::before {
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid #212121;
+}
+.nata-ui-menu > ul li ul li ul {
+    transition-delay: 200ms;
+    top: -2%;
+    left: 100%;
+    transform: translate(0);
+}
+
+.nata-ui-menu > ul li:hover > ul {
+    position: absolute;
+    top: -2%;
+    left: 100%;
+    transform: translate(0);
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 200ms;
+    z-index: 999999;
+}

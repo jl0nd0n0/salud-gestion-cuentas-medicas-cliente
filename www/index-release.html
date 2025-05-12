@@ -1,0 +1,86 @@
+<!doctype html>
+<html class="no-js" lang>
+	<head>
+        <meta charset="utf-8">
+        <title>ROBOT | Artemisa v0.0.1</title>
+        <meta name="description" content>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta property="og:title" content>
+        <meta property="og:type" content>
+        <meta property="og:url" content>
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="robots" content="noimageindex">
+        
+        <!--
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        -->
+
+        <!--
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
+        <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        -->
+        
+        <link rel="stylesheet" href="assets/css/app.min.css?v=v0.0.1">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="msapplication-TileImage" content="mstile-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+    </head>
+    <body class="noselect accelerated">
+        <div id="containerArtemisa" class="w-100"></div>
+        <div id="loader" class="loader">
+            <svg class="circular" viewbox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+            </svg>
+        </div>
+        <div id="containerLogin">
+            <nata-ui-login></nata-ui-login>
+        </div>
+        <div id="containerDashboard">
+            <div class="layout">
+    
+                <!--
+                    <div id="container-menu" class="ui-menu">
+                        <div id="menu" class="menu"></div>
+                    </div>
+                    !-->
+    
+                <div id="container-menu" class="ui-menu"></div>
+    
+                <div class="layout-container">
+                    <div class="layout-header">
+                        <div class="row">
+                            <div class="col-2 col-lg-2">
+                                <img id="iconNotificaciones" class="logo-producto d-none"
+                                    src="assets/images/logos/logo-producto.svg" alt>
+                            </div>
+                            <div id="containerNotificaciones" class="col-10 col-lg-10"></div>
+                        </div>
+                    </div>
+                    <div id="container" class="content"></div>
+                </div>
+            </div>
+        </div>
+        <!-- HASTA AQUI -->
+
+    <!-- #region scripts -->
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="assets/js/app.min.js?v=v0.0.1"></script>
+    <!-- #endregion scripts -->
+
+    </body>
+</html>

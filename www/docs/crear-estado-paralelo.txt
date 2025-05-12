@@ -1,0 +1,23 @@
+[pagina 1]
+<div class="px-3">
+    <h6>Video de explicación</h6>
+
+    <div class="w-100 text-center">
+        <video width="600" height="300" controls autoplay class="d-inline-block">
+            <source src="docs/crear-estado-paralelo.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+    </div>
+
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <h6>
+           Plantilla 
+           <a href="https://homi.artemisaips.com/server/php/7084dcc5-671c-4292-841e-5b8141099bd0/templates/excel/temporal_estados_paralelos.xlsx">temporal_estados_paralelos.xlsx</a>
+        </h6>
+        <h6>
+           Ver  
+           <a href="https://homi.artemisaips.com/server/php/7084dcc5-671c-4292-841e-5b8141099bd0/templates/excel/estados_homi.xlsx">estados homi</a>
+        </h6>
+    </div>
+</div>
+[/pagina 1]

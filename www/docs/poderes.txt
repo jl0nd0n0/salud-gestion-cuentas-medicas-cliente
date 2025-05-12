@@ -1,0 +1,7 @@
+[pagina 1]
+    <h6>Pasos para radicar</h6>
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>Los poderes obtenidos se encuentran en el siguiente link: </p>
+        <a href="https://1drv.ms/f/s!Ask62QV4DZkbxOJZgiAtJkSPZNKc_w?e=EXwg43" target="__blank">Poderes</a>
+    </div>
+[/pagina 1]

@@ -1,0 +1,16 @@
+[pagina 1]
+<div class="scroll-y px-3">
+	<h6>Pasos para liquidar una cobertura</h6>
+	<div class="alert alert-primary" role="alert" style="color: black;">
+		<ol>
+            <li>Identificar datos de prestación.</li>
+            <li>Identificar facturas asociadas.</li>
+            <li>Revisar los saldos de cada facturas, es decir si hay anulaciones, glosas aceptadas.</li>
+            <li>Calcular que el total de la prestación.</li>
+            <li>Identificar el monto o saldo disponible de la póliza.</li>
+            <li>Determinar si existe monto o saldo disponible de la póliza.</li>
+            <li>Calcular saldo pendiente por facturar.</li>
+        </ol>
+	</div>
+</div>
+[/pagina 1]

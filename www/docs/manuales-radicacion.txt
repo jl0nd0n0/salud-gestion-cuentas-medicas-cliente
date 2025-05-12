@@ -1,0 +1,84 @@
+[pagina 1]
+<ul class="list-group">
+    <li class="list-group-item">
+        ACTIVA :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-activa.pdf" target="new_">
+                        MANUAL RADICACION PRIMERA VEZ
+                    </a>            
+                </li>
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-glosa-activa.pdf" target="new_">
+                        MANUAL RADICACION GLOSA
+                    </a> 
+                </li>
+            </ul> 
+    </li>
+    <li class="list-group-item">
+        ADRES :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-adres.pdf" target="new_">
+                        MANUAL RADICACION ADRES
+                    </a>            
+                </li>
+            </ul> 
+    </li>
+    <li class="list-group-item">
+        COLPATRIA :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-colpatria-soat.pdf" target="new_">
+                        MANUAL RADICACION COLPATRIA SOAT
+                    </a>            
+                </li>
+            </ul> 
+    </li>
+    <li class="list-group-item">
+            EQUIDAD :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-equidad.pdf" target="new_">
+                        MANUAL RADICACION EQUIDAD
+                    </a>            
+                </li>
+            </ul> 
+    </li>
+    <li class="list-group-item">
+        ESTADO :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-estado-completo.pdf" target="new_">
+                        MANUAL RADICACION PRIMERA VEZ ESTADO COMPLETO
+                    </a>            
+                </li>
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-glosa-estado-completo.pdf" target="new_">
+                        MANUAL RADICACION GLOSA ESTADO COMPLETO
+                    </a> 
+                </li>
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-estado.pdf" target="new_">
+                        MANUAL RADICACION PRIMERA VEZ ESTADO PASO A PASO
+                    </a>            
+                </li>
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-glosa-estado.pdf" target="new_">
+                        MANUAL RADICACION GLOSA ESTADO PASO A PASO
+                    </a> 
+                </li>
+            </ul> 
+    </li>
+    <li class="list-group-item">
+            POSITIVA :
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="docs/manuales/manual-radicacion-positiva.pdf" target="new_">
+                        MANUAL RADICACION POSITIVA
+                    </a>            
+                </li>
+            </ul>
+    </li>
+</ul>
+[/pagina 1]

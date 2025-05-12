@@ -1,0 +1,8 @@
+[pagina 1]
+<div class="scroll-y px-3">
+	<video width="600" height="350" controls autoplay class="d-inline-block">
+			<source src="docs/induccion.mp4" type="video/mp4">
+			Tu navegador no soporta el elemento de video.
+	</video>
+</div>
+[/pagina 1]

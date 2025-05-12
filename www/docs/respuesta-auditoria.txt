@@ -1,0 +1,185 @@
+[pagina 1]
+<div class="px-3">
+    <h6>Validación Carga XML</h6>
+
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>
+            La carga del XML es obligatoria para validar los items facturados y con ellos poder comparar
+            que los soportes que estén cargados sean suficientes para la auditoria.
+        </p>
+    </div>
+
+    <button type="button"
+        id="validarXML"
+        class="btn btn-primary btn-generar center min-width-250px my-2 py-3">
+        Validar XML
+    </button>
+    
+    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            contenedorExito.innerText = mensaje;
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeError").style.display = "none";
+        }
+
+        document.getElementById("validarXML").addEventListener("click", function() {
+            document.getElementById("loader").style.display = "block";
+            axios.get(app.config.server.php1 + "x=cartera&y=validarXML&z=" + ${id} + "&w=0&ts=" + (new Date).getTime())
+                .then((function(response) {
+                    console.log(response.data);
+
+                    if(response.data[0].c != '0'){
+                        document.getElementById("loader").style.display = "none";
+                        mostrarMensajeExito("La factura tiene el XML cargado.");
+                        document.getElementById("siguienteBtn").style.display = "block";
+                        return;
+                    }
+                    else{
+                        document.getElementById("loader").style.display = "none";
+                        mostrarMensajeError("La factura no tiene el XML cargado, es necesario para continuar el proceso.");
+                        document.getElementById("cargarBtn").style.display = "block";
+                    }
+                })).catch((function(error) {
+                    console.log(error);
+                }));
+        });
+    </script>
+
+    <button type="button"
+        id="siguienteBtn"
+        style="display: none !important;"
+        class="btn btn-primary btn-siguiente-plus center min-width-250px my-2 py-3"
+        onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+
+    <button type="button"
+        id="cargarBtn"
+        style="display: none !important;"
+        class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+        onclick="fxPageRender(++page, text, ${id});">
+        Cargar XML
+    </button>
+</div>
+[/pagina 1]
+[pagina 2]
+<div class="px-3">
+    <h6>Cargar XML</h6>
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>Para subir los detalles de la factura, se debe realizar la carga en un <b>zip</b> con el archivo XML.</p>
+    </div>
+
+    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+
+    <div class="w-100 d-flex justify-content-center my-2">
+        <nata-ui-upload
+        data-title="Subir XML"
+        data-subtitle="Solo archivos con extensión zip"
+        data-accept=".zip"
+        data-url="https://homi.artemisaips.com/server/php/index.php?x=facturaDian&y=XMLUpload"
+        data-etl=""
+        data-consola=1
+        ></nata-ui-upload>
+    </div>
+
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            contenedorExito.innerText = mensaje;
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeError").style.display = "none";
+            document.getElementById("siguienteBtn2").style.display = "block";
+        }
+    </script>
+
+    <button type="button"
+        id="siguienteBtn2"
+        class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+        style="display: none !important;"
+        onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+</div>
+[/pagina 2]
+[pagina 3]
+<div class="px-3">
+    <h6>Validar homologación de soportes</h6>
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>La validación de homologación es necesaria para que cada item facturado tenga el soporte donde se valida su correspondencia</p>
+    </div>
+
+    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+
+    <script>
+        function mostrarMensajeError(mensaje) {
+            const contenedorError = document.getElementById("mensajeError");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            contenedorExito.innerText = mensaje;
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeError").style.display = "none";
+        }
+
+        document.getElementById("loader").style.display = "block";
+        axios.get(app.config.server.php1 + "x=cartera&y=validarXML&z=" + ${id} + "&w=1&ts=" + (new Date).getTime())
+            .then((function(response) {
+                console.log(response.data);
+
+                if(response.data.length == 0){
+                    document.getElementById("loader").style.display = "none";
+                    mostrarMensajeExito("Faltan items por ser homologados.");
+                    document.getElementById("homologarBtn").style.display = "block";
+                    return;
+                }
+                else{
+                    document.getElementById("loader").style.display = "none";
+                    mostrarMensajeError("Los items están homologados, puedes seguir.");
+                    document.getElementById("siguienteBtn3").style.display = "block";
+                }
+            })).catch((function(error) {
+                console.log(error);
+            }));
+    </script>
+
+    <button type="button"
+        id="homologarBtn"
+        style="display: none !important;"
+        class="btn btn-primary btn-siguiente-plus center min-width-250px my-2 py-3"
+        onclick="fxPageRender(++page, text, ${id});">
+        Homologar Items
+    </button>
+
+    <button type="button"
+        id="siguienteBtn3"
+        style="display: none !important;"
+        class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+        onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+</div>
+[/pagina 3]

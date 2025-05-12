@@ -1,0 +1,14 @@
+[pagina 1] 1. Generar Archivo furips
+<br />
+<a href="docs/cargar_archivo_furips.mp4" target="new_"> Ver video </a>
+<br />
+<br />
+2. Tener presente el nombre del archivo <strong>furips.xlsx</strong>
+<br />
+<br />
+<br />
+<br />
+<div class="alert alert-info" role="alert">
+  Si tiene errores contactar son soporte / verificar documento
+</div>
+[/pagina 1]

@@ -1,0 +1,166 @@
+/* theme */
+
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background: url(../images/background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+}
+
+#header {
+    display: block;
+    width: 100%;
+}
+
+#containerText {
+    font-family: 'Montserrat', sans-serif;
+}
+
+#containerLoginForm {
+    position: absolute;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-weight: bolder;
+}
+
+.container {
+    border-radius: 50px;
+    min-height: 100%;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.img-doctora {
+    position: absolute;
+    z-index: 2;
+}
+
+.min-width-250px {
+    min-width:250px;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.min-width-200px {
+    min-width:200px;
+}
+
+#containerMain {
+    width: calc(100% - 90px);
+    float: left;
+}
+
+#layout {
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.icon-logo-header {
+    height: 40px;
+    width: 40px;
+    margin: 10px;
+}
+
+.dropdown.dropend {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.dropend .dropdown-toggle::after {
+    content: none;
+}
+
+#containerForm {
+    position: relative;
+    padding: 15px;
+}
+
+#formsToolbar {
+    width: 100%;
+}
+
+#containerForm.signos-vitales, #formsToolbar.signos-vitales {
+    width: 50%;
+}
+
+#toolbar {
+    display: none;
+    padding: 8px;
+}
+
+.btn-circle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+}
+
+.btn.disabled, .btn:disabled, fieldset:disabled .btn {
+    opacity: .45;
+}
+
+.font-size-14px {
+    font-size: 14px;
+}
+
+.max-width-340px {
+	max-width:340px;
+}
+
+.float-none {
+    float: none;
+    clear: both;
+}
+
+.bg-dark {
+    background-color: #666!important;
+    color: #fff;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+
+#tableMonitorSignosVitales {
+    width: 1020px;
+}
+
+
+.bg-body {
+    background: url(../images/background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+}

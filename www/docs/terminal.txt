@@ -1,0 +1,13 @@
+[pagina 1]
+<text>
+Instala <b>Windows terminal</b>, puedes  buscar en google:<br>
+"download <b>Windows</b> github"<br>  
+o <a href="https://github.com/microsoft/terminal/releases/download/v1.17.11461.0/Microsoft.WindowsTerminal_1.17.11461.0_8wekyb3d8bbwe.msixbundle" target="new_">descargar directamente</a><br>
+<small><b>Si lo descargas directamente, ten en cuenta que puede estar desactualizado.</b></small><br><br>
+</text>
+<div class="w-100 text-center">
+	<a href="docs/terminal.mp4" target="new_">
+		Ver video instalación
+	</a>
+</div>
+[/pagina 1]

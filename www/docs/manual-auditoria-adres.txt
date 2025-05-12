@@ -1,0 +1,12 @@
+[pagina 1]
+<div>
+    <div class="alert alert-primary" role="alert" style="color: black;">
+		Los códigos de glosa generados por ADRES que se encuentran en la tabla <b>adres_manual_auditoria</b> son referenciados del siguiente manual.<br>
+		Para la carga de la tabla se debe tener la misma estructura que <b>adres_manual_auditoria</b> pero el nombre para la carga es <b>temporal_adres_manual_auditoria</b>.
+	</div>
+
+	<div class="w-100 text-center">
+		<embed src="docs/manual-auditoria-adres.pdf" width="500" height="600" type="application/pdf">
+	</div>
+</div>
+[/pagina 1]

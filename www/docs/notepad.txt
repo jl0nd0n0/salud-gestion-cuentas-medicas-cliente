@@ -1,0 +1,14 @@
+[pagina 1]
+<text>
+Instala <b>Notepad ++</b>, puedes  buscar en google:<br>
+"download <b>Notepad ++</b>"<br>
+o <a href="https://notepad-plus-plus.org/downloads/v8.5.7/" target="new_">descargar directamente</a><br>
+<small><b>Si lo descargas directamente, ten en cuenta que puede estar desactualizado.</b></small><br><br>
+<b>Asegurate de instalarlo en español</b>
+</text>
+<div class="w-100 text-center">
+	<a href="docs/notepad.mp4" target="new_">
+		Ver video instalación
+	</a>
+</div>
+[/pagina 1]

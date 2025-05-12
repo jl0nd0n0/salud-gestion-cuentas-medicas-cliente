@@ -1,0 +1,51 @@
+[pagina 1]
+<div class="scroll-y px-3">
+	<h6>Configurar Sitio Filezilla</h6>
+	<div class="w-100 my-2">
+		<a href="javascript:void();"
+			onclick="app.documentacion.wizard.render('filezilla', 'Consultar: Descarga Filezilla');">
+				Primero debes instalar Filezilla
+		</a>
+	</div>
+
+	<div class="w-100 text-center">
+		<video width="600" height="300" controls autoplay class="d-inline-block">
+			<source src="docs/filezilla-crear-sitio.mp4" type="video/mp4">
+			Tu navegador no soporta el elemento de video.
+		</video>
+	</div>
+
+	<div class="alert alert-primary" role="alert" style="color: black;">
+		<h6>Credenciales</h6>
+		Usuario: <b>homi</b><br/>
+		Contraseña: <b>cf6beba3-fab8-47d7-8223-f86e82563657</b><br/>
+		Servidor: <b>172.26.0.6</b><br/>
+		Puerto: <b></b><br>
+		Protocolo: <b>SFTP</b><br>
+    Ruta: <b>/home/homi/storage/soportes</b>
+	</div>
+
+	<button type="button"
+		class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+		onclick="fxPageRender(++page, text);">Siguiente</button>
+</div>
+[/pagina 1]
+[pagina 2]
+<div class="scroll-y px-3">
+	<h6>Cómo subir los soportes</h6>
+  Para radicar una cuenta se pueden requerir varios soportes como lo son factura, historia clínica, epicrisis, entre otros.<br>
+  Se debe crear una carpeta con el nombre de la factura y allí colocar los soportes requeridos utilizando los prefijos que aparecen en el aplicativo inicialmente de Crescend<br>
+  La factura iría de la siguiente forma <strong>fe-número de factura,</strong> primero el prefijo, después guion, después el número de factura.<br>
+  Una vez que estén completos los soportes en la carpeta, se comprime la carpeta y ese archivo es el que se debe cargar en la ruta que se explica en el apartado anterior.
+  <div class="w-100 text-center">
+		<video width="600" height="300" controls autoplay class="d-inline-block">
+			<source src="docs/filezilla-subir-soportes.mp4" type="video/mp4">
+			Tu navegador no soporta el elemento de video.
+		</video>
+	</div>
+  <button type="button"
+		class="btn btn-primary btn-anterior center min-width-250px my-2 p-3"
+		onclick="fxPageRender(--page, text);">anterior</button>
+  </div>
+[/pagina 2]
+

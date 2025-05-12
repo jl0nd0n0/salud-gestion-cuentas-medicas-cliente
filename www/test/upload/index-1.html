@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Multiple File Upload with Drag and Drop</title>
+    <style>
+        #dropZone {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 20px auto;
+            width: 300px;
+            cursor: pointer;
+        }
+
+        .file {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Advanced Multiple File Upload with Drag and Drop</h1>
+    <div id="dropZone">Drag and drop files here or click to select</div>
+    <div id="progressBars"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var dropZone = document.getElementById('dropZone');
+            var progressBars = document.getElementById('progressBars');
+
+            dropZone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                dropZone.classList.add('active');
+            });
+
+            dropZone.addEventListener('dragleave', function () {
+                dropZone.classList.remove('active');
+            });
+
+            dropZone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                dropZone.classList.remove('active');
+
+                var files = e.dataTransfer.files;
+                handleFiles(files);
+            });
+
+            dropZone.addEventListener('click', function () {
+                document.getElementById('fileInput').click();
+            });
+
+            document.getElementById('fileInput').addEventListener('change', function (e) {
+                var files = e.target.files;
+                handleFiles(files);
+            });
+
+            function handleFiles(files) {
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    var progressBar = document.createElement('div');
+                    progressBar.className = 'file';
+                    progressBar.innerHTML = '<strong>' + file.name + '</strong> - <span class="progress">0%</span>';
+                    progressBars.appendChild(progressBar);
+
+                    var formData = new FormData();
+                    formData.append('file', file);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'upload.php', true);
+
+                    xhr.upload.onprogress = function (e) {
+                        if (e.lengthComputable) {
+                            var percentComplete = (e.loaded / e.total) * 100;
+                            progressBar.querySelector('.progress').textContent = percentComplete.toFixed(2) + '%';
+                        }
+                    };
+
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            progressBar.querySelector('.progress').textContent = 'Upload complete';
+                        } else {
+                            progressBar.querySelector('.progress').textContent = 'Upload failed';
+                        }
+                    };
+
+                    xhr.send(formData);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

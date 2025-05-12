@@ -1,0 +1,38 @@
+[pagina 1]
+<div class="px-3">
+	<div class="alert alert-primary" role="alert" style="color: black;">
+        <h6>¿Cómo solicitar una carta tope a Previsora?</h6>
+        <p>Para solicitar la cobertura de aseguramiento es necesario enviar a la dirección de correo electrónico asignada con el siguiente formato</p>
+    </div>
+    <div>
+        Cordial saludo,<br><br>
+
+        Señores,<br><br>
+
+        Seguros La Previsora S.A.,<br><br>
+
+        En nombre de la Fundación Hospital la Misericordia solicitamos a ustedes
+        la carta tope de agotamiento con el valor del saldo actual de la póliza
+        número 3308005069514000.<br><br>
+
+        Nombre de la Víctima:  SARA ISABELLA CASTAÑEDA SANCHEZ<br>
+        Número de ID víctima: TI 1075682254<br>
+        Fecha de siniestro:  04/08/2023<br>
+        Placa del vehículo: SGR92E<br>
+        Tipo de Amparo: Gastos médicos relacionados con la atención inmediata y tratamiento de los lesionados en un accidente de tránsito.<br><br>
+
+        Esto con el fin de presentar el debido soporte a la Administradora de
+        recursos de la Salud ADRES, por factura radicada a esta entidad.<br><br>
+
+        IND271115<br><br>
+
+        Por lo anterior adjuntamos soportes de poder de acreditación para
+        trámites de conciliación y glosa certificación de cobertura de la póliza
+        emitida por la plataforma de SIS.<br><br>
+
+        Quedamos atentos<br>
+        Agradezco la atencion prestada<br>
+        Atentamente,
+    </div>
+</div>
+[/pagina 1]

@@ -1,0 +1,10 @@
+[pagina 1]
+<div class="px-3">
+	<div class="alert alert-primary" role="alert" style="color: black;">
+        <h6>¿Cómo radicar en Mundial SOAT?</h6>
+    </div>
+    <div class="mb-3 text-center">
+        <embed src="docs/radicacion-mundial.pdf" width="500" height="600" type="application/pdf">
+    </div>
+</div>
+[/pagina 1]

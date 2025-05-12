@@ -1,0 +1,195 @@
+.bg-opacity-004 {
+    background: rgba(0, 33, 249, 0.05)!important;
+}
+
+.bg-opacity-0025 {
+    background: rgba(0, 0, 0, 0.025)!important;
+}
+
+.w-1340px {
+    width: 100%;
+    /*width: 1340px;*/
+}
+
+.scroll-y {
+    overflow-y: auto!important;
+    margin-bottom: 100px;
+}
+
+.scroll-y-height-vh {
+    height: calc(100vh - 60px);
+}
+
+.scroll-x {
+    overflow-y: auto!important;
+}
+
+.border-top-none {
+    border-top: none!important;
+}
+
+.border-bottom-none {
+    border-bottom: none!important;
+}
+
+.w-500px {
+    width: 500px;
+}
+
+.w-250px {
+    width: 250px;
+}
+
+.w-150px {
+    width: 150px;
+}
+
+.w-100px {
+    width: 100px;
+}
+
+.w-90 {
+    width: 90%;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.btn-circle, .circle {
+    border-radius: 50%;
+    width: 29px;
+    height: 29px;
+    padding: 0;
+}
+
+.circle {
+    border: solid 2px red;
+}
+
+.w-900 {
+    width: 900px;
+}
+
+.center {
+    margin: 0 auto;
+    display: block!important;
+}
+
+.w-33 {
+    width: 33%;
+}
+
+.w-66 {
+    width: 66%;
+}
+
+.h-400px {
+    height: 400px;
+}
+
+.h-350px {
+    height: 350px;
+}
+
+.h-700px {
+    height: 700px;
+}
+
+.margin-top-m65px {
+    margin-top: -65px;
+}
+
+.min-width-100px {
+    min-width: 100px;
+}
+
+.font-size-10px {
+    font-size: 10px!important;
+}
+
+.font-size-11px {
+    font-size: 11px !important;
+}
+
+.stroke-transparent {
+    stroke: transparent!important;
+}
+
+.fill-white {
+    fill: #fff !important;
+}
+.btn-outline-primary{
+  font-size: 15px;
+}
+
+.font-size-12px {
+    font-size: 12px!important;
+}
+.m-top-160px {
+    margin-top: -160px;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.font-size-14px {
+    font-size: 14px!important;
+}
+
+.font-size-13px {
+    font-size: 13px !important;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.error {
+    font-size: 12px;
+    font-weight: bold;
+    color: red;
+}
+
+.border-top-2px {
+    border-top: solid 3px #c5c4c4;
+}
+
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+/* Show submenu on hover */
+.dropdown:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu>.dropdown:hover>.dropdown-menu {
+    display: block;
+}
+
+.font-size-12px {
+    font-size:12px;
+}
+
+.min-width-250px {
+    min-width:250px
+}
+
+.w-99 {
+    width: 99%;
+}
+
+.w-98 {
+    width: 98%;
+}
+
+.min-height-70px {
+    min-height: 70px!important;
+}
+
+.border-top-4px-fff {
+    border-top: solid 4px #717171;
+}

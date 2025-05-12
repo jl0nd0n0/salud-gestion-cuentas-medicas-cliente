@@ -1,0 +1,141 @@
+[pagina 1]
+<div class="px-3">
+    <h6>Asistente de auditoria</h6>
+    <br>
+    <div class="d-flex">
+        <img id="imageRobot" class="image-robot mirror-horizontal me-3" src="assets/nata/ui/electra/robot.gif" alt="Electra">
+        <div>
+            <div class="alert alert-primary" role="alert" style="color: black;" id="alertText">
+                <p>
+                    El proceso de auditoria puede variar según el tipo de la cuenta, para poder continuar es necesario que selecciones el estado que vas a auditar
+                </p>
+                <p>
+                <p>
+                    <b>Selecciona el estado:</b>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="divList"></div>
+
+    <script>
+        let selectedState = null;
+
+        function updateUI(html, newTitle) {
+            const alertText = document.querySelector('#alertText');
+            alertText.innerHTML = `
+                <p>
+                    El proceso de auditoria puede variar según el tipo de la cuenta. Para continuar es necesario que selecciones ${newTitle.toLowerCase()}.
+                </p>
+                <p>
+                <p>
+                    <b>Selecciona ${newTitle.toLowerCase()}:</b>
+                </p>
+            `;
+
+            const divList = document.querySelector('#divList');
+            divList.innerHTML = html;
+
+            divList.querySelectorAll('a').forEach(function(anchor) {
+                anchor.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    const id = this.getAttribute('data-id');
+                    console.log(id);
+
+                    if (newTitle === "el estado") {
+                        selectedState = id;
+                        console.log("Estado seleccionado:", selectedState);
+
+                        axios.get(app.config.server.php1 + "x=asistente&y=asistenteGetAsegurador&w=" + id + "&ts=" + new Date().getTime())
+                            .then(function(response) {
+                                console.log(response.data);
+
+                                let template = `
+                                    <div class="list-group">
+                                        {{~ it.detail: d:id }}
+                                            <a href="#" class="list-group-item list-group-item-action btn-siguiente" data-id="{{=d.a}}">
+                                                {{=d.a}}
+                                            </a>
+                                        {{~}}
+                                    </div>                
+                                    <button class="btn btn-secondary mt-3" id="btnVolver">Volver</button>
+                                `;
+
+                                let html = doT.template(template)({ detail: response.data });
+
+                                updateUI(html, "el asegurador");
+
+                                document.querySelector('#btnVolver').addEventListener('click', function() {
+                                    fetchEstados();
+                                });
+
+                                document.querySelectorAll('.btn-siguiente').forEach(function(btn) {
+                                    btn.addEventListener('click', function(event) {
+                                        event.stopPropagation();
+                                        event.preventDefault();
+
+                                        const asegurador = this.getAttribute('data-id');
+                                        console.log(asegurador);
+
+                                        const avanzarButton = document.querySelector('.btn-avanzar');
+                                        if (avanzarButton) {
+                                            avanzarButton.click();
+                                        }
+                                    });
+                                });
+
+                            })
+                            .catch(function(error) {
+                                console.error(error);
+                            });
+
+                    } else if (newTitle === "el asegurador") {
+                        const selectedAsegurador = id;
+                        console.log("Estado seleccionado:", selectedState);
+                        console.log("Asegurador seleccionado:", selectedAsegurador);
+                    }
+                });
+            });
+        }
+
+        function fetchEstados() {
+            axios.get(app.config.server.php1 + "x=asistente&y=asistenteGetEstados&w=auditoria&ts=" + new Date().getTime())
+                .then(function(response) {
+                    console.log(response.data);
+
+                    let template = `
+                        <div class="list-group">
+                            {{~ it.detail: d:id }}
+                                <a href="#" class="list-group-item list-group-item-action" id="{{=d.ie}}" data-id="{{=d.ie}}">
+                                    {{=d.ie}} - {{=d.e}}  
+                                </a>
+                            {{~}}
+                        </div>                
+                    `;
+
+                    let html = doT.template(template)({ detail: response.data });
+
+                    updateUI(html, "el estado");
+                })
+                .catch(function(error) {
+                    console.error(error);
+                });
+        }
+
+        fetchEstados();
+    </script>
+
+    <button type="button"
+        class="btn btn-primary btn-avanzar btn-siguiente center min-width-250px my-2 py-3"
+        style="display: none !important;"
+        onclick="fxPageRender(++page, text);">
+    </button>
+</div>
+[/pagina 1]
+[pagina 2]
+<div class="px-3">
+    <h6>Auditar</h6>
+</div>
+[/pagina 2]

@@ -1,0 +1,27 @@
+[pagina 1]
+<div class="scroll-y px-3">
+    <h6>Validación Soportes</h6>
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>Para realizar el cargue de factura XML, se debe realizar la carga en un <b>zip</b> con los archivos xml.
+        <br><b>Nota: </b> No debe haber archivos comprimidos dentro del zip, esto provocará el fallo en la carga.</p>
+    </div>
+    <div class="w-100 my-2">
+        <nata-ui-upload
+        data-title="Subir XML"
+        data-subtitle="Solo archivos con extensión zip"
+        data-file-types="zip"
+        data-url="https://homi.artemisaips.com/server/php/index.php?x=facturaDian&y=XMLUpload"
+        data-etl=""
+        data-consola=1
+        ></nata-ui-upload>
+    </div>
+
+    <div id="response-container" style="margin-top: 20px;">
+        <h6>Respuesta del servidor:</h6>
+        <pre id="response-output" style="background-color: #f8f9fa; font-size: 16px; padding: 2px 0; border: 1px solid #ced4da;">
+        <a id="link-output" href="" target="__blank"></a>
+        </pre>
+    </div>
+</div>
+[/pagina 1]
+

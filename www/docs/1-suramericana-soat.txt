@@ -1,0 +1,13 @@
+[pagina 1]
+<div class="px-3">
+	<div class="alert alert-primary" role="alert" style="color: black;">
+        <h6>¿Cómo radicar en Suramericana SOAT?</h6>
+        <p>Para poder tramitar las respuestas a glosas y objeciones generadas por SURA por la plataforma SIS SOAT SURA, debe presentarlas como un anexo técnico FURIPS 1 y 2 o FURTRAN como si fuera una reclamación nueva y por el valor de la respuesta a glosa u objeción, de acuerdo con la estructura del anexo técnico que indica la circular 022 del 2023 para las respuestas a glosas u objeción, deben diligenciar el campo 2 de la misma que corresponde a RGO Respuesta a Glosa u Objeción.
+            En los soportes adjuntan la carta de RGO o u objeción y adicional los soportes de la reclamación inicial.
+        </p>
+    </div>
+    <div class="mb-3 text-center">
+        <embed src="docs/manual-radicacion-sura-soat.pdf" width="500" height="600" type="application/pdf">
+    </div>
+</div>
+[/pagina 1]

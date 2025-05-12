@@ -1,0 +1,34 @@
+20230902
+	1. Pasar historia clinica al consecutivo 2
+		1.1 actualizar el consecutivo de Detalle de Cargos a 99
+		1.2 actualizar el consecutivo de historia clinica a 2
+		1.2 actualizar el consecutivo de Detalle de Cargos a 13
+
+	2. Implementar https://homi.crescend.software/ en esta app
+
+
+OK 1. cambiar administrador a Ing. Jhon Hernandez administrador 
+OK 2. activar control de versiones
+OK 3. implementar perfiles	
+OK 4. Generar Icons
+	OK 4.1 dev
+	OK 4.2 build
+5. Habilitar recuperar datos por correo
+OK 6. Habilitar icon soporte whatsapp en la app
+7. Iniciar con el primer visor 
+	numeral 1
+		Implementar PDF
+		Implementar carga de datos de prueba
+8. Formularios consulta filtrar solo números
+9. Levantamiento
+	9.1 Cuentas Medicas Requerimientos Página 15
+10. Crear documento migración mapeo de campos 	
+11. Hacer backup completo BD 
+	pg_dump -U usuario -W -h host basename > basename.sql
+12. Poner scroll a todos los documentos
+
+
+
+Mejoramiento continuo
+Describir proceso
+Revisar alcance

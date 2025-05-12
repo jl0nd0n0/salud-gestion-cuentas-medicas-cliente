@@ -1,0 +1,107 @@
+[pagina 1]
+<div class="px-3">
+    <h6>Pasos para responder glosa correctamente</h6>
+    <div class="alert alert-primary" role="alert" style="color: black;">
+        <p>Los pasos para validar y corregir las glosas son los siguientes:</p>       
+        <ol>
+            <li>Validar códigos de glosa</li>
+        </ol>
+    </div>
+
+    <button type="button"
+    class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+    onclick="fxPageRender(++page, text, ${id});">
+            Siguiente
+    </button>
+</div>
+[/pagina 1]
+[pagina 2]
+<div class="px-3">
+    <h6>Validar códigos de glosa</h6>
+
+    <div id="mensajeInfo" class="alert alert-info" style="display: none;"></div>
+    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+
+    <script>
+        function mostrarMensajeInfo(mensaje) {
+            const contenedorError = document.getElementById("mensajeInfo");
+            contenedorError.innerText = mensaje;
+            contenedorError.style.display = "block";
+            document.getElementById("mensajeExito").style.display = "none";
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const contenedorExito = document.getElementById("mensajeExito");
+            contenedorExito.innerText = mensaje;
+            contenedorExito.style.display = "block";
+            document.getElementById("mensajeInfo").style.display = "none";
+        }
+
+        axios.get(app.config.server.php1 + "x=cartera&y=validarCodigosGlosa&z=" + ${id} + "&w=" + ${asegurador})
+            .then(function(response){
+                console.log(response.data);
+                console.log(response.data.length);
+
+                if(response.data.length == 0){
+                    mostrarMensajeExito("No hay códigos de glosa para corregir");
+                }
+                else{
+                    mostrarMensajeInfo("Estas glosas no tienen código, es necesario validar");
+
+                    const options = {
+                        id: "tableCodigosGlosa",
+                        columns: [
+                            {
+                                title: "Id Glosa",
+                                width: "100",
+                                prop: "id"
+                            },
+                            {
+                                title: "Factura",
+                                width: "150",
+                                prop: "nf",
+                            },
+                            {
+                                title: "Código Glosa",
+                                width: "150",
+                                prop: "c",
+                            },
+                            {
+                                title: "Descripción Glosa",
+                                width: "350",
+                                prop: "dg"
+                            }
+                        ],
+                        data: response.data
+                    };
+
+                    nata.sessionStorage.setItem("widget", options);
+
+                    const tableContainer = document.getElementById("codigosGlosa");
+                    tableContainer.innerHTML = "<nata-ui-table></nata-ui-table>";
+                }
+
+                document.getElementById("siguienteBtn2").style.display = "block";
+            })
+            .catch(function(error){
+                console.error(error);
+            });
+    </script>
+
+    <div id="codigosGlosa" class="scroll-x w-100 d-flex justify-content-center text-center">
+    </div>
+
+    <button type="button"
+        id="siguienteBtn2"
+        class="btn btn-primary btn-siguiente center min-width-250px my-2 py-3"
+        style="display: none !important;"
+        onclick="fxPageRender(++page, text, ${id});">
+        Siguiente
+    </button>
+</div>
+[/pagina 2]
+[pagina 3]
+<div class="px-3">
+    <h6>Validar códigos de glosa</h6>
+</div>
+[/pagina 3]

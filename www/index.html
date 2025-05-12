@@ -1,0 +1,188 @@
+<!-- https://github.com/NeXTs/Jets.js !-->
+<!doctype html>
+<html class="no-js" lang>
+	<head>
+        <meta charset="utf-8">
+        <title>ROBOT | Artemisa v0.0.1</title>
+        <meta name="description" content>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta property="og:title" content>
+        <meta property="og:type" content>
+        <meta property="og:url" content>
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="robots" content="noimageindex">
+
+        <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/clusterize.css">
+        <link rel="stylesheet" href="assets/components/nata/ui/nata.ui.bootstrap.dropdown.nested.css">
+        <link rel="stylesheet" href="assets/nata/ui/login/nata.ui.login.css">
+        <!--<link rel="stylesheet" href="assets/nata/ui/menu/nata.ui.menu.css">!-->
+        <link rel="stylesheet" href="assets/components/nata/ui/dialog/nata.ui.dialog.css">
+        <!--<link rel="stylesheet" href="assets/nata/ui/menu/nata.ui.menu.dropdown.css">!-->
+        <link rel="stylesheet" href="assets/css/loader.css">
+        <link rel="stylesheet" href="assets/nata/nata.ui.search.css">
+        <link rel="stylesheet" href="assets/css/app.documentacion.css">
+        <link rel="stylesheet" href="assets/css/app.css">
+        <link rel="stylesheet" href="assets/css/theme.css">
+        <link rel="stylesheet" href="assets/css/scrollbar.css">
+        <link rel="stylesheet" href="assets/css/helper.css">
+        <link rel="stylesheet" href="assets/css/mq.css">
+
+        <link rel="stylesheet" href="assets/css/animista.css">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
+        
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+        <!--
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
+        <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+        -->
+        <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="msapplication-TileImage" content="mstile-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+        <script src="https://cdn.jsdelivr.net/npm/dot@1.1.3/doT.min.js"></script>
+    </head>
+    <body class="noselect accelerated">
+        <div id="containerArtemisa" class="w-100"></div>
+        <div id="loader" class="loader">
+            <svg class="circular" viewbox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+            </svg>
+        </div>
+        <div id="containerLogin">
+            <nata-ui-login></nata-ui-login>
+        </div>
+        <div id="containerDashboard">
+            <div class="layout">
+
+                <!--
+                <div id="container-menu" class="ui-menu">
+                    <div id="menu" class="menu"></div>
+                </div>
+                !-->
+
+                <div id="container-menu" class="ui-menu"></div>
+
+                <div class="layout-container">
+                    <div class="layout-header">
+                        <div class="row">
+                            <div class="col-2 col-lg-2">
+                                <img id="iconNotificaciones" class="logo-producto d-none" src="assets/images/logos/logo-producto.svg" alt>
+                            </div>
+                            <div id="containerNotificaciones" class="col-10 col-lg-10"></div>
+                        </div>
+                    </div>
+                    <div id="container" class="content"></div>
+                </div>
+            </div>
+        </div>
+        <!-- HASTA AQUI -->
+
+        <!-- #region scripts -->
+        <script src="assets/js/library/lottie.min.js"></script>
+        <script src="assets/js/library/bootstrap.bundle.min.js"></script>
+        
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>!-->
+        <!--<script src="https://unpkg.com/tippy.js@6"></script>!-->
+
+        <script src="assets/js/library/localforage.min.js"></script>
+
+        <script src="assets/js/library/axios.min.js"></script>
+        <script src="assets/js/library/doT.js"></script>
+        <script src="assets/js/library/alasql.js"></script>
+        <script src="assets/js/library/clusterize.min.js"></script>
+        <script src="assets/js/library/sweetalert.min.js"></script>
+        <script src="assets/js/library/jets.min.js"></script>
+
+        <script src="assets/js/library/echarts.min.js"></script>
+
+        <script src="assets/js/api/globals.js"></script>
+
+        <script src="assets/nata/chart/echarts/doughnutChart.js"></script>
+        <script src="assets/nata/ui/chart/nata.ui.chart.donut.class.js"></script>
+        <script src="assets/nata/ui/chart/nata.ui.chart.line.class.js"></script>
+
+        <script src="assets/nata/ui/chart/nata.widget.percent.js"></script>
+
+        <script src="assets/js/api/templates.js"></script>
+
+        <script src="assets/js/nata.ajax.js"></script>
+        <script src="assets/nata/nata.version.js"></script>
+
+        <script src="assets/nata/nata.ui.upload.class.js"></script>
+        <script src="assets/nata/nata.ui.upload.multiple.class.js"></script>
+
+        <script src="assets/js/api/app.config.js"></script>
+        <script src="assets/js/app.monitor.js"></script>
+        
+        <script src="assets/js/api/app.aseguradora.js"></script>
+        <script src="assets/js/app.auditoriaSoporte.js"></script>
+        
+        <script src="assets/nata/nata.localStorage.js"></script>
+        <script src="assets/nata/nata.localforage.js"></script>
+        <script src="assets/nata/nata.localforage.js"></script>
+        <script src="assets/nata/nata.sessionStorage.js"></script>
+
+        <script src="assets/nata/ui/nata.ui.dialog.class.js"></script>
+        <script src="assets/nata/ui/nata.ui.list.class.js"></script>
+        <script src="assets/nata/ui/nata.ui.todo.class.js"></script>
+        <script src="assets/nata/ui/nata.scrollYHeightPlugin.js"></script>
+
+        <!--<script src="assets/nata/ui/nata.ui.upload.js"></script>!-->
+
+        <script src="assets/nata/ui/nata.ui.table.class.js"></script>
+
+        <script src="assets/js/api/app.js"></script>
+        <script src="assets/js/api/app.glosa.js"></script>
+
+        <script src="assets/js/api/app.fx.js"></script>
+
+        <script src="assets/js/api/app.core.js"></script>
+        <script src="assets/js/api/app.electra.js"></script>
+        <script src="assets/nata/ui/electra/nata.ui.electra.class.js"></script>
+        <script src="assets/nata/ui/menu/nata.ui.menu.class.js"></script>
+        <script src="assets/nata/ui/nata.ui.responsive.js"></script>
+        <script src="assets/nata/ui/login/nata.ui.login.js"></script>
+
+        <script src="assets/js/api/app.usuario.js"></script>
+        <script src="assets/js/api/app.auditoria.js"></script>
+        <script src="assets/js/api/app.server.js"></script>
+        <script src="assets/js/api/app.cartera.js"></script>
+        <script src="assets/js/api/app.gestion.js"></script>
+        <script src="assets/js/api/app.furips.js"></script>
+        <script src="assets/js/api/app.furips.dos.js"></script>
+        <script src="assets/js/app.documentacion.js"></script>
+        <script src="assets/js/app.soportes.js"></script>
+        <script src="assets/js/api/app.upload.js"></script>
+        <script src="assets/js/app.cums.js"></script>
+        <script src="assets/js/app.rips.js"></script>
+        <script src="assets/js/app.adres.js"></script>
+        <script src="assets/js/app.asistente.js"></script>
+        
+        <script src="assets/js/app.wizard.js"></script>
+        <script src="assets/js/app.wizard_v1.js"></script>
+
+        <script src="assets/js/app.wizard.class.js"></script>
+        
+        <script src="assets/js/wizardEngine.class.js"></script>
+        <script src="assets/js/session.class.js"></script>
+        <script src="assets/js/app.robot.js"></script>
+
+                
+
+        <!--<script src="assets/nata/ui/menu/nata.ui.menu.dropdown.js"></script>!--->
+        <!-- #endregion scripts -->
+    </body>
+</html>

@@ -1,0 +1,142 @@
+:root {
+    --color-today: #BEE0EE;
+}
+
+#ui-calendar {
+    z-index: -1;
+}
+
+.calendar-grid {
+    border-radius: 7px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: 20px 95px 95px 95px 95px 95px 95px 95px;
+    gap: 0px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.01);
+}
+
+.prev,
+.next {
+    color: #bbb;
+}
+
+.ui-datepicker-container-day.today {
+    background: var(--color-today);
+}
+
+.ui-datepicker-container-day span.badge {
+    background: #aaa;
+}
+
+.ui-datepicker-container-day.disabled span.badge {
+    background: #eee;
+}
+
+.ui-datepicker-container-day.day-previous span.badge {
+    background: #666;
+}
+
+.ui-datepicker-container-day.day-previous {
+    background: #eee;
+}
+
+.ui-datepicker-container-day.selected span.badge {
+    background: #4A72B2;
+}
+
+.today span.badge {
+    background: var(--color-warning-opacity);
+}
+
+.calendar-grid>div {
+    position: relative;
+    border-left: solid 1px #ddd;
+}
+
+.calendar-grid>div:last-child {
+    border-right: solid 1px #ddd;
+}
+
+/*.calendar-grid>div:not(:last-child) {*/
+.calendar-grid > div {
+    border-bottom: solid 1px #ddd;
+}
+
+.calendar-grid>div.day-week:last-child {
+    border-right: 1px solid #ccc;
+}
+
+.calendar-label {
+    font-size: 10px;
+    position: absolute;
+    top: 1px;
+    right: 3px;
+    font-weight: 900;
+}
+
+.calendar-grid div .data {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.calendar-grid .day-week {
+    font-size: 11px;
+}
+
+.day-next {
+    cursor: pointer;
+}
+
+.container-day {
+    text-align: right;
+    cursor: pointer;
+}
+
+.day-previous {
+    background: rgba(0, 0, 0, 0.065);
+    cursor: default;
+    pointer-events: none;
+}
+
+.container-day.day-previous {
+    background: none;
+    cursor: default;
+}
+
+.calendar-grid .disabled {
+    pointer-events: none;
+    background: #f9f9f9;
+}
+
+.calendar-grid .disabled .bg-dark{
+    background-color: #999!important;
+    cursor: default!important;
+}
+
+.badge-day {
+    cursor: pointer;
+}
+
+.ui-datepicker-container-day {
+    padding: 1px;
+    background: #fff;
+}
+
+.badge-circle {
+    position: absolute;
+    min-width: 24px!important;
+    font-weight: bold;
+    line-height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    height: 24px;
+    font-size: 10px!important;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    bottom: 1px;
+    right: 1px;
+}

@@ -1,0 +1,13 @@
+.nata-ui-listTree-table .row-detail {
+  display: none;
+}
+.nata-ui-listTree-table .row-detail.show {
+    display: table-row;
+}
+.nata-ui-listTree-table tr.zebra {
+    background: var(--color-table-striped-bg);
+    --bs-table-accent-bg: var(--bs-table-striped-bg);
+}
+.nata-ui-listTree-detail {
+    cursor: pointer;
+}

@@ -1,0 +1,9 @@
+[pagina 1]
+<div class="scroll-y px-3">
+	<h6>Manual Radicación Adres</h6>
+
+	<div class="w-100 text-center">
+		<embed src="docs/manual-radicacion-adres.pdf" width="500" height="600" type="application/pdf">
+	</div>
+</div>
+[/pagina 1]

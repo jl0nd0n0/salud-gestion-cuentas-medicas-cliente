@@ -1,0 +1,34 @@
+[pagina 1]
+1. Si no te han instalado el robot para generar FURIPS, por favor contacta a tu lider o a soporte Crescend.<br><br>En la carpeta que te indicamos al instalar el robot, en donde prepararás la generación de los formatos pdf para los FURIPS
+<br>
+<br>
+2. Copia los archivos que se encuentran en el drive, acceso que solicitarás a Soporte Crescend. En la carpeta que acabas de crear
+<br>
+<br>
+3. Revisa el video, Cómo generar el CSV para FURIPS<br>
+<a href="docs/furips-csv.mp4" target="new_">
+	Ver video
+</a>
+<br>
+<br>
+4. Una vez que hayas creado el archivo csv con el nombre <b>"furips-anexo-1.csv"</b> en esta misma carpeta. Vamos a generar los FURIPS
+<br>
+<br>
+5. Abre la consola terminal. Debes haber instalado la aplicación.<br>
+<a href="docs/terminal.mp4" target="new_">
+	Instalar Terminal
+</a>
+<br>
+<a href="docs/terminal-carpeta.mp4" target="new_">
+	Abrir carpeta en terminal
+</a>
+<br>
+<br>
+6. En la consola terminal, digitar:
+<console>
+	node furipsGenerar.js
+</console>
+Sigue las instrucciones. <a href="docs/furips-robot.mp4" target="new_">
+	Ver video
+</a>
+[/pagina 1]

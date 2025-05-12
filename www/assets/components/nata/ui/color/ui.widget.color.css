@@ -1,0 +1,64 @@
+
+.color-rojo {
+	color: var(--color-rojo);
+}
+.color-azul {
+	color: var(--color-primary-dark);
+}
+
+.color-naranja {
+	color: var(--color-naranja);
+}
+
+.color-amarillo {
+	color: var(--color-amarillo);
+}
+
+.color-verde {
+	color: var(--color-verde);
+}
+
+.color-verde-oscuro {
+	color: var(--color-oscuro);
+}
+
+
+.stroke-rojo {
+	stroke: var(--color-rojo);
+}
+
+.stroke-naranja {
+	stroke: var(--color-naranja);
+}
+
+.stroke-amarillo {
+	stroke: var(--color-amarillo);
+}
+
+.stroke-verde {
+	stroke: var(--color-verde);
+}
+
+.stroke-verde-oscuro {
+	stroke: var(--color-verde-oscuro);
+}
+
+.background-rojo {
+	background: var(--color-rojo);
+}
+
+.background-naranja {
+	background: var(--color-naranja);
+}
+
+.background-amarillo {
+	background: var(--color-amarillo);
+}
+
+.background-verde {
+	background: var(--color-verde);
+}
+
+.background-verde-oscuro {
+	background: var(--color-verde-oscuro);
+}

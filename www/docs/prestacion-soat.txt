@@ -1,0 +1,51 @@
+[pagina 1]
+<div class="scroll-y px-3">
+	<h6>Introducción</h6>
+	<div class="w-100 my-2">
+		<p>
+            Crear introducción - Pendiente
+        </p>
+	</div>
+
+	<div class="alert alert-primary text-center" role="alert" style="color: black;">
+		<h6>¿Se ha identificado el automotor?</h6>
+	</div>
+
+    <div class="w-100 my-2 d-flex">
+        <button type="button"
+            class="btn btn-primary btn-aceptar btn-siguiente center min-width-250px my-2 py-3"
+            onclick="fxPageRender(++page, text);">
+            SÍ
+        </button>
+        <button type="button"
+            class="btn btn-primary btn-negar btn-siguiente center min-width-250px my-2 py-3"
+            onclick="fxPageRender(++page, text);">
+            NO
+        </button>
+    </div>
+</div>
+[/pagina 1]
+[pagina 2]
+<div class="scroll-y px-3">
+	<h6>Automor identificado</h6>
+    <p>
+        Los datos necesarios del furips 1 para diligenciarse son los que se encuentran en la siguiente tabla:
+    </p>
+    <button type="button"
+		class="btn btn-primary btn-volver-aceptar btn-anterior center min-width-250px my-2 p-3"
+		onclick="fxPageRender(--page, text);">Volver
+    </button>
+  </div>
+[/pagina 2]
+[pagina 3]
+<div class="scroll-y px-3">
+	<h6>Automotor sin identificar</h6>
+    <p>
+        Los datos necesarios del furips 1 para diligenciarse son los que se encuentran en la siguiente tabla:
+    </p>
+    <button type="button"
+		class="btn btn-primary btn-volver-negar btn-anterior center min-width-250px my-2 p-3"
+		onclick="fxPageRender(--page, text);">Volver
+    </button>
+</div>
+[/pagina 3]
