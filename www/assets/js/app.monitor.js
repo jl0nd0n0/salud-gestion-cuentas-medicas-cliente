@@ -20,6 +20,7 @@ app.monitor = {
 
         const tableTemplate = `
             <div class="container-1 w-100 h-100 algin-top">
+                
                 <div class="card mx-2 my-4 d-inline-block">
                     <div class="card-header">
                         <div class="icon-title">${iconChart}</div>  Armado Cuentas Médicas - Diario
@@ -50,7 +51,6 @@ app.monitor = {
                                 .table-robot-armado-cuenta-detail td {
                                     font-size: 12px
                                 }
-
 
                                 .table-robot-armado-cuenta-detail tr th {
                                     font-size: 11px
@@ -95,6 +95,7 @@ app.monitor = {
                                             </tr>                                
                                     </tbody>
                                 </table>
+                                
                                 <table class="table table-bordered table-sm table-robot-armado-cuenta-detail">
                                     <colgroup>
                                         <col width="400"></col>
@@ -115,7 +116,12 @@ app.monitor = {
                                     {{~d.d: dd:idd}}
                                     <tr {{? idd % 2 == 1}}class="bg-table-row-1"{{?}}>
                                         <td class="text-start">{{=dd.g}}</td>
-                                        <td class="text-start">{{=dd.s}}</td>
+                                        <td class="text-start">
+                                            <span class="badge 
+                                                {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
+                                                {{=dd.s}}
+                                            </span>                                        
+                                        </td>
                                         <td class="text-center">
                                             {{? dd.ge == "0"}}
                                             <div class="rounded-circle bg-danger d-inline-block"
@@ -210,16 +216,16 @@ app.monitor = {
 
             const data = [
                 {
-                    d: "Armadas por Radicar",
+                    d: "Faltan Soportes",
                     c: 76,
                     p: 76 / 487,
                     v: 173568748
                 },
                 {
-                    d: "Faltan Soportes",
+                    d: "Armadas por Radicar",
                     c: 411,
                     p: 411 / 487,
-                    v: 173568748 - 173568748
+                    v: 210692600 - 173568748
                 }
             ];
 
