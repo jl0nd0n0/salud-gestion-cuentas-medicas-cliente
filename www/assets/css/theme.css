@@ -1,3 +1,8 @@
+:root, [data-bs-theme=light] {
+    --bs-border-radius: 10px;
+}
+
+
 .table-primary {
     --bs-table-bg: #F4F3F8;
     --bs-table-border-color: #F4F3F8;
