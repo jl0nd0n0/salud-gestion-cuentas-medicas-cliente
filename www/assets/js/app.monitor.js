@@ -8,9 +8,11 @@ app.monitor = {
         // Obtener datos del localStorage
         let data = nata.localStorage.getItem("robot-armado");
         console.log(data);
+        /*
         console.log(data.filter(function (record) {
             return record.f == "IND646213"
         }));
+        */
 
         let dataDetalle = data.detalles;
         let dataResumen = data.resumen;
@@ -24,12 +26,21 @@ app.monitor = {
             };
         });
 
+        console.log(processedData);
+        
+
         const tableTemplate = `
             <div class="container-1 w-100 h-100 algin-top">
                 
                 <div class="card mx-2 my-4 d-inline-block">
-                    <div class="card-header">
-                        <div class="icon-title">${iconChart}</div>  Armado Cuentas Médicas - Diario
+                    <div class="card-header position-relative">
+                        <div>
+                            <div class="icon-title">${iconChart}</div>  Armado Cuentas Médicas - Diario
+                        </div>
+                        <div class="w-100 text-end">
+                            <input id="datepicker" type="date" class="form-control d-inline-block max-width-200px control-highlight" value="2025-05-12">
+                        </div>
+                        
                     </div>
                     <div id="chart1" class="card-body min-width-450px min-height-500px"></div>
                     <div id="box1" class="min-width-450px"></div>
@@ -87,9 +98,9 @@ app.monitor = {
                                             <tr class="bg-table-row-1">
                                                 <td class="text-center border-right-none">
                                                     {{? d.radicarOK }}
-                                                        <div class="rounded-circle bg-success d-inline-block" style="width: 25px; height: 25px;"></div>
+                                                        <div class="rounded-circle bg-success d-inline-block icon-dot" ></div>
                                                     {{??}}
-                                                        <div class="rounded-circle bg-danger d-inline-block" style="width: 25px; height: 25px;"></div>
+                                                        <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                                     {{?}}
                                                 </td>
                                                 <td class="text-start fw-bold">{{=d.f}}</td>
@@ -130,11 +141,9 @@ app.monitor = {
                                         </td>
                                         <td class="text-center">
                                             {{? dd.ge == "0"}}
-                                            <div class="rounded-circle bg-danger d-inline-block"
-                                                style="width: 25px; height: 25px;"></div>
+                                            <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                             {{??}}
-                                            <div class="rounded-circle bg-success d-inline-block"
-                                                        style="width: 25px; height: 25px;"></div>
+                                            <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
                                             {{?}}
                                         </td>
                                         <td class="text-start">{{=dd.o}}</td>
@@ -166,6 +175,34 @@ app.monitor = {
                 contentTag: "#searchTarget",
                 rowSelector: ".search-group"
             });
+
+           flatpickr("#datepicker", {
+                // mode: "range",
+                minDate: "2025-05-12",
+                maxDate: new Date(),
+                dateFormat: "Y-m-d",
+                locale: {
+                    firstDayOfWeek: 1,
+                    weekdays: {
+                        shorthand: ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"],
+                        longhand: [
+                            "Domingo", "Lunes", "Martes", "Miércoles",
+                            "Jueves", "Viernes", "Sábado"
+                        ]
+                    },
+                    months: {
+                        shorthand: [
+                            "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                            "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+                        ],
+                        longhand: [
+                            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+                        ]
+                    }
+                }
+            });
+
         } else {
             console.error("Contenedor no encontrado.");
         }
@@ -255,10 +292,10 @@ app.monitor = {
                         <tr class="bg-table-row-1">
                             <td class="text-center">
                                 {{? d.e == "Listas para radicar"}}
-                                <div class="rounded-circle bg-success d-inline-block"
+                                <div class="rounded-circle bg-success d-inline-block icon-dot"
                                     style="width: 25px; height: 25px;"></div>
                                 {{??}}
-                                <div class="rounded-circle bg-danger d-inline-block"
+                                <div class="rounded-circle bg-danger d-inline-block icon-dot"
                                     style="width: 25px; height: 25px;"></div>
                                 {{?}}                                
                             </td>                            

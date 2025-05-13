@@ -317,6 +317,7 @@ module.exports = function (grunt) {
 
             js: {
                 src: [
+                    "assets/js/library/flatpickr.min.js",
                     "assets/js/library/lottie.min.js",
                     "assets/js/library/bootstrap.bundle.min.js",
                     "assets/js/library/localforage.min.js",
@@ -403,6 +404,7 @@ module.exports = function (grunt) {
                     "assets/components/nata/ui/nata.ui.bootstrap.dropdown.nested.css",
                     "assets/nata/ui/login/nata.ui.login.css",
                     "assets/components/nata/ui/dialog/nata.ui.dialog.css",
+                    "assets/css/flatpickr.min.css",
                     "assets/css/loader.css",
                     "assets/nata/nata.ui.search.css",
                     "assets/css/app.documentacion.css",

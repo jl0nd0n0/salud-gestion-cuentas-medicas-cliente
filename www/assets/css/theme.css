@@ -1,5 +1,7 @@
-:root, [data-bs-theme=light] {
-    --bs-border-radius: 10px;
+:root {
+    --bs-border-radius: 10px;    
+    --color-control-blue: #22b9ff!important;
+    --color-primary: #5EB7F8;
 }
 
 .table-primary {
@@ -7,6 +9,17 @@
     --bs-table-border-color: #F4F3F8;
 }
 
+.control-highlight {
+    border: solid 2px #22b9ff!important;
+    border-radius: 20px;
+    color:  #22b9ff!important;
+    font-weight: 500;
+}
+
+.icon-dot {
+    width: 15px;
+    height: 15px;
+}
 
 tr.bg-table-row-1 td {
     background-color: #fff;
@@ -38,10 +51,6 @@ tr.bg-table-row-zebra-2 td {
 .icon-title svg {
     width: 30x;
     height: 30px;
-}
-
-:root {
-    --color-primary: #5EB7F8;
 }
 
 body {

@@ -310,7 +310,7 @@ app.server = {
             const fxCallback = function () {
                 ++contador;
                 console.log(contador);
-                if (contador == 1) {                    
+                if (contador == 2) {                    
                     app.monitor.index();
                     document.querySelector("#loader").style.display = "none";
                 }
@@ -322,6 +322,11 @@ app.server = {
                 {
                     url: "x=cuentasMedicas&k=monitorRobotArmado",
                     index: "robot-armado",
+                    callback: fxCallback
+                },
+                {
+                    url: "x=cuentasMedicas&k=monitorRobotArmado",
+                    index: "robot-armado-fecha",
                     callback: fxCallback
                 }
             ];
