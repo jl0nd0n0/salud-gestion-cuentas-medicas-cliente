@@ -325,7 +325,7 @@ app.server = {
                     callback: fxCallback
                 },
                 {
-                    url: "x=cuentasMedicas&k=monitorRobotArmado",
+                    url: "x=cuentasMedicas&k=monitorRobotArmadoTotal",
                     index: "robot-armado-fecha",
                     callback: fxCallback
                 }
