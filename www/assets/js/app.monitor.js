@@ -1,100 +1,166 @@
 /* eslint-disable quotes */
-/* globals app, nata, doT*/
+/* globals app, nata, doT, flatpickr, session, iconChart, iconProcess, Jets, echarts, nataUIDialog*/
 
 app.monitor = {
-   index: function () {
-        console.trace("%c app.monitor.index", "background:red;color:#fff;font-size:11px");
+    index: function () {
+        console.log("%c app.monitor.index", "background:red;color:#fff;font-size:11px");
+        //const data = nata.localStorage.getItem("robot-armado-fecha" + session.fechaDashboard);
+        const data = nata.localStorage.getItem("robot-armado-fecha");
+        const dataDetalle = data.detalles;
+        // let dataResumenOriginal = data.resumen;
+        // let dataResumenRegistrosOriginal = data.resumenRegistros;
 
-        // Obtener datos del localStorage
-        let data = nata.localStorage.getItem("robot-armado");
-        console.log(data);
-        /*
-        console.log(data.filter(function (record) {
-            return record.f == "IND646213"
-        }));
-        */
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
-        let dataDetalle = data.detalles;
-        let dataResumen = data.resumen;
-        let dataResumenRegistros = data.resumenRegistros;
+        function calculateSummaryStats(detalle) {
+            const grouped = {};
+            detalle.forEach(item => {
+                const key = item.f;
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        estado: item.radicarOK ? "Listas para radicar" : "Pendiente Soportes",
+                        valor: parseFloat(item.v) || 0
+                    };
+                }
+            });
+            const statsArray = Object.values(grouped);
+            const tsg = statsArray.filter(s => s.estado === "Listas para radicar").length;
+            const tsp = statsArray.filter(s => s.estado === "Pendiente Soportes").length;
+            const totalFacturas = tsg + tsp;
+            const totalValor = statsArray.reduce((sum, s) => sum + s.valor, 0);
+            const listasParaRadicarValor = statsArray
+                .filter(s => s.estado === "Listas para radicar")
+                .reduce((sum, s) => sum + s.valor, 0);
+            const pendienteSoportesValor = statsArray
+                .filter(s => s.estado === "Pendiente Soportes")
+                .reduce((sum, s) => sum + s.valor, 0);
+            const resumen = [
+                {
+                    e: "Listas para radicar",
+                    c: tsg,
+                    v: listasParaRadicarValor,
+                    p: ((listasParaRadicarValor / totalValor) * 100).toFixed(2)
+                },
+                {
+                    e: "Pendiente Soportes",
+                    c: tsp,
+                    v: pendienteSoportesValor,
+                    p: ((pendienteSoportesValor / totalValor) * 100).toFixed(2)
+                }
+            ];
+            const resumenRegistros = [{
+                tf: totalFacturas,
+                tsp: tsp,
+                tsg: tsg
+            }];
+            return { resumen, resumenRegistros };
+        }
 
-        const processedData = dataDetalle.map(item => {
-            const allOk = item.d.every(dd => dd.ge !== "0");
-            return {
+        function filterDataByDate(dataDetalle, date) {
+            const filteredDetalle = dataDetalle.filter(item => item.fe === date);
+            const processedDetalle = filteredDetalle.map(item => ({
                 ...item,
-                radicarOK: allOk
+                radicarOK: item.d.every(dd => dd.ge !== "0")
+            }));
+            const { resumen, resumenRegistros } = calculateSummaryStats(processedDetalle);
+            return {
+                detalle: processedDetalle,
+                resumen,
+                resumenRegistros
             };
-        });
+        }
 
-        console.log(processedData);
-        
+        const initialDate = getTodayDate();
+        const initialFilteredData = filterDataByDate(dataDetalle, initialDate);
+        let currentDetalle = initialFilteredData.detalle;
+        let currentResumen = initialFilteredData.resumen;
+        let currentResumenRegistros = initialFilteredData.resumenRegistros;
 
-        const tableTemplate = `
-            <div class="container-1 w-100 h-100 algin-top">
-                
-                <div class="card mx-2 my-4 d-inline-block">
-                    <div class="card-header position-relative">
-                        <div>
-                            <div class="icon-title">${iconChart}</div>  Armado Cuentas Médicas - Diario
+        let myChart = null;
+
+        const renderMainTable = (filteredData) => {
+            const tableTemplate = `
+                <div class="container-1 w-100 h-100 algin-top">
+                    
+                    <div class="card mx-2 my-4 d-inline-block">
+                        <div class="card-header position-relative">
+                            <div>
+                                <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
+                            </div>
+                            <div class="w-100 text-end">
+                                <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-200px control-highlight">
+                            </div>
                         </div>
-                        <div class="w-100 text-end">
-                            <input id="datepicker" type="date" class="form-control d-inline-block max-width-200px control-highlight" value="2025-05-12">
+                        <div id="chart1" class="card-body min-width-450px min-height-500px"></div>
+                        <div id="box1" class="min-width-450px"></div>
+                    </div>
+                    <div class="card mx-2 my-4 d-inline-block scroll-y">
+
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-title me-2">${iconProcess}</div>
+                                <span>Control Armado Cuentas Médicas - Diario</span>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle btn-circle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                    </svg>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" id="validar-factura-detalle">Soportes faltantes</a></li>
+                                </ul>
+                            </div>
                         </div>
-                        
-                    </div>
-                    <div id="chart1" class="card-body min-width-450px min-height-500px"></div>
-                    <div id="box1" class="min-width-450px"></div>
-                </div>
 
-                <div class="card mx-2 my-4 d-inline-block scroll-y">
-                    <div class="card-header">
-                        <div class="icon-title">${iconProcess}</div>  Control Armado Cuentas Médicas - Diario
-                    </div>
-                    <div class="card-body">
-                        <input id="txtSearch" type="text" class="form-control input-search mb-3" placeholder="Buscar ..." autocomplete="off" style="width: 980px;">
-                        <div id="searchTarget" style="overflow: auto; height: 80vh;">
-                            <style>
-                                .table-robot-armado-cuenta {
-                                    table-layout: fixed;
-                                    width: 930px;
-                                }
-
-                                .table-robot-armado-cuenta-detail {
-                                    table-layout: fixed;
-                                    width: 930px;
-                                }
-
-                                .table-robot-armado-cuenta td,
-                                .table-robot-armado-cuenta-detail td {
-                                    font-size: 12px
-                                }
-
-                                .table-robot-armado-cuenta-detail tr th {
-                                    font-size: 11px
-                                }
-                            </style>
-                            
-                            {{~it.detail: d:id}}
-                            <div class="search-group mb-4">
-                                <table class="table table-bordered table-sm table-robot-armado-cuenta">
-                                    <colgroup>
-                                        <col width="50"></col>
-                                        <col width="350"></col>
-                                        <col width="200"></col>
-                                        <col width="140"></col>
-                                        <col width="240"></col>
-                                    </colgroup>
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th class="text-center">Radicar</th>
-                                            <th class="text-center">Factura</th>
-                                            <th class="text-center">Fecha</th>
-                                            <th class="text-center">Valor</th>
-                                            <th class="text-center">Paciente</th>
-                                            <th class="text-center"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                        <div class="card-body">
+                            <input id="txtSearch" type="text" class="form-control input-search mb-3" placeholder="Buscar ..." autocomplete="off" style="width: 980px;">
+                            <div id="searchTarget" style="overflow: auto; height: 80vh;">
+                                <style>
+                                    .table-robot-armado-cuenta {
+                                        table-layout: fixed;
+                                        width: 930px;
+                                    }
+                                    .table-robot-armado-cuenta-detail {
+                                        table-layout: fixed;
+                                        width: 930px;
+                                    }
+                                    .table-robot-armado-cuenta td,
+                                    .table-robot-armado-cuenta-detail td {
+                                        font-size: 12px
+                                    }
+                                    .table-robot-armado-cuenta-detail tr th {
+                                        font-size: 11px
+                                    }
+                                </style>
+                                {{~it.detail: d:id}}
+                                <div class="search-group mb-4">
+                                    <table class="table table-bordered table-sm table-robot-armado-cuenta">
+                                        <colgroup>
+                                            <col width="50"></col>
+                                            <col width="350"></col>
+                                            <col width="200"></col>
+                                            <col width="140"></col>
+                                            <col width="240"></col>
+                                        </colgroup>
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th class="text-center">Radicar</th>
+                                                <th class="text-center">Factura</th>
+                                                <th class="text-center">Fecha</th>
+                                                <th class="text-center">Valor</th>
+                                                <th class="text-center">Paciente</th>
+                                                <th class="text-center"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             <tr class="bg-table-row-1">
                                                 <td class="text-center border-right-none">
                                                     {{? d.radicarOK }}
@@ -105,178 +171,262 @@ app.monitor = {
                                                 </td>
                                                 <td class="text-start fw-bold">{{=d.f}}</td>
                                                 <td class="text-center">{{=d.fe}}</td>
-                                                <td class="text-end">
-                                                    $ {{=numberDecimal.format( d.v )}}
-                                                </td>
+                                                <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
                                                 <td colspan="2" class="text-center">{{=d.p}}</td>
                                             </tr>                                
-                                    </tbody>
-                                </table>
-                                
-                                <table class="table table-bordered table-sm table-robot-armado-cuenta-detail">
-                                    <colgroup>
-                                        <col width="400"></col>
-                                        <col width="200"></col>
-                                        <col width="140"></col>
-                                        <col width="120"></col>
-                                        <col width="120"></col>
-                                    </colgroup>
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th class="text-center">Grupo</th>
-                                            <th class="text-center">Soporte</th>
-                                            <th class="text-center">Armado</th>
-                                            <th class="text-center">Estado</th>
-                                            <th class="text-center">Descripción</th>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-bordered table-sm table-robot-armado-cuenta-detail">
+                                        <colgroup>
+                                            <col width="400"></col>
+                                            <col width="200"></col>
+                                            <col width="140"></col>
+                                            <col width="120"></col>
+                                            <col width="120"></col>
+                                        </colgroup>
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th class="text-center">Grupo</th>
+                                                <th class="text-center">Soporte</th>
+                                                <th class="text-center">Armado</th>
+                                                <th class="text-center">Estado</th>
+                                                <th class="text-center">Descripción</th>
+                                            </tr>
+                                        </thead>
+                                        {{~d.d: dd:idd}}
+                                        <tr {{? idd % 2 == 1}}class="bg-table-row-1"{{?}}>
+                                            <td class="text-start">{{=dd.g}}</td>
+                                            <td class="text-start">
+                                                <span class="badge 
+                                                    {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
+                                                    {{=dd.s}}
+                                                </span>                                        
+                                            </td>
+                                            <td class="text-center">
+                                                {{? dd.ge == "0"}}
+                                                <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
+                                                {{??}}
+                                                <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                                {{?}}
+                                            </td>
+                                            <td class="text-start">{{=dd.o}}</td>
+                                            <td class="text-start">{{=dd.n}}</td>
                                         </tr>
-                                    </thead>
-                                    {{~d.d: dd:idd}}
-                                    <tr {{? idd % 2 == 1}}class="bg-table-row-1"{{?}}>
-                                        <td class="text-start">{{=dd.g}}</td>
-                                        <td class="text-start">
-                                            <span class="badge 
-                                                {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
-                                                {{=dd.s}}
-                                            </span>                                        
-                                        </td>
-                                        <td class="text-center">
-                                            {{? dd.ge == "0"}}
-                                            <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
-                                            {{??}}
-                                            <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
-                                            {{?}}
-                                        </td>
-                                        <td class="text-start">{{=dd.o}}</td>
-                                        <td class="text-start">{{=dd.n}}</td>
-                                    </tr>
-                                    {{~}}                                
-                                    </tbody>
-                                </table>
+                                        {{~}}                                
+                                    </table>
+                                </div>
+                                {{~}}
                             </div>
-                            {{~}}
+                        </div>
+                    </div>            
+                </div>
+            `;
+            const html = doT.template(tableTemplate)({ detail: filteredData });
+
+            const container = document.getElementById("container");
+            if (container) {
+                container.innerHTML = ""; // Limpiar antes
+                if (typeof session.html == "undefined") {
+                    session.html = html;
+                }   
+                container.insertAdjacentHTML("afterbegin", session.html);
+
+                if (session.jets) {
+                    session.jets.destroy();
+                }
+
+                session.jets = new Jets({
+                    searchTag: "#txtSearch",
+                    contentTag: "#searchTarget",
+                    rowSelector: ".search-group"
+                });
+            } else {
+                console.error("Contenedor no encontrado.");
+            }
+
+            const butonSoporte = document.getElementById("validar-factura-detalle");
+
+            butonSoporte.addEventListener("click", function () {
+                let dataFaltante = nata.localStorage.getItem("robot-armado-faltante");
+                console.log(dataFaltante);
+                
+                const templateFaltantes = `
+                    <div id="containerCatera" class="w-100">
+                        <style>
+                            #tableCartera {
+                                table-layout: fixed;
+                                width: 900px;
+                            }
+                        </style>
+                        <div class="w-100">
+                            <div class="mb-3">
+                                <input type="text" id="filterInput" class="form-control" placeholder="Filtrar por numero factura, Soporte, fecha factura y observacíon">
+                            </div>
+                        <table id="tableCartera" class="table table-sm table-striped">
+                                <colgroup>
+                                    <col width="100"></col>
+                                    <col width="120"></col>
+                                    <col width="120"></col>
+                                    <col width="120"></col>
+                                </colgroup>
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>Numero Factura</th>
+                                        <th>Soporte</th>
+                                        <th>Fecha Factura</th>
+                                        <th>Observación</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    {{~ it.detail: d:id}}
+                                    <tr class="text-center">
+                                        <td>{{=d.nf}}</td>
+                                        <td>{{=d.s}}</td>
+                                        <td>{{=d.f}}</td>
+                                        <td>{{=d.o}}</td>
+                                    </tr>
+                                    {{~}}
+                                </tbody>
+                            </table>
 
                         </div>
                     </div>
-                </div>            
-            </div>
-        `;
+                `;
 
-        const html = doT.template(tableTemplate)({detail: processedData});
+                const html = doT.template(templateFaltantes)({detail: dataFaltante});
+                new nataUIDialog({
+                    html: html,
+                    title: "Soportes Faltantes",
+                    events: {
+                        render: function () {
+                            const filterInput = document.getElementById("filterInput");
+                            const tableBody = document.getElementById("tableBody");
+                            
+                            filterInput.addEventListener("keyup", function() {
+                                const filterValue = this.value.toLowerCase();
+                                const rows = tableBody.getElementsByTagName("tr");
 
-        // const html = compiledTemplate(data); 
+                                Array.from(rows).forEach((row, index) => {
+                                    if (index === 0) return;
 
-        const container = document.getElementById("container");
+                                    const id = row.cells[0].textContent.toLowerCase();
+                                    const nit = row.cells[1].textContent.toLowerCase();
+                                    const asegurador = row.cells[2].textContent.toLowerCase();
+                                    const observacion = row.cells[3].textContent.toLowerCase();
 
-        if (container) {
-            container.innerHTML = html;
-
-            session.jets = new Jets({
-                searchTag: "#txtSearch",
-                contentTag: "#searchTarget",
-                rowSelector: ".search-group"
-            });
-
-           flatpickr("#datepicker", {
-                // mode: "range",
-                minDate: "2025-05-12",
-                maxDate: new Date(),
-                dateFormat: "Y-m-d",
-                locale: {
-                    firstDayOfWeek: 1,
-                    weekdays: {
-                        shorthand: ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"],
-                        longhand: [
-                            "Domingo", "Lunes", "Martes", "Miércoles",
-                            "Jueves", "Viernes", "Sábado"
-                        ]
-                    },
-                    months: {
-                        shorthand: [
-                            "Ene", "Feb", "Mar", "Abr", "May", "Jun",
-                            "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
-                        ],
-                        longhand: [
-                            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-                        ]
+                                    if (
+                                        id.includes(filterValue) ||
+                                        nit.includes(filterValue) ||
+                                        asegurador.includes(filterValue) ||
+                                        observacion.includes(filterValue)
+                                    ) {
+                                        row.style.display = "";
+                                    } else {
+                                        row.style.display = "none";
+                                    }
+                                });
+                            });
+                        },
+                        close: function () {}
                     }
-                }
+                });
             });
 
-        } else {
-            console.error("Contenedor no encontrado.");
-        }
 
-        const fxRenderChart = function () {
-            // Initialize the echarts instance based on the prepared dom
-            const myChart = echarts.init(document.getElementById('chart1'));
+        };
 
-            const chartData = dataResumen.map(item => ({
+        // Renderizar inicialmente
+        renderMainTable(currentDetalle);
+
+        // Inicializar datepicker
+        flatpickr("#datepicker", {
+            dateFormat: "Y-m-d",
+            defaultDate: initialDate,
+            minDate: new Date(2015, 4, 12),
+            maxDate: new Date().toISOString().split("T")[0],
+            locale: {
+                firstDayOfWeek: 1,
+                weekdays: {
+                    shorthand: ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"],
+                    longhand: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+                },
+                months: {
+                    shorthand: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                    longhand: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+                }
+            }
+        });
+
+        document.getElementById("datepicker").value = initialDate;
+
+        document.getElementById("datepicker").addEventListener("change", function () {
+            console.log("datepicker.change");
+            const self = this;
+            console.log(self.value);
+            /*
+            const selectedDate = this.value;
+            console.log("Fecha seleccionada:", selectedDate); 
+            const filteredData = filterDataByDate(dataDetalle, selectedDate);
+            currentDetalle = filteredData.detalle;
+            currentResumen = filteredData.resumen;
+            currentResumenRegistros = filteredData.resumenRegistros;
+            renderMainTable(filteredData.detalle);
+            updateChartsAndSummary(filteredData.resumen, filteredData.resumenRegistros);
+            */
+        });
+
+        function updateChartsAndSummary(resumen, resumenRegistros) {
+            console.log("%c updateChartsAndSummary", "background:red;color:#fff;font-size:11px");
+            const chartContainer = document.getElementById('chart1');
+
+            if (myChart && !myChart.isDisposed()) {
+                myChart.dispose();
+            }
+
+            myChart = echarts.init(chartContainer);
+
+            const chartData = resumen.map(item => ({
                 value: parseFloat(item.v),
                 name: item.e
             }));
 
-            // Specify the configuration items and data for the chart
             const option = {
-                color: ['#f8d7da', '#C5E1A5'],
-                tooltip: {
-                    trigger: 'item'
-                },
-                legend: {
-                    top: '5%',
-                    left: 'center'
-                },
-                series: [
-                    {
-                        name: 'Facturas',
-                        type: 'pie',
-                        radius: ['40%', '70%'],
-                        avoidLabelOverlap: false,
-                        itemStyle: {
-                            borderRadius: 10,
-                            borderColor: '#fff',
-                            borderWidth: 2
-                        },
+                color: ['#C5E1A5', '#f8d7da'],
+                tooltip: { trigger: 'item' },
+                legend: { top: '5%', left: 'center' },
+                series: [{
+                    name: 'Facturas',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: { show: false },
+                    emphasis: {
                         label: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            label: {
-                                show: true,
-                                fontSize: 40,
-                                fontWeight: 'bold'
-                            }
-                        },
-                        labelLine: {
-                            show: false
-                        },
-                        data: chartData
-                    }
-                ]
+                            show: true,
+                            fontSize: 40,
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: { show: false },
+                    data: chartData
+                }]
             };
+            myChart.setOption(option, true);
 
-            // Display the chart using the configuration items and data just specified.
-            myChart.setOption(option);
-
-            const template = `
+            const summaryTemplate = `
                 <style>
-                    .table-consolidado {
-                        table-layout: fixed;
-                        width: 480px;
-                    }
-                    .table-consolidado tr th {
-                        font-size: 11px
-                    }
+                    .table-consolidado { table-layout: fixed; width: 480px; }
+                    .table-consolidado tr th { font-size: 11px }
                 </style>
-                
                 <table class="table table-bordered table-sm table-consolidado mb-3">
                     <colgroup>
-                        <col width="50"></col>
-                        <col width="150"></col>
-                        <col width="80"></col>
-                        <col width="120"></col>
-                        <col width="80"></col>
+                        <col width="50"><col width="150"><col width="80">
+                        <col width="120"><col width="80">
                     </colgroup>
                     <thead class="table-primary">
                         <tr>
@@ -292,11 +442,9 @@ app.monitor = {
                         <tr class="bg-table-row-1">
                             <td class="text-center">
                                 {{? d.e == "Listas para radicar"}}
-                                <div class="rounded-circle bg-success d-inline-block icon-dot"
-                                    style="width: 25px; height: 25px;"></div>
+                                <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
                                 {{??}}
-                                <div class="rounded-circle bg-danger d-inline-block icon-dot"
-                                    style="width: 25px; height: 25px;"></div>
+                                <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                 {{?}}                                
                             </td>                            
                             <td class="text-start fw-bold">{{=d.e}}</td>
@@ -307,57 +455,19 @@ app.monitor = {
                         {{~}}                           
                     </tbody>
                 </table>
-
-                <style>
-                    #tableResumenRegistros{
-                        margin-top: 1rem !important;
-                    }
-
-                    .table-consolidado {
-                        table-layout: fixed;
-                        width: 480px;
-                    }
-                    .table-consolidado tr th {
-                        font-size: 11px
-                    }
-                </style>
-                
-                <table id="tableResumenRegistros" class="table table-bordered table-sm table-consolidado">
-                    <colgroup>
-                        <col width="150"></col>
-                        <col width="120"></col>
-                        <col width="120"></col>
-                    </colgroup>
-                    <thead class="table-primary">
-                        <tr>
-                            <th class="text-center">Total Facturas</th>
-                            <th class="text-center">Pendiente Soportes</th>
-                            <th class="text-center">Soportes Generados</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{~it.datailRegistro: d:id}}
-                        <tr class="bg-table-row-1">                     
-                            <td>{{=d.tf}}</td>
-                            <td>{{=d.tsp}}</td>
-                            <td>{{=d.tsg}}</td>
-                        </tr>
-                        {{~}}                           
-                    </tbody>
-                </table>
             `;
+            const htmlSummary = doT.template(summaryTemplate)({
+                detail: resumen,
+                datailRegistro: resumenRegistros
+            });
 
-            const html = doT.template(template)({ detail: dataResumen, datailRegistro: dataResumenRegistros });
             const box1 = document.getElementById("box1");
             if (box1) {
-                box1.innerHTML = html;
-            } else {
-                console.error("Contenedor no encontrado.");
+                box1.innerHTML = "";
+                box1.insertAdjacentHTML("afterbegin", htmlSummary);
             }
-        };
-        fxRenderChart();
+        }
 
-
+        updateChartsAndSummary(currentResumen, currentResumenRegistros);
     }
 };
-

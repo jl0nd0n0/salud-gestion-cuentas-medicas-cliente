@@ -3,9 +3,9 @@
 app.server = {
     data: {
         get: function (idPerfil = 0) {
-            console.log( "%c app.server.data.get", "background:red;color:#fff;font-size:11px");
+            console.trace( "%c app.server.data.get", "background:red;color:#fff;font-size:11px");
 
-            app.server.data.notificaciones();
+            // app.server.data.notificaciones();
             if (idPerfil == 1) {
                 app.server.data.administradorGet();
             }
@@ -303,34 +303,62 @@ app.server = {
 
         administradorGet: function () {
             //alert("01");
-            console.log("app.server.data.administradorGet");
+            console.trace("app.server.data.administradorGet");
+
+            const fxServerDataGet = function () {
+                const fxCallback1 = function () {
+                    ++contador;
+                    console.log(contador);
+                    if (contador == 2) {
+                        nata.localStorage.setItem("app-iniciada", 1);
+                        app.monitor.index();
+                        document.querySelector("#loader").style.display = "none";
+                    }
+                };
+
+                const params = [
+                    //FIXME: se debe trabajar con la misma vista de monitor, al implementar
+                    // hay que optimizar los recursos
+                    /*
+                    {
+                        url: "x=cuentasMedicas&k=monitorRobotArmado",
+                        index: "robot-armado-" + session.fechaDashboard,
+                        callback: fxCallback1
+                    },
+                    */
+                    {
+                        url: "x=cuentasMedicas&k=monitorRobotArmadoTotal",
+                        index: "robot-armado-fecha",
+                        callback: fxCallback1
+                    },
+                    {
+                        url: "x=cuentasMedicas&k=monitorSoportesFaltantes",
+                        index: "robot-armado-faltante",
+                        callback: fxCallback1
+                    }
+                ];
+                nata.localStorage.load(app.config.server.php1, "json", params);
+            };
 
             let contador = 0;
 
             const fxCallback = function () {
-                ++contador;
-                console.log(contador);
-                if (contador == 2) {                    
-                    app.monitor.index();
-                    document.querySelector("#loader").style.display = "none";
-                }
+                fxServerDataGet();
             };
 
             const params = [
                 //FIXME: se debe trabajar con la misma vista de monitor, al implementar
                 // hay que optimizar los recursos
                 {
-                    url: "x=cuentasMedicas&k=monitorRobotArmado",
-                    index: "robot-armado",
-                    callback: fxCallback
-                },
-                {
-                    url: "x=cuentasMedicas&k=monitorRobotArmado",
-                    index: "robot-armado-fecha",
-                    callback: fxCallback
+                    url: "x=cuentasMedicas&k=fecha",
+                    index: "robot-armado-fecha-parametro",
+                    callback: function (data) {
+                        console.log(data);
+                        session.fechaDashboard = data[0].f;
+                        fxCallback();
+                    }
                 }
             ];
-
             nata.localStorage.load(app.config.server.php1, "json", params);
         },
 
