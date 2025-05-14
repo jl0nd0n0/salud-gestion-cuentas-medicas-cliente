@@ -272,7 +272,7 @@ app.monitor = {
             }));
 
             const option = {
-                color: ['#f8d7da', '#C5E1A5'],
+                color: ['#C5E1A5', '#f8d7da'],
                 tooltip: { trigger: 'item' },
                 legend: { top: '5%', left: 'center' },
                 series: [{
