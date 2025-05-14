@@ -115,6 +115,7 @@ app.monitor = {
                                     </svg>
                                 </button>
                                 <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" id="armado-radicar-facturas">Radicar Facturas</a></li>
                                     <li><a class="dropdown-item" id="validar-factura-detalle">Soportes faltantes</a></li>
                                 </ul>
                             </div>
@@ -145,8 +146,9 @@ app.monitor = {
                                     <table class="table table-bordered table-sm table-robot-armado-cuenta">
                                         <colgroup>
                                             <col width="50"></col>
-                                            <col width="350"></col>
+                                            <col width="230"></col>
                                             <col width="200"></col>
+                                            <col width="120"></col>
                                             <col width="140"></col>
                                             <col width="240"></col>
                                         </colgroup>
@@ -155,6 +157,7 @@ app.monitor = {
                                                 <th class="text-center">Radicar</th>
                                                 <th class="text-center">Factura</th>
                                                 <th class="text-center">Fecha</th>
+                                                <th class="text-center">Días Vencimiento</th>
                                                 <th class="text-center">Valor</th>
                                                 <th class="text-center">Paciente</th>
                                                 <th class="text-center"></th>
@@ -171,6 +174,7 @@ app.monitor = {
                                                 </td>
                                                 <td class="text-start fw-bold">{{=d.f}}</td>
                                                 <td class="text-center">{{=d.fe}}</td>
+                                                <td class="text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
                                                 <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
                                                 <td colspan="2" class="text-center">{{=d.p}}</td>
                                             </tr>                                
@@ -298,33 +302,10 @@ app.monitor = {
                     html: html,
                     title: "Soportes Faltantes",
                     events: {
-                        render: function () {
-                            const filterInput = document.getElementById("filterInput");
-                            const tableBody = document.getElementById("tableBody");
-                            
-                            filterInput.addEventListener("keyup", function() {
-                                const filterValue = this.value.toLowerCase();
-                                const rows = tableBody.getElementsByTagName("tr");
-
-                                Array.from(rows).forEach((row, index) => {
-                                    if (index === 0) return;
-
-                                    const id = row.cells[0].textContent.toLowerCase();
-                                    const nit = row.cells[1].textContent.toLowerCase();
-                                    const asegurador = row.cells[2].textContent.toLowerCase();
-                                    const observacion = row.cells[3].textContent.toLowerCase();
-
-                                    if (
-                                        id.includes(filterValue) ||
-                                        nit.includes(filterValue) ||
-                                        asegurador.includes(filterValue) ||
-                                        observacion.includes(filterValue)
-                                    ) {
-                                        row.style.display = "";
-                                    } else {
-                                        row.style.display = "none";
-                                    }
-                                });
+                        render: function () {                            
+                            session.jets = new Jets({
+                                searchTag: "#filterInput",
+                                contentTag: "#tableCartera tbody"
                             });
                         },
                         close: function () {}
@@ -332,7 +313,235 @@ app.monitor = {
                 });
             });
 
+            document.querySelector("#armado-radicar-facturas").addEventListener("click", function() {
+                console.log("armado-radicar-facturas.click");
 
+                const processedData = dataDetalle.map(item => ({
+                        ...item,
+                        radicarOK: item.d.every(dd => dd.ge !== "0")
+                }));
+
+                const dataRadicar = processedData.filter(item => item.radicarOK);
+                console.log(dataRadicar);
+
+                let templateRadicar = `
+                    <ul class="list-group mt-n3">
+                        <div class="input-group input-group-sm mb-3">
+                            <input id="txtFacturasRadicar" type="text" class="form-control w-1000 input-search" placeholder="Buscar ..." autocomplete="off">
+                        </div>
+
+                        <div class="form-check d-flex justify-content-between align-content-center">
+                            <div>
+                                <input type="checkbox" class="form-check-input" id="chk-seleccionar-primeros">
+                                <label class="form-check-label" for="chk-seleccionar-primeros">
+                                    Seleccionar primeros <span id="contador-seleccionados">0</span> registros
+                                </label>
+                            </div>
+
+                            <div>
+                                <button id="btn-limpiar-seleccion" class="btn btn-sm btn-outline-secondary mb-3">
+                                    Limpiar
+                                </button>
+                            </div>
+                        </div>
+                        {{~it.detail: d:id}}
+                        <li class="list-group-item">
+                            <div class="form-check d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <input class="form-check-input chk-soporte me-2" type="checkbox"
+                                        value="{{=d.f}}" data-id="{{=d.f}}" id="chk-{{=d.f}}">
+                                    <label class="factura-radicar form-check-label" for="chk-{{=d.f}}">
+                                        {{=d.f}}
+                                    </label>
+                                </div>
+
+                                <div class="badges-container">
+                                    <small class="factura-radicar badge rounded-pill text-bg-success text-end" style="font-size: 0.75em;">
+                                        $ {{=numberDecimal.format(d.v)}}
+                                    </small>
+                                    <small class="factura-radicar badge fecha rounded-pill text-bg-primary text-end" style="font-size: 0.75em;">
+                                        {{=d.fe}}
+                                    </small>
+                                    
+                                </div>
+                            </div>
+                        </li>
+                        {{~}}
+                    </ul>
+                `;
+
+                const html = doT.template(templateRadicar)({ detail: dataRadicar });
+
+                new nataUIDialog({
+                    html: html,
+                    height: 400,
+                    width: 500,
+                    title: `Factura para radicar
+                        &nbsp;&nbsp;
+                            <button id="btn-guardar-seleccion" class="btn btn-sm btn-primary">
+                                Guardar selección
+                            </button>
+                    `,
+                    events: {
+                        render: function () {
+                            setTimeout(() => {
+                                setupSearch();
+                                setupCheckSeleccionarPrimeros();
+                                setupSeleccionLimitada.init();
+                                setupLimpiarSeleccion();
+                                setupBotonGuardar();
+                            }, 100);                        
+                        },
+                        close: function () {}
+                    }
+                });
+            });
+
+            const setupSearch = () => {
+                const input = document.getElementById('txtFacturasRadicar');
+                if (!input) return;
+
+                input.addEventListener('input', function () {
+                    const searchTerm = this.value.toLowerCase();
+
+                    document.querySelectorAll('.list-group-item').forEach(li => {
+                        const label = li.querySelector('.form-check-label')?.textContent.trim().toLowerCase() || '';
+                        const fecha = li.querySelector('.fecha')?.textContent.trim().toLowerCase() || '';
+                        const valor = li.querySelector('.badge-success')?.textContent.trim().toLowerCase() || '';
+
+                        const textToSearch = `${label} ${fecha} ${valor}`;
+                        li.style.display = textToSearch.includes(searchTerm) ? '' : 'none';
+                    });
+
+                    setupSeleccionLimitada.init();
+                });
+            };
+
+            const setupCheckSeleccionarPrimeros = () => {
+                const checkbox = document.getElementById('chk-seleccionar-primeros');
+                if (!checkbox) return;
+
+                checkbox.addEventListener('change', () => {
+                    const itemsVisibles = Array.from(document.querySelectorAll('.list-group-item')).filter(li => li.style.display !== 'none');
+                    const seleccionables = itemsVisibles.slice(0, 20);
+                    const marcadosActuales = document.querySelectorAll('.chk-soporte:checked').length;
+
+                    seleccionables.forEach((li, index) => {
+                        if (index + marcadosActuales >= 20) return;
+                        const chk = li.querySelector('.chk-soporte');
+                        if (chk) chk.checked = checkbox.checked;
+                    });
+
+                    setupSeleccionLimitada.actualizarContador();
+                });
+            };
+
+            const setupLimpiarSeleccion = () => {
+                const btnLimpiar = document.getElementById('btn-limpiar-seleccion');
+                if (!btnLimpiar) return;
+
+                btnLimpiar.addEventListener('click', () => {
+                    document.querySelectorAll('.chk-soporte').forEach(chk => {
+                        chk.checked = false;
+                    });
+                    setupSeleccionLimitada.actualizarContador();
+                });
+            };
+
+            const getFacturasSeleccionadas = () => {
+                return Array.from(document.querySelectorAll('.chk-soporte:checked')).map(chk => {
+                    const item = chk.closest('.list-group-item');
+                    return {
+                        f: item.querySelector('.form-check-label')?.textContent.trim()
+                    };
+                });
+            };
+
+            const setupBotonGuardar = () => {
+                const btnGuardar = document.getElementById('btn-guardar-seleccion');
+                if (!btnGuardar) return;
+
+                btnGuardar.addEventListener('click', () => {
+                    const seleccionadas = getFacturasSeleccionadas();
+
+                    if (seleccionadas.length === 0) {
+                        swal('Información', 'Por favor selecciona al menos una factura antes de guardar.', 'info');
+                        return;
+                    }
+
+                    console.log('Facturas seleccionadas:', seleccionadas);
+
+                    swal({
+                        text: `¿Deseas generar el armado de las ${seleccionadas.length} seleccionadas?`,
+                        icon: "warning",
+                        buttons: ["NO, voy a revisar", "SI, Continuar"]
+                    }).then((response) => {
+                        if (response) {
+                            axios.post(app.config.server.php1 + "x=cuentasMedicas&k=robotCuentasRadicar&ts=" + new Date().getTime(), seleccionadas)
+                                .then(function(response){
+                                    console.log(response.data);
+
+                                    const file = app.config.server.cdnPathBase + "homi/armado_radicar/" + response.data;
+                                    console.log(file);
+                                    window.open(file, "_blank");
+
+                                    app.core.robot.message("Se ha generado el armado correctamente", 5);
+                                })
+                                .catch(function(error){
+                                    console.error(error);
+                                });                            
+                        }
+                    });
+                    
+                });
+            };
+
+            const setupSeleccionLimitada = {
+                actualizarContador() {
+                    const totalMarcados = document.querySelectorAll('.chk-soporte:checked').length;
+                    const contador = document.getElementById('contador-seleccionados');
+                    const master = document.getElementById('chk-seleccionar-primeros');
+
+                    if (contador) contador.textContent = totalMarcados;
+                    if (master) {
+                        master.checked = totalMarcados > 0;
+                        master.indeterminate = totalMarcados > 0 && totalMarcados < 20;
+                    }
+                },
+
+                init() {
+                    const master = document.getElementById('chk-seleccionar-primeros');
+
+                    document.querySelectorAll('.chk-soporte').forEach(chk => {
+                        chk.addEventListener('change', () => {
+                            const marcados = document.querySelectorAll('.chk-soporte:checked');
+                            if (marcados.length > 20) {
+                                chk.checked = false;
+                                alert('Solo puedes seleccionar máximo 20 facturas.');
+                            }
+                            this.actualizarContador();
+                        });
+                    });
+
+                    if (master) {
+                        master.addEventListener('change', () => {
+                            const itemsVisibles = Array.from(document.querySelectorAll('.list-group-item')).filter(li => li.style.display !== 'none');
+                            const seleccionables = itemsVisibles.slice(0, 20);
+                            const marcadosActuales = document.querySelectorAll('.chk-soporte:checked').length;
+
+                            seleccionables.forEach((li, index) => {
+                                if (index + marcadosActuales >= 20) return;
+                                const chk = li.querySelector('.chk-soporte');
+                                if (chk) chk.checked = master.checked;
+                            });
+
+                            this.actualizarContador();
+                        });
+                    }
+
+                    this.actualizarContador();
+                }
+            };
         };
 
         // Renderizar inicialmente
@@ -363,7 +572,7 @@ app.monitor = {
             console.log("datepicker.change");
             const self = this;
             console.log(self.value);
-            /*
+            
             const selectedDate = this.value;
             console.log("Fecha seleccionada:", selectedDate); 
             const filteredData = filterDataByDate(dataDetalle, selectedDate);
@@ -372,7 +581,7 @@ app.monitor = {
             currentResumenRegistros = filteredData.resumenRegistros;
             renderMainTable(filteredData.detalle);
             updateChartsAndSummary(filteredData.resumen, filteredData.resumenRegistros);
-            */
+            
         });
 
         function updateChartsAndSummary(resumen, resumenRegistros) {
