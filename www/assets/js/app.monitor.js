@@ -1,11 +1,12 @@
 /* eslint-disable quotes */
-/* globals app, nata, doT, flatpickr, session, iconChart, iconProcess, Jets, echarts */
+/* globals app, nata, doT, flatpickr, session, iconChart, iconProcess, Jets, echarts, nataUIDialog*/
 
 app.monitor = {
     index: function () {
-        console.trace("%c app.monitor.index", "background:red;color:#fff;font-size:11px");
-        let data = nata.localStorage.getItem("robot-armado-fecha");
-        let dataDetalle = data.detalles;
+        console.log("%c app.monitor.index", "background:red;color:#fff;font-size:11px");
+        //const data = nata.localStorage.getItem("robot-armado-fecha" + session.fechaDashboard);
+        const data = nata.localStorage.getItem("robot-armado-fecha");
+        const dataDetalle = data.detalles;
         // let dataResumenOriginal = data.resumen;
         // let dataResumenRegistrosOriginal = data.resumenRegistros;
 
@@ -86,22 +87,39 @@ app.monitor = {
         const renderMainTable = (filteredData) => {
             const tableTemplate = `
                 <div class="container-1 w-100 h-100 algin-top">
+                    
                     <div class="card mx-2 my-4 d-inline-block">
                         <div class="card-header position-relative">
                             <div>
                                 <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
                             </div>
                             <div class="w-100 text-end">
-                                <input id="datepicker" type="date" class="form-control d-inline-block max-width-200px control-highlight">
+                                <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-200px control-highlight">
                             </div>
                         </div>
                         <div id="chart1" class="card-body min-width-450px min-height-500px"></div>
                         <div id="box1" class="min-width-450px"></div>
                     </div>
                     <div class="card mx-2 my-4 d-inline-block scroll-y">
-                        <div class="card-header">
-                            <div class="icon-title">${iconProcess}</div> Control Armado Cuentas Médicas - Diario
+
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-title me-2">${iconProcess}</div>
+                                <span>Control Armado Cuentas Médicas - Diario</span>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle btn-circle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                    </svg>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" id="validar-factura-detalle">Soportes faltantes</a></li>
+                                </ul>
+                            </div>
                         </div>
+
                         <div class="card-body">
                             <input id="txtSearch" type="text" class="form-control input-search mb-3" placeholder="Buscar ..." autocomplete="off" style="width: 980px;">
                             <div id="searchTarget" style="overflow: auto; height: 80vh;">
@@ -208,7 +226,10 @@ app.monitor = {
             const container = document.getElementById("container");
             if (container) {
                 container.innerHTML = ""; // Limpiar antes
-                container.insertAdjacentHTML("afterbegin", html);
+                if (typeof session.html == "undefined") {
+                    session.html = html;
+                }   
+                container.insertAdjacentHTML("afterbegin", session.html);
 
                 if (session.jets) {
                     session.jets.destroy();
@@ -222,6 +243,96 @@ app.monitor = {
             } else {
                 console.error("Contenedor no encontrado.");
             }
+
+            const butonSoporte = document.getElementById("validar-factura-detalle");
+
+            butonSoporte.addEventListener("click", function () {
+                let dataFaltante = nata.localStorage.getItem("robot-armado-faltante");
+                console.log(dataFaltante);
+                
+                const templateFaltantes = `
+                    <div id="containerCatera" class="w-100">
+                        <style>
+                            #tableCartera {
+                                table-layout: fixed;
+                                width: 900px;
+                            }
+                        </style>
+                        <div class="w-100">
+                            <div class="mb-3">
+                                <input type="text" id="filterInput" class="form-control" placeholder="Filtrar por numero factura, Soporte, fecha factura y observacíon">
+                            </div>
+                        <table id="tableCartera" class="table table-sm table-striped">
+                                <colgroup>
+                                    <col width="100"></col>
+                                    <col width="120"></col>
+                                    <col width="120"></col>
+                                    <col width="120"></col>
+                                </colgroup>
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>Numero Factura</th>
+                                        <th>Soporte</th>
+                                        <th>Fecha Factura</th>
+                                        <th>Observación</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    {{~ it.detail: d:id}}
+                                    <tr class="text-center">
+                                        <td>{{=d.nf}}</td>
+                                        <td>{{=d.s}}</td>
+                                        <td>{{=d.f}}</td>
+                                        <td>{{=d.o}}</td>
+                                    </tr>
+                                    {{~}}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                `;
+
+                const html = doT.template(templateFaltantes)({detail: dataFaltante});
+                new nataUIDialog({
+                    html: html,
+                    title: "Soportes Faltantes",
+                    events: {
+                        render: function () {
+                            const filterInput = document.getElementById("filterInput");
+                            const tableBody = document.getElementById("tableBody");
+                            
+                            filterInput.addEventListener("keyup", function() {
+                                const filterValue = this.value.toLowerCase();
+                                const rows = tableBody.getElementsByTagName("tr");
+
+                                Array.from(rows).forEach((row, index) => {
+                                    if (index === 0) return;
+
+                                    const id = row.cells[0].textContent.toLowerCase();
+                                    const nit = row.cells[1].textContent.toLowerCase();
+                                    const asegurador = row.cells[2].textContent.toLowerCase();
+                                    const observacion = row.cells[3].textContent.toLowerCase();
+
+                                    if (
+                                        id.includes(filterValue) ||
+                                        nit.includes(filterValue) ||
+                                        asegurador.includes(filterValue) ||
+                                        observacion.includes(filterValue)
+                                    ) {
+                                        row.style.display = "";
+                                    } else {
+                                        row.style.display = "none";
+                                    }
+                                });
+                            });
+                        },
+                        close: function () {}
+                    }
+                });
+            });
+
+
         };
 
         // Renderizar inicialmente
@@ -231,6 +342,8 @@ app.monitor = {
         flatpickr("#datepicker", {
             dateFormat: "Y-m-d",
             defaultDate: initialDate,
+            minDate: new Date(2015, 4, 12),
+            maxDate: new Date().toISOString().split("T")[0],
             locale: {
                 firstDayOfWeek: 1,
                 weekdays: {
@@ -247,6 +360,10 @@ app.monitor = {
         document.getElementById("datepicker").value = initialDate;
 
         document.getElementById("datepicker").addEventListener("change", function () {
+            console.log("datepicker.change");
+            const self = this;
+            console.log(self.value);
+            /*
             const selectedDate = this.value;
             console.log("Fecha seleccionada:", selectedDate); 
             const filteredData = filterDataByDate(dataDetalle, selectedDate);
@@ -255,9 +372,11 @@ app.monitor = {
             currentResumenRegistros = filteredData.resumenRegistros;
             renderMainTable(filteredData.detalle);
             updateChartsAndSummary(filteredData.resumen, filteredData.resumenRegistros);
+            */
         });
 
         function updateChartsAndSummary(resumen, resumenRegistros) {
+            console.log("%c updateChartsAndSummary", "background:red;color:#fff;font-size:11px");
             const chartContainer = document.getElementById('chart1');
 
             if (myChart && !myChart.isDisposed()) {
@@ -332,21 +451,6 @@ app.monitor = {
                             <td class="text-end">{{=d.c}}</td>
                             <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
                             <td class="text-end">{{=d.p}}%</td>
-                        </tr>
-                        {{~}}                           
-                    </tbody>
-                </table>
-                <table class="table table-bordered table-sm table-consolidado">
-                    <colgroup><col width="150"><col width="120"><col width="120"></colgroup>
-                    <thead class="table-primary">
-                        <tr><th class="text-center">Total Facturas</th><th class="text-center">Pendiente Soportes</th><th class="text-center">Soportes Generados</th></tr>
-                    </thead>
-                    <tbody>
-                        {{~it.datailRegistro: d:id}}
-                        <tr class="bg-table-row-1">
-                            <td>{{=d.tf}}</td>
-                            <td>{{=d.tsp}}</td>
-                            <td>{{=d.tsg}}</td>
                         </tr>
                         {{~}}                           
                     </tbody>
