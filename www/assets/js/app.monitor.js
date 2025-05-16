@@ -89,7 +89,11 @@ app.monitor = {
             const tableTemplate = `
                 <div class="container-1 w-100 h-100 align-top">
                     
+<<<<<<< HEAD
                     <div class="card mx-2 my-4 d-inline-block">
+=======
+                    <div class="card my-4 d-inline-block min-width-380px">
+>>>>>>> 9f98b8734c5a4777cef39227ec57636fb135910a
                         <div class="card-header position-relative min-width-380px">
                             <div>
                                 <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
@@ -101,8 +105,9 @@ app.monitor = {
                         <div id="chart1" class="card-body min-width-380px min-height-400px p-0"></div>
                         <div id="box1" class="min-width-380px"></div>
                     </div>
-                    <div class="card mx-2 my-4 d-inline-block scroll-y">
 
+
+                    <div class="card mx-2 my-4 d-inline-block scroll-y width-829px">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <div class="icon-title me-2">${iconProcess}</div>
@@ -128,11 +133,11 @@ app.monitor = {
                                 <style>
                                     .table-robot-armado-cuenta {
                                         table-layout: fixed;
-                                        width: 930px;
+                                        width: 825px;
                                     }
                                     .table-robot-armado-cuenta-detail {
                                         table-layout: fixed;
-                                        width: 930px;
+                                        width: 825px;
                                     }
                                     .table-robot-armado-cuenta td,
                                     .table-robot-armado-cuenta-detail td {
@@ -147,11 +152,11 @@ app.monitor = {
                                     <table class="table table-bordered table-sm table-robot-armado-cuenta">
                                         <colgroup>
                                             <col width="50"></col>
-                                            <col width="230"></col>
-                                            <col width="200"></col>
-                                            <col width="120"></col>
-                                            <col width="140"></col>
-                                            <col width="240"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
+                                            <col width="375"></col>
                                         </colgroup>
                                         <thead class="table-primary">
                                             <tr>
@@ -183,11 +188,11 @@ app.monitor = {
                                     </table>
                                     <table class="table table-bordered table-sm table-robot-armado-cuenta-detail">
                                         <colgroup>
-                                            <col width="400"></col>
                                             <col width="200"></col>
-                                            <col width="140"></col>
-                                            <col width="120"></col>
-                                            <col width="120"></col>
+                                            <col width="200"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
                                         </colgroup>
                                         <thead class="table-primary">
                                             <tr>
@@ -640,7 +645,11 @@ app.monitor = {
                 series: [{
                     name: 'Facturas',
                     type: 'pie',
+<<<<<<< HEAD
                     radius: ['20%', '50%'],
+=======
+                    radius: ['45%', '70%'],
+>>>>>>> 9f98b8734c5a4777cef39227ec57636fb135910a
                     avoidLabelOverlap: false,
                     itemStyle: {
                         borderRadius: 10,
@@ -669,14 +678,23 @@ app.monitor = {
                 </style>
                 <table class="table table-bordered table-sm table-consolidado mb-3">
                     <colgroup>
+<<<<<<< HEAD
                         <col width="50"><col width="135"><col width="50">
                         <col width="100"><col width="60">
+=======
+                        <col width="50"><col width="125"><col width="50">
+                        <col width="80"><col width="60">
+>>>>>>> 9f98b8734c5a4777cef39227ec57636fb135910a
                     </colgroup>
                     <thead class="table-primary">
                         <tr>
                             <th class="text-center">Radicar</th>
                             <th class="text-center">Estado</th>
+<<<<<<< HEAD
                             <th class="text-end">No. Facturas</th>
+=======
+                            <th class="text-end">No. Factura</th>
+>>>>>>> 9f98b8734c5a4777cef39227ec57636fb135910a
                             <th class="text-end">Valor Total</th>
                             <th class="text-end">%</th>
                         </tr>
