@@ -130,13 +130,13 @@ app.config = {
     version: {
         check: {
             // app.config.version.check.review
-            review: true,
+            review: false,
             // app.config.version.check.time
             time: 60,
             // app.config.version.check.login
             login: 20,
             // app.config.version.check.version
-            version: "v0.2.41"
+            version: "v0.2.42"
         }
     },
 
