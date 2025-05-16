@@ -488,15 +488,20 @@ app.monitor = {
                         buttons: ["NO, voy a revisar", "SI, Continuar"]
                     }).then((response) => {
                         if (response) {
+                            document.getElementById("loader").style.display = "block";
                             axios.post(app.config.server.php1 + "x=cuentasMedicas&k=robotCuentasRadicar&ts=" + new Date().getTime(), seleccionadas)
                                 .then(function(response){
                                     console.log(response.data);
+
+                                    document.getElementById("loader").style.display = "none";
 
                                     const file = app.config.server.cdnPathBase + "homi/armado_radicar/" + response.data;
                                     console.log(file);
                                     window.open(file, "_blank");
 
                                     app.core.robot.message("Se ha generado el armado correctamente", 5);
+
+                                    app.core.dialog.removeAll();
                                 })
                                 .catch(function(error){
                                     console.error(error);
