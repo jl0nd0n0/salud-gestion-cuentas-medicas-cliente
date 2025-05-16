@@ -7,6 +7,7 @@ app.monitor = {
         //const data = nata.localStorage.getItem("robot-armado-fecha" + session.fechaDashboard);
         const data = nata.localStorage.getItem("robot-armado-fecha");
         const dataDetalle = data.detalles;
+        console.log(dataDetalle);
         // let dataResumenOriginal = data.resumen;
         // let dataResumenRegistrosOriginal = data.resumenRegistros;
 
@@ -86,9 +87,13 @@ app.monitor = {
 
         const renderMainTable = (filteredData) => {
             const tableTemplate = `
-                <div class="container-1 w-100 h-100 algin-top">
+                <div class="container-1 w-100 h-100 align-top">
                     
+<<<<<<< HEAD
+                    <div class="card mx-2 my-4 d-inline-block">
+=======
                     <div class="card my-4 d-inline-block min-width-380px">
+>>>>>>> 9f98b8734c5a4777cef39227ec57636fb135910a
                         <div class="card-header position-relative min-width-380px">
                             <div>
                                 <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
@@ -640,7 +645,11 @@ app.monitor = {
                 series: [{
                     name: 'Facturas',
                     type: 'pie',
+<<<<<<< HEAD
+                    radius: ['20%', '50%'],
+=======
                     radius: ['45%', '70%'],
+>>>>>>> 9f98b8734c5a4777cef39227ec57636fb135910a
                     avoidLabelOverlap: false,
                     itemStyle: {
                         borderRadius: 10,
@@ -669,14 +678,23 @@ app.monitor = {
                 </style>
                 <table class="table table-bordered table-sm table-consolidado mb-3">
                     <colgroup>
+<<<<<<< HEAD
+                        <col width="50"><col width="135"><col width="50">
+                        <col width="100"><col width="60">
+=======
                         <col width="50"><col width="125"><col width="50">
                         <col width="80"><col width="60">
+>>>>>>> 9f98b8734c5a4777cef39227ec57636fb135910a
                     </colgroup>
                     <thead class="table-primary">
                         <tr>
                             <th class="text-center">Radicar</th>
                             <th class="text-center">Estado</th>
+<<<<<<< HEAD
+                            <th class="text-end">No. Facturas</th>
+=======
                             <th class="text-end">No. Factura</th>
+>>>>>>> 9f98b8734c5a4777cef39227ec57636fb135910a
                             <th class="text-end">Valor Total</th>
                             <th class="text-end">%</th>
                         </tr>
