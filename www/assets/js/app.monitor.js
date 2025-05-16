@@ -7,6 +7,7 @@ app.monitor = {
         //const data = nata.localStorage.getItem("robot-armado-fecha" + session.fechaDashboard);
         const data = nata.localStorage.getItem("robot-armado-fecha");
         const dataDetalle = data.detalles;
+        console.log(dataDetalle);
         // let dataResumenOriginal = data.resumen;
         // let dataResumenRegistrosOriginal = data.resumenRegistros;
 
@@ -86,10 +87,10 @@ app.monitor = {
 
         const renderMainTable = (filteredData) => {
             const tableTemplate = `
-                <div class="container-1 w-100 h-100 algin-top">
+                <div class="container-1 w-100 h-100 align-top">
                     
                     <div class="card mx-2 my-4 d-inline-block">
-                        <div class="card-header position-relative">
+                        <div class="card-header position-relative min-width-380px">
                             <div>
                                 <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
                             </div>
@@ -97,8 +98,8 @@ app.monitor = {
                                 <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-200px control-highlight">
                             </div>
                         </div>
-                        <div id="chart1" class="card-body min-width-450px min-height-500px"></div>
-                        <div id="box1" class="min-width-450px"></div>
+                        <div id="chart1" class="card-body min-width-380px min-height-400px p-0"></div>
+                        <div id="box1" class="min-width-380px"></div>
                     </div>
                     <div class="card mx-2 my-4 d-inline-block scroll-y">
 
@@ -639,7 +640,7 @@ app.monitor = {
                 series: [{
                     name: 'Facturas',
                     type: 'pie',
-                    radius: ['40%', '70%'],
+                    radius: ['20%', '50%'],
                     avoidLabelOverlap: false,
                     itemStyle: {
                         borderRadius: 10,
@@ -662,19 +663,20 @@ app.monitor = {
 
             const summaryTemplate = `
                 <style>
-                    .table-consolidado { table-layout: fixed; width: 480px; }
+                    .table-consolidado { table-layout: fixed; width: 380px; }
                     .table-consolidado tr th { font-size: 11px }
+                    .table-consolidado tr td { font-size: 12px }
                 </style>
                 <table class="table table-bordered table-sm table-consolidado mb-3">
                     <colgroup>
-                        <col width="50"><col width="150"><col width="80">
-                        <col width="120"><col width="80">
+                        <col width="50"><col width="135"><col width="50">
+                        <col width="100"><col width="60">
                     </colgroup>
                     <thead class="table-primary">
                         <tr>
                             <th class="text-center">Radicar</th>
                             <th class="text-center">Estado</th>
-                            <th class="text-end">Cantidad Facturas</th>
+                            <th class="text-end">No. Facturas</th>
                             <th class="text-end">Valor Total</th>
                             <th class="text-end">%</th>
                         </tr>

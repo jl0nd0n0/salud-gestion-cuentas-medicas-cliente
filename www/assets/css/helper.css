@@ -190,12 +190,12 @@
     border-top: solid 4px #717171;
 }
 
-.min-width-450px {
-    min-width: 450px;
+.min-width-380px {
+    min-width: 380px;
 }
 
-.min-height-500px {
-    height:500px;
+.min-height-400px {
+    height:400px;
 }
 
 .border-right-none {
