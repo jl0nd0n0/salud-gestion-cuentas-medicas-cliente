@@ -494,3 +494,7 @@ a svg {
     height: 1.4em;
     vertical-align: top;
 }
+
+td .badge {
+    min-width: 40px;
+}

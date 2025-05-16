@@ -116,7 +116,7 @@ app.monitor = {
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" id="armado-radicar-facturas">Radicar Facturas</a></li>
-                                    <li><a class="dropdown-item" id="validar-factura-detalle">Soportes faltantes</a></li>
+                                    <li><a class="dropdown-item" id="menuSoportesFaltantes">Soportes faltantes</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -248,18 +248,19 @@ app.monitor = {
                 console.error("Contenedor no encontrado.");
             }
 
-            const butonSoporte = document.getElementById("validar-factura-detalle");
+            const buttonSoportesFaltantes = document.getElementById("menuSoportesFaltantes");
 
-            butonSoporte.addEventListener("click", function () {
-                let dataFaltante = nata.localStorage.getItem("robot-armado-faltante");
-                console.log(dataFaltante);
+            buttonSoportesFaltantes.addEventListener("click", function () {
+                console.log("%c buttonSoportesFaltantes.click", "background:red;color:#fff;font-size:11px");
+                const data = nata.localStorage.getItem("robot-armado-faltante");
+                console.log(data);
                 
-                const templateFaltantes = `
+                const template = `
                     <div id="containerCatera" class="w-100">
                         <style>
                             #tableCartera {
                                 table-layout: fixed;
-                                width: 900px;
+                                width: 740px;
                             }
                         </style>
                         <div class="w-100">
@@ -269,8 +270,10 @@ app.monitor = {
                         <table id="tableCartera" class="table table-sm table-striped">
                                 <colgroup>
                                     <col width="100"></col>
+                                    <col width="200"></col>
                                     <col width="120"></col>
                                     <col width="120"></col>
+                                    <col width="80"></col>
                                     <col width="120"></col>
                                 </colgroup>
                                 <thead>
@@ -279,15 +282,23 @@ app.monitor = {
                                         <th>Soporte</th>
                                         <th>Fecha Factura</th>
                                         <th>Observación</th>
+                                        <th>Días en proceso</th>
+                                        <th>Valor</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
                                     {{~ it.detail: d:id}}
                                     <tr class="text-center">
                                         <td>{{=d.nf}}</td>
-                                        <td>{{=d.s}}</td>
+                                        <td class="text-start">
+                                            <span class="badge rounded-pill text-bg-danger">{{=d.s}}</span>
+                                        </td>
                                         <td>{{=d.f}}</td>
                                         <td>{{=d.o}}</td>
+                                        <td class="text-end">
+                                            <span class="badge rounded-pill text-bg-danger">{{=d.d}}</span>
+                                        </td>
+                                        <td class="text-end">{{=d.v}}</td>
                                     </tr>
                                     {{~}}
                                 </tbody>
@@ -297,7 +308,7 @@ app.monitor = {
                     </div>
                 `;
 
-                const html = doT.template(templateFaltantes)({detail: dataFaltante});
+                const html = doT.template(template)({ detail: data });
                 new nataUIDialog({
                     html: html,
                     title: "Soportes Faltantes",
