@@ -101,7 +101,6 @@ app.monitor = {
                         <div id="box1" class="min-width-380px"></div>
                     </div>
 
-
                     <div class="card mx-2 my-4 d-inline-block scroll-y width-829px">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
@@ -123,7 +122,8 @@ app.monitor = {
                         </div>
 
                         <div class="card-body">
-                            <input id="txtSearch" type="text" class="form-control input-search mb-3" placeholder="Buscar ..." autocomplete="off" style="width: 980px;">
+                            <input id="txtSearch" type="text" class="form-control input-search mb-3" 
+                                placeholder="Buscar ..." autocomplete="off">
                             <div id="searchTarget" style="overflow: auto; height: 80vh;">
                                 <style>
                                     .table-robot-armado-cuenta {
@@ -183,11 +183,11 @@ app.monitor = {
                                     </table>
                                     <table class="table table-bordered table-sm table-robot-armado-cuenta-detail">
                                         <colgroup>
+                                            <col width="265"></col>
+                                            <col width="180"></col>
+                                            <col width="80"></col>
+                                            <col width="100"></col>
                                             <col width="200"></col>
-                                            <col width="200"></col>
-                                            <col width="100"></col>
-                                            <col width="100"></col>
-                                            <col width="100"></col>
                                         </colgroup>
                                         <thead class="table-primary">
                                             <tr>

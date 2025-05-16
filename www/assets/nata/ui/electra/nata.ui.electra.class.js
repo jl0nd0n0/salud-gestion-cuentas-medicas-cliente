@@ -79,6 +79,7 @@ class nataUIElectra extends HTMLElement {
                     position: fixed;
                     top: 30px;
                     right: 4px;
+                    display: none;
                 }
 
                 .robot {

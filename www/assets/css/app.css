@@ -9,7 +9,7 @@ body{
     font-weight:400;
     font-size: 14px;    
     position: relative;
-    overflow-y: visible;
+    overflow: hidden;
 }
 
 #containerDashboard{
@@ -431,4 +431,8 @@ a {
     position: absolute;
     right: 5px;
     top: 5px;
+}
+
+#nata-ui-electra {
+    display: none;
 }
