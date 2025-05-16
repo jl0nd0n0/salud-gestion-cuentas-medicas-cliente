@@ -260,7 +260,8 @@ app.monitor = {
                         <style>
                             #tableCartera {
                                 table-layout: fixed;
-                                width: 740px;
+                                width: 860px;
+                                font-size: 16px
                             }
                         </style>
                         <div class="w-100">
@@ -273,6 +274,7 @@ app.monitor = {
                                     <col width="200"></col>
                                     <col width="120"></col>
                                     <col width="120"></col>
+                                    <col width="120"></col>
                                     <col width="80"></col>
                                     <col width="120"></col>
                                 </colgroup>
@@ -281,6 +283,7 @@ app.monitor = {
                                         <th>Numero Factura</th>
                                         <th>Soporte</th>
                                         <th>Fecha Factura</th>
+                                        <th>Fecha Desmaterializado</th>
                                         <th>Observación</th>
                                         <th>Días en proceso</th>
                                         <th>Valor</th>
@@ -289,16 +292,21 @@ app.monitor = {
                                 <tbody id="tableBody">
                                     {{~ it.detail: d:id}}
                                     <tr class="text-center">
-                                        <td>{{=d.nf}}</td>
+                                        <td>
+                                            <span class="badge rounded-pill text-bg-primary">{{=d.nf}}</span>
+                                        </td>
                                         <td class="text-start">
                                             <span class="badge rounded-pill text-bg-danger">{{=d.s}}</span>
                                         </td>
-                                        <td>{{=d.f}}</td>
+                                        <td class="text-end">{{=d.f}}</td>
+                                        <td class="text-end">{{=d.fd}}</td>
                                         <td>{{=d.o}}</td>
                                         <td class="text-end">
                                             <span class="badge rounded-pill text-bg-danger">{{=d.d}}</span>
                                         </td>
-                                        <td class="text-end">{{=d.v}}</td>
+                                        <td class="text-end">
+                                            {{=numberDecimal.format(d.v)}}
+                                        </td>
                                     </tr>
                                     {{~}}
                                 </tbody>
