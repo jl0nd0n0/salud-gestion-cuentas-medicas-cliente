@@ -302,13 +302,21 @@ app.monitor = {
                                         <td class="text-end">{{=d.fd}}</td>
                                         <td>{{=d.o}}</td>
                                         <td class="text-end">
-                                            <span class="badge rounded-pill text-bg-danger">{{=d.d}}</span>
+                                            <span class="badge rounded-pill text-bg-danger pulse-red">{{=d.d}}</span>
                                         </td>
                                         <td class="text-end">
-                                            {{=numberDecimal.format(d.v)}}
+                                            <b>{{=numberDecimal.format(d.v)}}</b>
                                         </td>
                                     </tr>
                                     {{~}}
+                                    <tr class="text-center">
+                                        <td colspan="6" class="text-center">
+                                            <b>TOTAL</b>
+                                        </td>
+                                        <td class="text-end">
+                                            <b>{{=numberDecimal.format(it.total)}}</b>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
 
@@ -316,7 +324,8 @@ app.monitor = {
                     </div>
                 `;
 
-                const html = doT.template(template)({ detail: data });
+                
+                const html = doT.template(template)({ detail: data, total: data.sum("v") });
                 new nataUIDialog({
                     html: html,
                     title: "Soportes Faltantes",

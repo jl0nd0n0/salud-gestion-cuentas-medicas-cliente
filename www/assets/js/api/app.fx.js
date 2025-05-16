@@ -1,6 +1,16 @@
 /* globals app, mes, doT */
 
 app.fx = {
+
+    array: {
+        sum: function (items, prop) {
+            console.log("nata.fx.array.sum");
+            return items.reduce(function (a, b) {
+                return parseInt(a) + parseInt(b[prop]);
+            }, 0);
+        }
+    },
+
     // app.fx.classByEstadoGet
     classByEstadoGet: function (estadoEtapa, estado) {
         console.log("app.fx.classByEstadoGet");
@@ -200,4 +210,8 @@ Array.prototype.totalObject = function (prop) {
         total += parseFloat(value);
     }
     return total;
+};
+
+Array.prototype.sum = function (prop) {
+    return app.fx.array.sum(this, prop);
 };
