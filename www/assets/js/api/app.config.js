@@ -136,7 +136,7 @@ app.config = {
             // app.config.version.check.login
             login: 20,
             // app.config.version.check.version
-            version: "v0.2.42"
+            version: "v0.2.43"
         }
     },
 
