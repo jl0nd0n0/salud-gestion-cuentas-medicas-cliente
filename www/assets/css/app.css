@@ -7,9 +7,9 @@ body{
     height:100vh;
     color:#000;
     font-weight:400;
-    font-size:14px;    
-    position:relative;
-    overflow:hidden
+    font-size: 14px;    
+    position: relative;
+    overflow-y: visible;
 }
 
 #containerDashboard{

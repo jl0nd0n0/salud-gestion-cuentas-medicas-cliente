@@ -88,8 +88,8 @@ app.monitor = {
             const tableTemplate = `
                 <div class="container-1 w-100 h-100 algin-top">
                     
-                    <div class="card mx-2 my-4 d-inline-block">
-                        <div class="card-header position-relative">
+                    <div class="card my-4 d-inline-block min-width-380px">
+                        <div class="card-header position-relative min-width-380px">
                             <div>
                                 <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
                             </div>
@@ -97,11 +97,12 @@ app.monitor = {
                                 <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-200px control-highlight">
                             </div>
                         </div>
-                        <div id="chart1" class="card-body min-width-450px min-height-500px"></div>
-                        <div id="box1" class="min-width-450px"></div>
+                        <div id="chart1" class="card-body min-width-380px min-height-400px p-0"></div>
+                        <div id="box1" class="min-width-380px"></div>
                     </div>
-                    <div class="card mx-2 my-4 d-inline-block scroll-y">
 
+
+                    <div class="card mx-2 my-4 d-inline-block scroll-y width-829px">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <div class="icon-title me-2">${iconProcess}</div>
@@ -127,11 +128,11 @@ app.monitor = {
                                 <style>
                                     .table-robot-armado-cuenta {
                                         table-layout: fixed;
-                                        width: 930px;
+                                        width: 825px;
                                     }
                                     .table-robot-armado-cuenta-detail {
                                         table-layout: fixed;
-                                        width: 930px;
+                                        width: 825px;
                                     }
                                     .table-robot-armado-cuenta td,
                                     .table-robot-armado-cuenta-detail td {
@@ -146,11 +147,11 @@ app.monitor = {
                                     <table class="table table-bordered table-sm table-robot-armado-cuenta">
                                         <colgroup>
                                             <col width="50"></col>
-                                            <col width="230"></col>
-                                            <col width="200"></col>
-                                            <col width="120"></col>
-                                            <col width="140"></col>
-                                            <col width="240"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
+                                            <col width="375"></col>
                                         </colgroup>
                                         <thead class="table-primary">
                                             <tr>
@@ -182,11 +183,11 @@ app.monitor = {
                                     </table>
                                     <table class="table table-bordered table-sm table-robot-armado-cuenta-detail">
                                         <colgroup>
-                                            <col width="400"></col>
                                             <col width="200"></col>
-                                            <col width="140"></col>
-                                            <col width="120"></col>
-                                            <col width="120"></col>
+                                            <col width="200"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
+                                            <col width="100"></col>
                                         </colgroup>
                                         <thead class="table-primary">
                                             <tr>
@@ -639,7 +640,7 @@ app.monitor = {
                 series: [{
                     name: 'Facturas',
                     type: 'pie',
-                    radius: ['40%', '70%'],
+                    radius: ['45%', '70%'],
                     avoidLabelOverlap: false,
                     itemStyle: {
                         borderRadius: 10,
@@ -662,19 +663,20 @@ app.monitor = {
 
             const summaryTemplate = `
                 <style>
-                    .table-consolidado { table-layout: fixed; width: 480px; }
+                    .table-consolidado { table-layout: fixed; width: 380px; }
                     .table-consolidado tr th { font-size: 11px }
+                    .table-consolidado tr td { font-size: 12px }
                 </style>
                 <table class="table table-bordered table-sm table-consolidado mb-3">
                     <colgroup>
-                        <col width="50"><col width="150"><col width="80">
-                        <col width="120"><col width="80">
+                        <col width="50"><col width="125"><col width="50">
+                        <col width="80"><col width="60">
                     </colgroup>
                     <thead class="table-primary">
                         <tr>
                             <th class="text-center">Radicar</th>
                             <th class="text-center">Estado</th>
-                            <th class="text-end">Cantidad Facturas</th>
+                            <th class="text-end">No. Factura</th>
                             <th class="text-end">Valor Total</th>
                             <th class="text-end">%</th>
                         </tr>
