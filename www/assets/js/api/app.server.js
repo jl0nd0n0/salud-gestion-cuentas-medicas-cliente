@@ -309,7 +309,7 @@ app.server = {
                 const fxCallback1 = function () {
                     ++contador;
                     console.log(contador);
-                    if (contador == 2) {
+                    if (contador == 1) {
                         nata.localStorage.setItem("app-iniciada", 1);
                         app.monitor.index();
                         document.querySelector("#loader").style.display = "none";
@@ -331,11 +331,11 @@ app.server = {
                         index: "robot-armado-fecha",
                         callback: fxCallback1
                     },
-                    {
-                        url: "x=cuentasMedicas&k=monitorSoportesFaltantes",
-                        index: "robot-armado-faltante",
-                        callback: fxCallback1
-                    }
+                    // {
+                    //     url: "x=cuentasMedicas&k=monitorSoportesFaltantes",
+                    //     index: "robot-armado-faltante",
+                    //     callback: fxCallback1
+                    // }
                 ];
                 nata.localStorage.load(app.config.server.php1, "json", params);
             };

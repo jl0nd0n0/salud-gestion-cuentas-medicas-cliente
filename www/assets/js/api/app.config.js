@@ -130,13 +130,13 @@ app.config = {
     version: {
         check: {
             // app.config.version.check.review
-            review: false,
+            review: true,
             // app.config.version.check.time
             time: 60,
             // app.config.version.check.login
             login: 20,
             // app.config.version.check.version
-            version: "v0.2.43"
+            version: "v0.2.47"
         }
     },
 
@@ -191,7 +191,7 @@ app.config.server.upload = app.config.server.upload + "server/php/index.php?";
 //DANGER: AQUI
 // servicio de control de versiones
 //produccion
-app.config.version.check.server = app.config.server.php1 + "x=servidor&y=version";
+app.config.version.check.server = app.config.server.php1 + "x=servidor&y=versionRobots";
 //night
 //app.config.version.check.server = app.config.server.php + "version/nightGet";
 
