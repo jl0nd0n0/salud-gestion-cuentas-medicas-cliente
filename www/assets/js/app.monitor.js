@@ -80,6 +80,12 @@ app.monitor = {
         const initialDate = getTodayDate();
         const initialFilteredData = filterDataByDate(dataDetalle, initialDate);
         let currentDetalle = initialFilteredData.detalle;
+        session.data = currentDetalle;
+        let i;
+        for (i = 0; i < currentDetalle.length; i++) {
+            console.log(currentDetalle[i].f);
+        }
+
         let currentResumen = initialFilteredData.resumen;
         let currentResumenRegistros = initialFilteredData.resumenRegistros;
 
@@ -210,6 +216,12 @@ app.monitor = {
                                         </tr>                                
                                     </tbody>
                                 </table>
+                                {{
+                                    console.log("******************************");
+                                    let lista;
+                                    if (d.radicarOK) { lista = 1 } else { lista = 0 }
+                                    console.log(d.f, lista);
+                                }}
                                 <table class="table table-bordered table-sm table-robot-armado-cuenta-detail
                                     {{? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}"
                                     <colgroup>
@@ -647,14 +659,13 @@ app.monitor = {
                 }
                 
                 const elements = document.querySelectorAll("table.cuenta-no-radicar");
+                document.querySelector("#cuentas-cantidad").innerText = session.pendientesSoportes;
+                document.querySelector("#box2-table").visibility = "display";
                 let i;
                 for (i = 0; i < elements.length; i++) {
                     const element = elements[i];
                     element.style.display = "block";
                 }
-
-
-                document.querySelector("#box2-table").visibility = "display";
                 fxOcultarResto()
             });
 
@@ -671,6 +682,7 @@ app.monitor = {
                 }
 
                 let elements = document.querySelectorAll("table.cuenta-radicar");
+                document.querySelector("#cuentas-cantidad").innerText = session.radicar;
                 if (elements.length === 0) {
                     swal(app.config.title, "No hay cuentas para radicar", "info");
                     document.querySelector("#box2-table").visibility = "hidden";
@@ -715,6 +727,13 @@ app.monitor = {
                 document.getElementById("datepicker").value = selectedDate;
                 const filteredData = filterDataByDate(dataDetalle, selectedDate);
                 currentDetalle = filteredData.detalle;
+                session.data = currentDetalle;
+
+                let i;
+                for (i = 0; i < currentDetalle.length; i++) {
+                    console.log(currentDetalle[i].f);
+                }
+
                 currentResumen = filteredData.resumen;
                 currentResumenRegistros = filteredData.resumenRegistros;
                 updateChartsAndSummary(filteredData.resumen, filteredData.resumenRegistros);
@@ -811,6 +830,20 @@ app.monitor = {
                 detail: resumen,
                 datailRegistro: resumenRegistros
             });
+
+            resumen.forEach(estado => {
+                console.log(estado.e);
+
+                if(estado.e === "Pendiente Soportes"){
+                    session.pendientesSoportes = estado.c;
+                }
+
+                if(estado.e === "Listas para radicar"){
+                    session.radicar = estado.c;
+                }
+            });
+
+            session.totalFactura = session.pendientesSoportes + session.radicar;
 
             const box1 = document.getElementById("box1");
             if (box1) {
