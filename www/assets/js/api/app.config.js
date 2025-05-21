@@ -7,6 +7,8 @@ if (typeof app.config.ui.labels == "undefined") app.config.ui.labels = [];
 
 app.config = {
 
+    title: "Artemisa Cuentas Médicas",
+
     // app.config.client
     client: "homi",
 

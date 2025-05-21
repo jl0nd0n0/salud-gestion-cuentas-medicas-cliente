@@ -1,0 +1,23 @@
+<!-- Campo de entrada -->
+<input type="text" id="datepicker" placeholder="Selecciona una fecha">
+
+<!-- Incluye Flatpickr desde CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css ">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr "></script>
+
+<script>
+  // Inicializa Flatpickr
+  flatpickr("#datepicker", {
+    // Opciones adicionales si las necesitas
+    dateFormat: "Y-m-d", // Formato de fecha
+
+    // Evento onChange cuando se selecciona una fecha
+    onChange: function(selectedDates, dateStr, instance) {
+      console.log("Fecha seleccionada:", dateStr);
+      console.log("Fecha como objeto Date:", selectedDates[0]);
+
+      // También puedes hacer algo con la fecha aquí
+      alert("Fecha seleccionada: " + dateStr);
+    }
+  });
+</script>

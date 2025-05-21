@@ -190,8 +190,8 @@
     border-top: solid 4px #717171;
 }
 
-.min-width-380px {
-    min-width: 380px;
+.min-width-400px {
+    min-width: 400px;
 }
 
 .min-height-400px {
@@ -206,11 +206,21 @@
     max-width: 200px;
 }
 
-.width-829px {
-    width: 829px;
+.width-814px {
+    width: 814px;
+}
+
+.min-width-814px {
+    min-width: 814px;
 }
 
 #iconCrescend{
     position: relative;
     width: 180px;
+}
+
+.no-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Estándar */
 }
