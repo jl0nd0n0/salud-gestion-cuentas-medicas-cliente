@@ -826,6 +826,14 @@ app.monitor = {
                             <td class="text-end">{{=d.p}}%</td>
                         </tr>
                         {{~}}
+                        <tr>
+                            <td class="text-center fw-bold" colspan="2">
+                                <b>Total</b>
+                            </td>
+                            <td class="text-end fw-bold">{{=it.detail.sum("c")}}</td>
+                            <td class="text-end fw-bold">$ {{=numberDecimal.format( it.detail.sum("v") )}}</td>
+                            <td class="text-end">{{=numberDecimal.format(it.detail.sum("p"))}}.00%</td>
+                        </tr>
                     </tbody>
                 </table>                
             `;
