@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-/* globals app, nata, doT, flatpickr, session, iconChart, iconProcess, Jets, echarts, nataUIDialog, axios*/
+/* globals app, nata, doT, flatpickr, session, iconChart, iconProcess, Jets, echarts, nataUIDialog, axios, alasql*/
 
 app.monitor = {
     index: function () {
@@ -82,6 +82,7 @@ app.monitor = {
         let currentDetalle = initialFilteredData.detalle;
         let currentResumen = initialFilteredData.resumen;
         let currentResumenRegistros = initialFilteredData.resumenRegistros;
+        let selectedDate = getTodayDate();
 
         let myChart = null;
 
@@ -237,6 +238,13 @@ app.monitor = {
                 }   
                 container.insertAdjacentHTML("afterbegin", session.html);
 
+                const dateInput = document.getElementById("datepicker");
+                if (dateInput) {
+                    // ✅ Si ya se había seleccionado una fecha, úsala
+                    dateInput.value = selectedDate || getTodayDate();
+                }
+
+
                 if (session.jets) {
                     session.jets.destroy();
                 }
@@ -260,6 +268,20 @@ app.monitor = {
                         console.log(response.data);
 
                         const data = response.data;
+
+                        const sql = `
+                            select sum(v::NUMBER) as v
+                            from ( 
+                                SELECT
+                                    nf as nf,
+                                    v::NUMBER as v
+                                FROM ?
+                                GROUP BY nf, v
+                            ) as s
+                        `;
+
+                        const totales = alasql(sql, [data]);
+                        console.log(totales);
 
                         const template = `
                             <div id="containerCatera" class="w-100">
@@ -296,6 +318,7 @@ app.monitor = {
                                             </tr>
                                         </thead>
                                         <tbody id="tableBody">
+                                            {{let factura = "";}}
                                             {{~ it.detail: d:id}}
                                             <tr class="text-center">
                                                 <td>
@@ -310,9 +333,14 @@ app.monitor = {
                                                 <td class="text-end">
                                                     <span class="badge rounded-pill text-bg-danger pulse-red">{{=d.d}}</span>
                                                 </td>
-                                                <td class="text-end">
-                                                    <b>{{=numberDecimal.format(d.v)}}</b>
-                                                </td>
+                                                {{?factura != d.nf}}
+                                                    <td class="text-end">
+                                                        <b>{{=numberDecimal.format(d.v)}}</b>
+                                                    </td>
+                                                {{??}}
+                                                    <td class="text-end"></td>
+                                                {{?}}
+                                                {{factura = d.nf;}}
                                             </tr>
                                             {{~}}
                                             <tr class="text-center">
@@ -320,17 +348,16 @@ app.monitor = {
                                                     <b>TOTAL</b>
                                                 </td>
                                                 <td class="text-end">
-                                                    <b>{{=numberDecimal.format(it.total)}}</b>
+                                                    <b>{{=numberDecimal.format(it.total.v)}}</b>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
-
                                 </div>
                             </div>
                         `;
                         
-                        const html = doT.template(template)({ detail: data, total: data.sum("v") });
+                        const html = doT.template(template)({ detail: data, total: totales[0] });
                         new nataUIDialog({
                             html: html,
                             title: "Soportes Faltantes",
@@ -618,43 +645,45 @@ app.monitor = {
 
         // Renderizar inicialmente
         renderMainTable(currentDetalle);
+        setTimeout(() => initFlatpickr(), 50);
 
-        // Inicializar datepicker
-        flatpickr("#datepicker", {
-            dateFormat: "Y-m-d",
-            defaultDate: initialDate,
-            minDate: new Date(2015, 4, 12),
-            maxDate: new Date().toISOString().split("T")[0],
-            locale: {
-                firstDayOfWeek: 1,
-                weekdays: {
-                    shorthand: ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"],
-                    longhand: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
-                },
-                months: {
-                    shorthand: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-                    longhand: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-                }
+        function initFlatpickr() {
+            const input = document.getElementById("datepicker");
+            if (!input) {
+                console.warn("No se encontró el elemento #datepicker al inicializar Flatpickr");
+                return;
             }
-        });
 
-        document.getElementById("datepicker").value = initialDate;
+            flatpickr(input, {
+                dateFormat: "Y-m-d",
+                defaultDate: input.value || new Date().toISOString().split("T")[0],
+                minDate: new Date(2015, 4, 12),
+                maxDate: new Date().toISOString().split("T")[0],
+                locale: {
+                    firstDayOfWeek: 1,
+                    weekdays: {
+                        shorthand: ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"],
+                        longhand: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+                    },
+                    months: {
+                        shorthand: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                        longhand: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+                    }
+                }
+            });
 
-        document.getElementById("datepicker").addEventListener("change", function () {
-            console.log("datepicker.change");
-            const self = this;
-            console.log(self.value);
-            
-            const selectedDate = this.value;
-            console.log("Fecha seleccionada:", selectedDate); 
-            const filteredData = filterDataByDate(dataDetalle, selectedDate);
-            currentDetalle = filteredData.detalle;
-            currentResumen = filteredData.resumen;
-            currentResumenRegistros = filteredData.resumenRegistros;
-            renderMainTable(filteredData.detalle);
-            updateChartsAndSummary(filteredData.resumen, filteredData.resumenRegistros);
-            
-        });
+            input.addEventListener("change", function () {
+                selectedDate = this.value;
+                const filteredData = filterDataByDate(dataDetalle, selectedDate);
+                currentDetalle = filteredData.detalle;
+                currentResumen = filteredData.resumen;
+                currentResumenRegistros = filteredData.resumenRegistros;
+                renderMainTable(filteredData.detalle);
+                updateChartsAndSummary(filteredData.resumen, filteredData.resumenRegistros);
+                setTimeout(() => initFlatpickr(), 50);
+            });
+        }
+
 
         function updateChartsAndSummary(resumen, resumenRegistros) {
             console.log("%c updateChartsAndSummary", "background:red;color:#fff;font-size:11px");
