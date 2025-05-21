@@ -789,26 +789,29 @@ app.monitor = {
 
             const summaryTemplate = `
                 <style>
-                    .table-consolidado { table-layout: fixed; width: 380px; }
+                    .table-consolidado { table-layout: fixed; width: 400px; }
                     .table-consolidado tr th { font-size: 11px }
                     .table-consolidado tr td { font-size: 11px }
                 </style>
-                {{~it.detail: d:id}}
                 <table class="table table-bordered table-sm table-consolidado mb-3">
                     <colgroup>
-                        <col width="50"><col width="125"><col width="50">
-                        <col width="80"><col width="60">
+                        <col width="50">
+                        <col width="125">
+                        <col width="60">
+                        <col width="105">
+                        <col width="60">
                     </colgroup>
                     <thead class="table-primary">
                         <tr>
                             <th class="text-center">Radicar</th>
                             <th class="text-center">Estado</th>
-                            <th class="text-end">No. Factura</th>
+                            <th class="text-end">Cantidad Facturas</th>
                             <th class="text-end">Valor Total</th>
                             <th class="text-end">%</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {{~it.detail: d:id}}
                         <tr class="bg-table-row-1">
                             <td class="text-center">
                                 {{? d.e == "Listas para radicar"}}
@@ -821,10 +824,10 @@ app.monitor = {
                             <td class="text-end">{{=d.c}}</td>
                             <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
                             <td class="text-end">{{=d.p}}%</td>
-                        </tr>                                                
+                        </tr>
+                        {{~}}
                     </tbody>
-                </table>
-                {{~}}
+                </table>                
             `;
             const htmlSummary = doT.template(summaryTemplate)({
                 detail: resumen,
