@@ -69,6 +69,7 @@ app.monitor = {
                 ...item,
                 radicarOK: item.d.every(dd => dd.ge !== "0")
             }));
+            console.log(processedDetalle);
             const { resumen, resumenRegistros } = calculateSummaryStats(processedDetalle);
             return {
                 detalle: processedDetalle,
@@ -88,6 +89,7 @@ app.monitor = {
 
         let currentResumen = initialFilteredData.resumen;
         let currentResumenRegistros = initialFilteredData.resumenRegistros;
+        let selectedDate = getTodayDate();
 
         let myChart = null;
 
