@@ -150,6 +150,8 @@ app.monitor = {
                                 <li><hr class="dropdown-divider"></li>
 
                                 <li><a class="dropdown-item" id="armado-radicar-facturas">Radicar Facturas</a></li>
+                                <li><a class="dropdown-item" id="menuExcelRadicar">Descargar Excel Facturas radicar</a></li>
+                                <li><a class="dropdown-item" id="menuExcelPreauditoria">Descargar Excel Preauditoria</a></li>
                                 <li><a class="dropdown-item" id="menuExcelSoportesFaltantes">Descargar Excel Soportes faltantes</a></li>
                             </ul>
                         </div>
@@ -289,6 +291,42 @@ app.monitor = {
                 rowSelector: ".search-group"
             });
 
+            const buttonExcelRadicar = document.getElementById("menuExcelRadicar");
+
+            buttonExcelRadicar.addEventListener("click", function(){
+                console.log("menuExcelRadicar.click");
+
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorRadicarExcel&ts=" + new Date().getTime())
+                    .then(function(response){
+                        console.log(response.data);
+
+                        const file = app.config.server.path + response.data[0].file;
+
+                        window.open(file, "_blank");
+                    })
+                    .catch(function(error){
+                        console.error(error);
+                    });
+            });
+
+            const buttonExcelPreauditoria = document.getElementById("menuExcelPreauditoria");
+
+            buttonExcelPreauditoria.addEventListener("click", function(){
+                console.log("menuExcelPreauditoria.click");
+
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorPreauditoriaExcel&ts=" + new Date().getTime())
+                    .then(function(response){
+                        console.log(response.data);
+
+                        const file = app.config.server.path + response.data[0].file;
+
+                        window.open(file, "_blank");
+                    })
+                    .catch(function(error){
+                        console.error(error);
+                    });
+            });
+
             const buttonExcelSoportesFaltantes = document.getElementById("menuExcelSoportesFaltantes");
 
             buttonExcelSoportesFaltantes.addEventListener("click", function(){
@@ -305,7 +343,7 @@ app.monitor = {
                     .catch(function(error){
                         console.error(error);
                     });
-            })
+            });
 
             // const buttonSoportesFaltantes = document.getElementById("menuSoportesFaltantes");
 
