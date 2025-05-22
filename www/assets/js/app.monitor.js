@@ -154,8 +154,8 @@ app.monitor = {
                     </div>
 
                     <div>
-                        <span id="cuentas-badge" class="badge rounded-pill text-bg-dark position-relative">
-                            <span id="cuentas-title">Total</span>
+                        <span id="cuentas-badge" class="badge rounded-pill text-bg-primary position-relative min-width-100px">
+                            <center><span id="cuentas-title">Total</span></center>
                             <span id="cuentas-cantidad" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
                                 {{=it.cantidad}}
                             <span class="visually-hidden">unread messages</span>
