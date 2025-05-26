@@ -150,6 +150,8 @@ app.monitor = {
                                 <li><hr class="dropdown-divider"></li>
 
                                 <li><a class="dropdown-item" id="armado-radicar-facturas">Radicar Facturas</a></li>
+                                <li><a class="dropdown-item" id="menuExcelRadicar">Descargar Excel Facturas radicar</a></li>
+                                <li><a class="dropdown-item" id="menuExcelPreauditoria">Descargar Excel Preauditoria</a></li>
                                 <li><a class="dropdown-item" id="menuExcelSoportesFaltantes">Descargar Excel Soportes faltantes</a></li>
                             </ul>
                         </div>
@@ -197,30 +199,103 @@ app.monitor = {
                                         <col width="364"></col>
                                     </colgroup>
                                     <thead class="table-primary">
-                                        <tr>
-                                            <th class="text-center">Radicar</th>
-                                            <th class="text-center">Factura</th>
-                                            <th class="text-center">Fecha</th>
-                                            <th class="text-center">Días Vencimiento</th>
-                                            <th class="text-center">Valor</th>
-                                            <th class="text-center">Paciente</th>
-                                            <th class="text-center"></th>
-                                        </tr>
+                                        {{? d.sa == 1 }}
+                                            <tr>
+                                                <th class="tableColorRojo text-center">Radicar</th>
+                                                <th class="tableColorRojo text-center">Factura</th>
+                                                <th class="tableColorRojo text-center">Fecha</th>
+                                                <th class="tableColorRojo text-center">Días Vencimiento</th>
+                                                <th class="tableColorRojo text-center">Valor</th>
+                                                <th class="tableColorRojo text-center">Paciente</th>
+                                            </tr>
+                                        {{??}}
+                                            {{? d.sr == 1 }}
+                                                <tr>
+                                                    <th class="tableColorVerde text-center">Radicar</th>
+                                                    <th class="tableColorVerde text-center">Factura</th>
+                                                    <th class="tableColorVerde text-center">Fecha</th>
+                                                    <th class="tableColorVerde text-center">Días Vencimiento</th>
+                                                    <th class="tableColorVerde text-center">Valor</th>
+                                                    <th class="tableColorVerde text-center">Paciente</th>
+                                                </tr>
+                                            {{??}}
+                                                <tr>
+                                                    <th class="text-center">Radicar</th>
+                                                    <th class="text-center">Factura</th>
+                                                    <th class="text-center">Fecha</th>
+                                                    <th class="text-center">Días Vencimiento</th>
+                                                    <th class="text-center">Valor</th>
+                                                    <th class="text-center">Paciente</th>
+                                                </tr>
+                                            {{?}}
+                                        {{?}}                                        
                                     </thead>
                                     <tbody>
                                         <tr class="bg-table-row-1">
-                                            <td class="text-center border-right-none">
-                                                {{? d.radicarOK }}
-                                                    <div class="rounded-circle bg-success d-inline-block icon-dot" ></div>
+                                            {{? d.sa == 1 }}
+                                                <td class="text-center {{? !d.radicarOK }}bg-danger text-white{{?}} border-right-none">
+                                                    <div class="rounded-circle d-inline-block" style="width: 14px; height: 14px; background-color: #f74260 !important;"></div>
+                                                </td>
+                                            {{??}}
+                                                {{? d.sr == 1 }}
+                                                    <td class="text-center border-right-none" style="background-color: #c5e1a5;">
+                                                        <div class="rounded-circle d-inline-block" style="width: 14px; height: 14px; background-color: #66BB6A;"></div>
+                                                    </td>
                                                 {{??}}
-                                                    <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
+                                                    <td class="text-center border-right-none">
+                                                        {{? d.radicarOK }}
+                                                            <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                                        {{??}}
+                                                            <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
+                                                        {{?}}
+                                                    </td>
                                                 {{?}}
-                                            </td>
-                                            <td class="text-start fw-bold">{{=d.f}}</td>
-                                            <td class="text-center">{{=d.fe}}</td>
-                                            <td class="text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
-                                            <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
-                                            <td colspan="2" class="text-center">{{=d.p}}</td>
+                                            {{?}}
+                                            {{? d.sa == 1 }}
+                                                <td class="tableColorRojoTd text-start fw-bold">{{=d.f}}</td>
+                                            {{??}}
+                                                {{? d.sr == 1 }}
+                                                    <td style="background-color: #c5e1a5;" class="text-start fw-bold">{{=d.f}}</td>
+                                                {{??}}
+                                                    <td class="text-start fw-bold">{{=d.f}}</td>
+                                                {{?}}
+                                            {{?}}
+                                            {{? d.sa == 1 }}
+                                                <td class="tableColorRojoTd text-center">{{=d.fe}}</td>
+                                            {{??}}
+                                                {{? d.sr == 1 }}
+                                                    <td style="background-color: #c5e1a5;" class="text-center">{{=d.fe}}</td>
+                                                {{??}}
+                                                    <td class="text-center">{{=d.fe}}</td>
+                                                {{?}}
+                                            {{?}}
+                                            {{? d.sa == 1 }}
+                                                <td class="tableColorRojoTd text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
+                                            {{??}}
+                                                {{? d.sr == 1 }}
+                                                    <td style="background-color: #c5e1a5;" class="text-center fw-bold"><span class="badge text-bg-success">{{=d.dv}}</span></td>
+                                                {{??}}
+                                                <td class="text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
+                                                {{?}} 
+                                            {{?}}
+                                            {{? d.sa == 1 }}
+                                                <td style="background-color: #F8D7DA;" class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
+                                            {{??}}
+                                                {{? d.sr == 1 }}
+                                                    <td style="background-color: #c5e1a5;" class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
+                                                {{??}}
+                                                    <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
+                                                {{?}}
+                                            {{?}}
+                                            {{? d.sa == 1 }}
+                                                <td style="background-color: #F8D7DA;" colspan="2" class="text-center">{{=d.p}}</td>
+                                            {{??}}
+                                                {{? d.sr == 1 }}
+                                                    <td style="background-color: #c5e1a5;" colspan="2" class="text-center">{{=d.p}}</td>
+                                                {{??}}
+                                                    <td colspan="2" class="text-center">{{=d.p}}</td>
+                                                {{?}}
+                                            {{?}}
                                         </tr>                                
                                     </tbody>
                                 </table>
@@ -230,45 +305,87 @@ app.monitor = {
                                     if (d.radicarOK) { lista = 1 } else { lista = 0 }
                                     console.log(d.f, lista);
                                 }}
-                                <table class="table table-bordered table-sm table-robot-armado-cuenta-detail 
-                                    {{? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}"
-                                    <colgroup>
-                                        <col width="254"></col>
-                                        <col width="180"></col>
-                                        <col width="80"></col>
-                                        <col width="100"></col>
-                                        <col width="200"></col>
-                                    </colgroup>
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th class="text-center">Grupo</th>
-                                            <th class="text-center">Soporte</th>
-                                            <th class="text-center">Armado</th>
-                                            <th class="text-center">Estado</th>
-                                            <th class="text-center">Descripción</th>
-                                        </tr>
-                                    </thead>
-                                    {{~d.d: dd:idd}}
-                                    <tr {{? idd % 2 == 1}}class="bg-table-row-1"{{?}}>
-                                        <td class="text-start">{{=dd.g}}</td>
-                                        <td class="text-start">
-                                            <span class="badge 
-                                                {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
-                                                {{=dd.s}}
-                                            </span>                                        
+                                {{? d.sa == 1 }}
+                                    <table class="table table-bordered table-sm w-100">
+                                          <td class="text-center py-1" style="background-color: #F8D7DA">
+                                            <span class="badge text-bg-danger">Anulada</span>
                                         </td>
-                                        <td class="text-center">
-                                            {{? dd.ge == "0"}}
-                                            <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
+                                    </table>
+                                {{??}}
+                                    <table class="table table-bordered table-sm table-robot-armado-cuenta-detail 
+                                        {{? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                                        <colgroup>
+                                            <col width="254"></col>
+                                            <col width="180"></col>
+                                            <col width="80"></col>
+                                            <col width="100"></col>
+                                            <col width="200"></col>
+                                        </colgroup>
+                                        <thead class="table-primary">
+                                            {{? d.sr == 1 }}
+                                                <tr>
+                                                    <th class="tableColorVerdeTh text-center">Grupo</th>
+                                                    <th class="tableColorVerdeTh text-center">Soporte</th>
+                                                    <th class="tableColorVerdeTh text-center">Armado</th>
+                                                    <th class="tableColorVerdeTh text-center">Estado</th>
+                                                    <th class="tableColorVerdeTh text-center">Descripción</th>
+                                                </tr>
                                             {{??}}
-                                            <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                                <tr>
+                                                    <th class="text-center">Grupo</th>
+                                                    <th class="text-center">Soporte</th>
+                                                    <th class="text-center">Armado</th>
+                                                    <th class="text-center">Estado</th>
+                                                    <th class="text-center">Descripción</th>
+                                                </tr>
                                             {{?}}
-                                        </td>
-                                        <td class="text-start">{{=dd.o}}</td>
-                                        <td class="text-start">{{=dd.n}}</td>
-                                    </tr>
-                                    {{~}}                                
-                                </table>
+
+                                        </thead>
+                                        {{~d.d: dd:idd}}
+                                            {{? d.sr == 1 }}
+                                            <tr {{? idd % 2 == 1}} class="tableColorVerdeTr bg-table-row-1"{{?}}>
+                                                    <td class="tableColorVerdeTr text-start">{{=dd.g}}</td>
+                                                    <td class=" tableColorVerdeTr text-start">
+                                                        <span class="badge 
+                                                            {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
+                                                            {{=dd.s}}
+                                                        </span>                                        
+                                                    </td>
+                                                    <td class="tableColorVerdeTr text-center">
+                                                        <div class="rounded-circle d-inline-block" style="width: 14px; height: 14px; background-color: #66BB6A;"></div>
+                                                    </td>
+                                                    <td class=" tableColorVerdeTr text-center">
+                                                        <div class="badge text-bg-success" >Radicar</div>
+                                                    </td>
+                                                    <td class="tableColorVerdeTr text-start">{{=dd.n}}</td>
+                                                </tr>
+                                            {{??}}
+                                                <tr {{? idd % 2 == 1}}class="bg-table-row-1"{{?}}>
+                                                    <td class="text-start">{{=dd.g}}</td>
+                                                    <td class="text-start">
+                                                        <span class="badge 
+                                                            {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
+                                                            {{=dd.s}}
+                                                        </span>                                        
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{? dd.ge == "0"}}
+                                                        <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
+                                                        {{??}}
+                                                        <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                                        {{?}}
+                                                    </td>
+                                                    {{? d.sr == 1 }}                                            
+                                                        <td class="badge text-bg-success text-center">Radicar</td>
+                                                    {{??}}
+                                                        <td class="text-start">{{=dd.o}}</td>
+                                                    {{?}}
+                                                    <td class="text-start">{{=dd.n}}</td>
+                                                </tr>
+                                            {{?}}
+                                        {{~}}                                
+                                    </table>
+                                {{?}}
                             </div>
                             {{~}}
                         </div>
@@ -289,6 +406,42 @@ app.monitor = {
                 rowSelector: ".search-group"
             });
 
+            const buttonExcelRadicar = document.getElementById("menuExcelRadicar");
+
+            buttonExcelRadicar.addEventListener("click", function(){
+                console.log("menuExcelRadicar.click");
+
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorRadicarExcel&ts=" + new Date().getTime())
+                    .then(function(response){
+                        console.log(response.data);
+
+                        const file = app.config.server.path + response.data[0].file;
+
+                        window.open(file, "_blank");
+                    })
+                    .catch(function(error){
+                        console.error(error);
+                    });
+            });
+
+            const buttonExcelPreauditoria = document.getElementById("menuExcelPreauditoria");
+
+            buttonExcelPreauditoria.addEventListener("click", function(){
+                console.log("menuExcelPreauditoria.click");
+
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorPreauditoriaExcel&ts=" + new Date().getTime())
+                    .then(function(response){
+                        console.log(response.data);
+
+                        const file = app.config.server.path + response.data[0].file;
+
+                        window.open(file, "_blank");
+                    })
+                    .catch(function(error){
+                        console.error(error);
+                    });
+            });
+
             const buttonExcelSoportesFaltantes = document.getElementById("menuExcelSoportesFaltantes");
 
             buttonExcelSoportesFaltantes.addEventListener("click", function(){
@@ -305,7 +458,7 @@ app.monitor = {
                     .catch(function(error){
                         console.error(error);
                     });
-            })
+            });
 
             // const buttonSoportesFaltantes = document.getElementById("menuSoportesFaltantes");
 
@@ -880,7 +1033,7 @@ app.monitor = {
                                 {{??}}
                                 <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                 {{?}}                                
-                            </td>                            
+                            </td>                        
                             <td class="text-start fw-bold">{{=d.e}}</td>
                             <td class="text-end">{{=d.c}}</td>
                             <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
