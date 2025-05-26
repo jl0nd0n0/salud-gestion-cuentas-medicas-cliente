@@ -6,6 +6,7 @@ app.monitor = {
         console.log("%c app.monitor.index", "background:red;color:#fff;font-size:11px");
         //const data = nata.localStorage.getItem("robot-armado-fecha" + session.fechaDashboard);
         const data = nata.localStorage.getItem("robot-armado-fecha");
+        const dataResumen = nata.localStorage.getItem("robot-armado-resumen");
         const dataDetalle = data.detalles;
         console.log(dataDetalle);
         // let dataResumenOriginal = data.resumen;
@@ -94,30 +95,47 @@ app.monitor = {
         let myChart = null;
 
         const templateLayout = `
-             <div class="container-1 w-100 h-100 align-top">
-                <div class="card my-4 d-inline-block min-width-400px">
-                    <div class="card-header position-relative min-width-400px">
-                        <div>
-                            <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
+            <div class="container-1 w-100 h-100 align-top my-4 ms-3">
+                <div class="row d-inline-block col-izquierda h-100 v-align-top scroll-y">
+                    <div class="card w-100">
+                        <div class="card-header position-relative">
+                            <div>
+                                <div class="icon-title">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <title>chart-arc</title><path d="M16.18,19.6L14.17,16.12C15.15,15.4 15.83,14.28 15.97,13H20C19.83,15.76 18.35,18.16 16.18,19.6M13,7.03V3C17.3,3.26 20.74,6.7 21,11H16.97C16.74,8.91 15.09,7.26 13,7.03M7,12.5C7,13.14 7.13,13.75 7.38,14.3L3.9,16.31C3.32,15.16 3,13.87 3,12.5C3,7.97 6.54,4.27 11,4V8.03C8.75,8.28 7,10.18 7,12.5M11.5,21C8.53,21 5.92,19.5 4.4,17.18L7.88,15.17C8.7,16.28 10,17 11.5,17C12.14,17 12.75,16.87 13.3,16.62L15.31,20.1C14.16,20.68 12.87,21 11.5,21Z"></path></svg>
+                                </div> Armado Cuentas Médicas - Consolidado
+                            </div>
                         </div>
-                        <div class="w-100 text-end">
-                            <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-200px control-highlight">
+                        <div class="card-body ps-0">
+                            <div id="table-placeholder"></div>
                         </div>
                     </div>
-                    <div id="chart1" class="card-body min-width-400px min-height-400px p-0"></div>
-                    <div id="box1" class="min-width-400px"></div>
+
+                    <div class="card w-100">
+                        <div class="card-header position-relative">
+                            <div>
+                                <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
+                            </div>
+                            <div class="w-100 text-end">
+                                <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-200px control-highlight">
+                            </div>
+                        </div>
+                        <div id="chart1" class="card-body min-width-400px min-height-400px p-0"></div>
+                        <div id="box1" class="min-width-400px"></div>
+                    </div>
                 </div>
-                
-                <div id="box2" class="d-inline-block width-814px"></div>
+                <div id="box2" class="d-inline-block col-derecha h-100 ms-5"></div>
             </div>
-        `
+        `;
+
+        
 
         const container = document.getElementById("container");
         container.innerHTML = templateLayout;
 
         const renderMainTable = (filteredData) => {
             const tableTemplate = `
-                <div class="card mx-2 my-4 d-inline-block scroll-y width-100">
+                <div class="card d-inline-block scroll-y width-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
                             <div class="icon-title me-2">${iconProcess}</div>
@@ -165,7 +183,7 @@ app.monitor = {
                             <span class="visually-hidden">unread messages</span>
                         </span>
                     </div>
-                    <div id="box2-table" class="card-body min-width-814px vh-100">
+                    <div id="box2-table" class="card-body vh-100">
                         <input id="txtSearch" type="text" class="form-control input-search mb-3" 
                             placeholder="Buscar ..." autocomplete="off">
                         <div id="searchTarget" style="overflow-x:hidden; overflow-y: auto; height: 75vh;">
@@ -238,7 +256,7 @@ app.monitor = {
                                                 </td>
                                             {{??}}
                                                 {{? d.sr == 1 }}
-                                                    <td class="text-center border-right-none" style="background-color: #c5e1a5;">
+                                                    <td class="text-center border-right-none tableColorVerdeTd">
                                                         <div class="rounded-circle d-inline-block" style="width: 14px; height: 14px; background-color: #66BB6A;"></div>
                                                     </td>
                                                 {{??}}
@@ -255,7 +273,7 @@ app.monitor = {
                                                 <td class="tableColorRojoTd text-start fw-bold">{{=d.f}}</td>
                                             {{??}}
                                                 {{? d.sr == 1 }}
-                                                    <td style="background-color: #c5e1a5;" class="text-start fw-bold">{{=d.f}}</td>
+                                                    <td class="tableColorVerdeTd text-start fw-bold">{{=d.f}}</td>
                                                 {{??}}
                                                     <td class="text-start fw-bold">{{=d.f}}</td>
                                                 {{?}}
@@ -264,7 +282,7 @@ app.monitor = {
                                                 <td class="tableColorRojoTd text-center">{{=d.fe}}</td>
                                             {{??}}
                                                 {{? d.sr == 1 }}
-                                                    <td style="background-color: #c5e1a5;" class="text-center">{{=d.fe}}</td>
+                                                    <td class="tableColorVerdeTd text-center">{{=d.fe}}</td>
                                                 {{??}}
                                                     <td class="text-center">{{=d.fe}}</td>
                                                 {{?}}
@@ -273,7 +291,7 @@ app.monitor = {
                                                 <td class="tableColorRojoTd text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
                                             {{??}}
                                                 {{? d.sr == 1 }}
-                                                    <td style="background-color: #c5e1a5;" class="text-center fw-bold"><span class="badge text-bg-success">{{=d.dv}}</span></td>
+                                                    <td class="tableColorVerdeTd text-center fw-bold"><span class="badge text-bg-success">{{=d.dv}}</span></td>
                                                 {{??}}
                                                 <td class="text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
                                                 {{?}} 
@@ -282,7 +300,7 @@ app.monitor = {
                                                 <td style="background-color: #F8D7DA;" class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
                                             {{??}}
                                                 {{? d.sr == 1 }}
-                                                    <td style="background-color: #c5e1a5;" class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
+                                                    <td class="tableColorVerdeTd text-end">$ {{=numberDecimal.format( d.v )}}</td>
                                                 {{??}}
                                                     <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
                                                 {{?}}
@@ -291,7 +309,7 @@ app.monitor = {
                                                 <td style="background-color: #F8D7DA;" colspan="2" class="text-center">{{=d.p}}</td>
                                             {{??}}
                                                 {{? d.sr == 1 }}
-                                                    <td style="background-color: #c5e1a5;" colspan="2" class="text-center">{{=d.p}}</td>
+                                                    <td colspan="2" class=" tableColorVerdeTd text-center">{{=d.p}}</td>
                                                 {{??}}
                                                     <td colspan="2" class="text-center">{{=d.p}}</td>
                                                 {{?}}
@@ -355,7 +373,7 @@ app.monitor = {
                                                         <div class="rounded-circle d-inline-block" style="width: 14px; height: 14px; background-color: #66BB6A;"></div>
                                                     </td>
                                                     <td class=" tableColorVerdeTr text-center">
-                                                        <div class="badge text-bg-success" >Radicar</div>
+                                                        <div class="badge text-bg-success" >Radicado</div>
                                                     </td>
                                                     <td class="tableColorVerdeTr text-start">{{=dd.n}}</td>
                                                 </tr>
@@ -1075,8 +1093,75 @@ app.monitor = {
                 box1.innerHTML = "";
                 box1.insertAdjacentHTML("afterbegin", htmlSummary);
             }
+
+            app.monitor.consolidado.render();
         }
 
         updateChartsAndSummary(currentResumen, currentResumenRegistros);
+    },
+
+    consolidado: {
+        render: function() {
+            console.log("%c app.monitor.consolidado.render", "background:red;color:#fff;font-size:11px");
+            const data = nata.localStorage.getItem("robot-armado-resumen");
+            console.log(data);
+            const template = `
+                <style>
+                    .table-consolidado { table-layout: fixed; width: 400px; }
+                    .table-consolidado tr th { font-size: 11px }
+                    .table-consolidado tr td { font-size: 11px }
+                </style>
+                <table class="table table-bordered table-resumen table-sm table-consolidado mb-3">
+                    <colgroup>
+                        <col width="50">
+                        <col width="125">
+                        <col width="60">
+                        <col width="105">
+                        <col width="60">
+                    </colgroup>
+                    <thead class="table-primary">
+                        <tr>
+                            <th class="text-center">Radicar</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-end">Cantidad Facturas</th>
+                            <th class="text-end">Valor Total</th>
+                            <th class="text-end">%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{~it.detail: d:id}}
+                        <tr class="bg-table-row-1">
+                            <td class="text-center">
+                                {{? d.e == "Listas para radicar"}}
+                                <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                {{??}}
+                                <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
+                                {{?}}                                
+                            </td>                        
+                            <td class="text-start fw-bold">{{=d.e}}</td>
+                            <td class="text-end">{{=d.cf}}</td>
+                            <td class="text-end">$ {{=numberDecimal.format( d.vt )}}</td>
+                            <td class="text-end">{{=d.p}}%</td>
+                        </tr>
+                        {{~}}
+                        <tr>
+                            <td class="text-center fw-bold" colspan="2">
+                                <b>Total</b>
+                            </td>
+                            <td class="text-end fw-bold">{{=it.detail.sum("cf")}}</td>
+                            <td class="text-end fw-bold">$ {{=numberDecimal.format( it.detail.sum("vt") )}}</td>
+                            <td class="text-end">{{=it.detail.reduce((a,b) => a + +b.p, 0).toFixed(2)}}%</td>
+                        </tr>
+                    </tbody>
+                </table>                
+            `;
+            
+            const html = doT.template(template)({
+                detail: data
+            });
+
+            document.getElementById("table-placeholder").innerHTML = html;
+            
+        }
     }
 };

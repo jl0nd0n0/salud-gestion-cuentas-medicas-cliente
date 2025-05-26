@@ -436,3 +436,21 @@ a {
 #nata-ui-electra {
     display: none;
 }
+
+.container-1 {
+      display: flex;
+      width: 100%;
+      max-width: 1366px;
+      min-height: 100vh;
+    }
+
+.col-izquierda {
+    width: 420px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.col-derecha {
+    flex: 1;
+    box-sizing: border-box;
+}

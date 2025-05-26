@@ -224,3 +224,7 @@
     -ms-user-select: none;      /* IE 10+ */
     user-select: none;          /* Estándar */
 }
+
+.max-width-400px {
+    max-width: 420px;
+}

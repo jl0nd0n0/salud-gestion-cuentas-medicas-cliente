@@ -58,6 +58,7 @@ body {
     font-weight: 300;
     font-style: normal;
     background-color: #FCFCFC;
+    overflow: auto;
 }
 
 #containerLogin {
@@ -502,8 +503,12 @@ td .badge {
     background-color: #afd980 !important;
 }
 .tableColorVerdeTr {
-    background-color: #c5e1a5 !important;
+    background-color: #c7ddaf !important;
 }
+.tableColorVerdeTd {
+    background-color: #c7ddaf !important;
+}
+
 .tableColorVerdeTh {
     background-color: #afd980 !important;
 }
