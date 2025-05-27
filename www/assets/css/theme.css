@@ -58,7 +58,6 @@ body {
     font-weight: 300;
     font-style: normal;
     background-color: #FCFCFC;
-    overflow: auto;
 }
 
 #containerLogin {
@@ -67,6 +66,10 @@ body {
 
 .bg-success {
     background-color: #C5E1A5!important;
+}
+
+.bg-success-2 {
+    background-color: #68ba6f!important;
 }
 
 .table {

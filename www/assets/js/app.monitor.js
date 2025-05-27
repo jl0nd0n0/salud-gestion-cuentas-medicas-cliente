@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-/* globals app, nata, doT, flatpickr, session, iconChart, iconProcess, Jets, echarts, nataUIDialog, axios, swal */
+/* globals app, nata, doT, flatpickr, session, iconChart, iconProcess, Jets, echarts, nataUIDialog, axios, swal, alasql */
 
 app.monitor = {
     index: function () {
@@ -25,44 +25,74 @@ app.monitor = {
             detalle.forEach(item => {
                 const key = item.f;
                 if (!grouped[key]) {
+                    let estado = "Pendiente Soportes";
+
+                    if (item.sr == "1") {
+                        estado = "Radicado";
+                    } else if (item.radicarOK) {
+                        estado = "Listas para radicar";
+                    }
+
                     grouped[key] = {
-                        estado: item.radicarOK ? "Listas para radicar" : "Pendiente Soportes",
+                        estado,
                         valor: parseFloat(item.v) || 0
                     };
                 }
             });
+
             const statsArray = Object.values(grouped);
+
             const tsg = statsArray.filter(s => s.estado === "Listas para radicar").length;
             const tsp = statsArray.filter(s => s.estado === "Pendiente Soportes").length;
-            const totalFacturas = tsg + tsp;
-            const totalValor = statsArray.reduce((sum, s) => sum + s.valor, 0);
+            const tr  = statsArray.filter(s => s.estado === "Radicado").length;
+
+            const totalFacturas = tsg + tsp + tr;
+
             const listasParaRadicarValor = statsArray
                 .filter(s => s.estado === "Listas para radicar")
                 .reduce((sum, s) => sum + s.valor, 0);
+
             const pendienteSoportesValor = statsArray
                 .filter(s => s.estado === "Pendiente Soportes")
                 .reduce((sum, s) => sum + s.valor, 0);
+
+            const radicadoValor = statsArray
+                .filter(s => s.estado === "Radicado")
+                .reduce((sum, s) => sum + s.valor, 0);
+
+            const totalValor = listasParaRadicarValor + pendienteSoportesValor + radicadoValor;
+
             const resumen = [
-                {
-                    e: "Listas para radicar",
-                    c: tsg,
-                    v: listasParaRadicarValor,
-                    p: ((listasParaRadicarValor / totalValor) * 100).toFixed(2)
-                },
                 {
                     e: "Pendiente Soportes",
                     c: tsp,
                     v: pendienteSoportesValor,
                     p: ((pendienteSoportesValor / totalValor) * 100).toFixed(2)
-                }
+                },
+                {
+                    e: "Listas para radicar",
+                    c: tsg,
+                    v: listasParaRadicarValor,
+                    p: ((listasParaRadicarValor / totalValor) * 100).toFixed(2)
+                },                
+                {
+                    e: "Radicado",
+                    c: tr,
+                    v: radicadoValor,
+                    p: ((radicadoValor / totalValor) * 100).toFixed(2)
+                },
             ];
+
             const resumenRegistros = [{
                 tf: totalFacturas,
                 tsp: tsp,
-                tsg: tsg
+                tsg: tsg,
+                tr: tr
             }];
+
             return { resumen, resumenRegistros };
         }
+
 
         function filterDataByDate(dataDetalle, date) {
             const filteredDetalle = dataDetalle.filter(item => item.fe === date);
@@ -79,6 +109,26 @@ app.monitor = {
             };
         }
 
+        function filterDataByDateRange(dataDetalle, startDate, endDate) {
+            const filteredDetalle = dataDetalle.filter(item => {
+                return item.fe >= startDate && item.fe <= endDate;
+            });
+
+            const processedDetalle = filteredDetalle.map(item => ({
+                ...item,
+                radicarOK: item.d.every(dd => dd.ge !== "0")
+            }));
+
+            const { resumen, resumenRegistros } = calculateSummaryStats(processedDetalle);
+
+            return {
+                detalle: processedDetalle,
+                resumen,
+                resumenRegistros
+            };
+        }
+
+
         const initialDate = getTodayDate();
         const initialFilteredData = filterDataByDate(dataDetalle, initialDate);
         let currentDetalle = initialFilteredData.detalle;
@@ -89,6 +139,7 @@ app.monitor = {
         }
 
         let currentResumen = initialFilteredData.resumen;
+        console.log(currentResumen);
         let currentResumenRegistros = initialFilteredData.resumenRegistros;
         let selectedDate = getTodayDate();
 
@@ -117,7 +168,7 @@ app.monitor = {
                                 <div class="icon-title">${iconChart}</div> Armado Cuentas Médicas - Diario
                             </div>
                             <div class="w-100 text-end">
-                                <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-200px control-highlight">
+                                <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-250px control-highlight">
                             </div>
                         </div>
                         <div id="chart1" class="card-body min-width-400px min-height-400px p-0"></div>
@@ -165,9 +216,16 @@ app.monitor = {
                                     </a>
                                 </li>
 
+                                <li>
+                                    <a class="dropdown-item" id="menuCuentasRadicadas">
+                                        <div class="rounded-circle bg-success-2 d-inline-block icon-dot"></div>&nbsp;&nbsp;Cuentas radicadas
+                                    </a>
+                                </li>
+
                                 <li><hr class="dropdown-divider"></li>
 
                                 <li><a class="dropdown-item" id="armado-radicar-facturas">Radicar Facturas</a></li>
+                                <li><a class="dropdown-item" id="menuSoportesFaltantes">Ver Soportes Faltantes</a></li>
                                 <li><a class="dropdown-item" id="menuExcelRadicar">Descargar Excel Facturas radicar</a></li>
                                 <li><a class="dropdown-item" id="menuExcelPreauditoria">Descargar Excel Preauditoria</a></li>
                                 <li><a class="dropdown-item" id="menuExcelSoportesFaltantes">Descargar Excel Soportes faltantes</a></li>
@@ -207,7 +265,7 @@ app.monitor = {
                             {{~it.detail: d:id}}
                             <div class="search-group mb-4">
                                 <table class="table table-bordered table-sm table-robot-armado-cuenta
-                                    {{? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                                    {{? d.sr == "1"}}cuenta-radicada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
                                     <colgroup>
                                         <col width="50"></col>
                                         <col width="100"></col>
@@ -331,7 +389,7 @@ app.monitor = {
                                     </table>
                                 {{??}}
                                     <table class="table table-bordered table-sm table-robot-armado-cuenta-detail 
-                                        {{? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                                        {{? d.sr == "1"}}cuenta-radicada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
                                         <colgroup>
                                             <col width="254"></col>
                                             <col width="180"></col>
@@ -478,121 +536,197 @@ app.monitor = {
                     });
             });
 
-            // const buttonSoportesFaltantes = document.getElementById("menuSoportesFaltantes");
+            function descargarExcelPorSoporte(soporteNombre) {
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantesExcel_v1&y=" + soporteNombre + "&ts=" + new Date().getTime())
+                    .then(function(response){
+                        console.log(response.data);
 
-            // buttonSoportesFaltantes.addEventListener("click", function () {
-            //     console.log("%c buttonSoportesFaltantes.click", "background:red;color:#fff;font-size:11px");
+                        const file = app.config.server.path + response.data[0].file;
+                        window.open(file, "_blank");
+                    }).catch(error => {
+                        console.error(error);
+                    });
+            }
 
-            //     axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantes&ts=" + new Date().getTime())
-            //         .then(function(response){
-            //             console.log(response.data);
 
-            //             const data = response.data;
+            const buttonSoportesFaltantes = document.getElementById("menuSoportesFaltantes");
 
-            //             const template = `
-            //                 <div id="containerCatera" class="w-100">
-            //                     <style>
-            //                         #tableCartera {
-            //                             table-layout: fixed;
-            //                             width: 860px;
-            //                             font-size: 16px
-            //                         }
-            //                     </style>
-            //                     <div class="w-100">
-            //                         <div class="mb-3">
-            //                             <input type="text" id="filterInput" class="form-control" placeholder="Filtrar por numero factura, Soporte, fecha factura y observacíon">
-            //                         </div>
-            //                     <table id="tableCartera" class="table table-sm table-striped">
-            //                             <colgroup>
-            //                                 <col width="100"></col>
-            //                                 <col width="200"></col>
-            //                                 <col width="120"></col>
-            //                                 <col width="120"></col>
-            //                                 <col width="250"></col>
-            //                                 <col width="80"></col>
-            //                                 <col width="120"></col>
-            //                             </colgroup>
-            //                             <thead>
-            //                                 <tr class="text-center">
-            //                                     <th>Numero Factura</th>
-            //                                     <th>Soporte</th>
-            //                                     <th>Fecha Factura</th>
-            //                                     <th>Fecha Desmaterializado</th>
-            //                                     <th>Observación</th>
-            //                                     <th>Días en proceso</th>
-            //                                     <th>Valor</th>
-            //                                 </tr>
-            //                             </thead>
-            //                             <tbody id="tableBody">
-            //                                 {{~ it.detail: d:id}}
-            //                                 <tr class="text-center">
-            //                                     <td>
-            //                                         <span class="badge rounded-pill text-bg-primary">{{=d.nf}}</span>
-            //                                     </td>
-            //                                     <td class="text-start">
-            //                                         <span class="badge rounded-pill text-bg-danger">{{=d.s}}</span>
-            //                                     </td>
-            //                                     <td class="text-end">{{=d.f}}</td>
-            //                                     <td class="text-end">{{=d.fd}}</td>
-            //                                     <td class="text-start">{{=d.o}}</td>
-            //                                     <td class="text-end">
-            //                                         <span class="badge rounded-pill text-bg-danger pulse-red">{{=d.d}}</span>
-            //                                     </td>
-            //                                     <td class="text-end">
-            //                                         <b>{{=numberDecimal.format(d.v)}}</b>
-            //                                     </td>
-            //                                 </tr>
-            //                                 {{~}}
-            //                                 <tr class="text-center">
-            //                                     <td colspan="6" class="text-center">
-            //                                         <b>TOTAL</b>
-            //                                     </td>
-            //                                     <td class="text-end">
-            //                                         <b>{{=numberDecimal.format(it.total)}}</b>
-            //                                     </td>
-            //                                 </tr>
-            //                             </tbody>
-            //                         </table>
+            buttonSoportesFaltantes.addEventListener("click", function () {
+                console.log("%c buttonSoportesFaltantes.click", "background:red;color:#fff;font-size:11px");
 
-            //                     </div>
-            //                 </div>
-            //             `;
+                document.getElementById("loader").style.display = "block";
+
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantes&ts=" + new Date().getTime())
+                    .then(function(response){
+                        console.log(response.data);
+
+                        document.getElementById("loader").style.display = "none";
+
+                        const strSQL = `
+                            SELECT
+                                s,
+                                COUNT(1) AS tc
+                            FROM ?
+                            GROUP BY s
+                            order by tc desc;
+                        `;
+
+                        const oData = alasql(strSQL, [response.data]);  
+                        console.log(oData);
                         
-            //             const html = doT.template(template)({ detail: data, total: data.sum("v") });
-            //             new nataUIDialog({
-            //                 html: html,
-            //                 title: "Soportes Faltantes",
-            //                 toolbar: `
-            //                     <div class="btn-group">
-            //                         <button type="button" class="btn btn-primary dropdown-toggle btn-circle" data-bs-toggle="dropdown" aria-expanded="false">
-            //                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            //                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-            //                             </svg>
-            //                         </button>
-            //                         <ul class="dropdown-menu">
-            //                             <li><a class="dropdown-item" id="descargar-excel">Descargar Excel</a></li>
-            //                         </ul>
-            //                     </div>
-            //                 `,
-            //                 events: {
-            //                     render: function () {                            
-            //                         session.jets = new Jets({
-            //                             searchTag: "#filterInput",
-            //                             contentTag: "#tableCartera tbody"
-            //                         });
-            //                     },
-            //                     close: function () {}
-            //                 }
-            //             });
-
+                        const template = `
+                            <style>
+                                #tableSoportesFaltantesResumen {
+                                    table-layout: fixed;
+                                    width: 560px;
+                                }
+                            </style>
+                            <table id="tableSoportesFaltantesResumen" class="table table-sm table-striped">
+                                <colgroup>
+                                    <col width="200"></col>
+                                    <col width="120"></col>
+                                    <col width="240"></col>
+                                </colgroup>
+                                <thead>
+                                    <th>Soporte</th>
+                                    <th>Cantidad Facturas</th>
+                                    <th></th>
+                                </thead>
+                                <tbody id="tableBody">
+                                    {{~ it.detail: d:id}}
+                                    <tr class="text-center">
+                                        <td class="text-start">
+                                            <span class="badge rounded-pill text-bg-danger">{{=d.s}}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge rounded-pill text-bg-danger">{{=d.tc}}</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary btn-detalle" data-id="{{=d.s}}">Ver Detalle</button>
+                                            <button type="button" class="btn btn-sm btn-success btn-descargar-excel" data-id="{{=d.s}}">Descargar Excel</button>
+                                        </td>
+                                    </tr>
+                                    {{~}}
+                                </tbody>
+                            </table>
+                        `;
                         
-            //         })
-            //         .catch(function(error){
-            //             console.error(error);
-            //         })
+                        const html = doT.template(template)({ detail: oData });
 
-            //     console.log(data);
-            // });
+                        new nataUIDialog({
+                            html: html,
+                            title: "Soportes Faltantes",
+                            events: {
+                                render: function () {},
+                                close: function () {}
+                            }
+                        });
+                        
+                        document.querySelectorAll(".btn-descargar-excel").forEach(btn => {
+                            btn.addEventListener("click", function () {
+                                const soporteNombre = this.getAttribute("data-id");
+                                descargarExcelPorSoporte(soporteNombre);
+                            });
+                        });
+
+                        document.querySelectorAll(".btn-detalle").forEach(btn => {
+                            btn.addEventListener("click", function () {
+                                const soporteNombre = this.getAttribute("data-id");
+                                const filtered = response.data.filter(r => r.s === soporteNombre);
+
+                                console.log(filtered);
+
+                                const detalleTable = `
+                                    <style>
+                                        #tableSoportesFaltantesDetalle {
+                                            table-layout: fixed;
+                                            width: 840px;
+                                        }
+                                    </style>
+                                    <table id="tableSoportesFaltantesDetalle" class="table table-sm table-striped">
+                                        <colgroup>
+                                            <col width="120"></col>
+                                            <col width="120"></col>
+                                            <col width="80"></col>
+                                            <col width="180"></col>
+                                            <col width="220"></col>
+                                            <col width="120"></col>
+                                        </colgroup>
+                                        <thead>
+                                            <th>Número factura</th>
+                                            <th>Fecha factura</th>
+                                            <th>Días vencimiento</th> 
+                                            <th>Soporte</th>
+                                            <th>Observación</th> 
+                                            <th>Valor</th>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            {{~ it.detail: d:id}}
+                                            <tr class="text-center">
+                                                <td>
+                                                    <span class="badge rounded-pill text-bg-primary">{{=d.nf}}</span>
+                                                </td>
+                                                <td>
+                                                    {{=d.f}}
+                                                </td>
+                                                <td>
+                                                    <span class="badge rounded-pill text-bg-danger">{{=d.d}}</span>
+                                                </td>
+                                                <td>
+                                                    {{=d.s}}
+                                                </td>
+                                                <td class="text-start">
+                                                    {{=d.o}}
+                                                </td>
+                                                <td class="text-end">
+                                                    <span class="badge rounded-pill text-bg-danger">{{=numberDecimal.format(d.v)}}</span>
+                                                </td>
+                                            </tr>
+                                            {{~}}
+                                        </tbody>
+                                    </table>
+                                `;
+
+                                const html = doT.template(detalleTable)({ detail: filtered });
+
+                                new nataUIDialog({
+                                    html: html,
+                                    title: `Detalle de facturas - Soporte: 
+                                        <span class="badge rounded-pill text-bg-danger">${soporteNombre}</span>
+                                        <span class="badge rounded-pill text-bg-primary">${filtered.length}</span>
+                                    `,
+                                    toolbar: `
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-primary dropdown-toggle btn-circle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                                </svg>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item btn-descargar-excel" data-id="${soporteNombre}">
+                                                        Descargar excel
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    `,
+                                    events: {}
+                                });
+
+                                document.querySelectorAll(".btn-descargar-excel").forEach(btn => {
+                                    btn.addEventListener("click", function () {
+                                        const soporteNombre = this.getAttribute("data-id");
+                                        descargarExcelPorSoporte(soporteNombre);
+                                    });
+                                });
+                            });
+                        });
+                    })
+                    .catch(function(error){
+                        console.error(error);
+                    })
+            });
 
             document.querySelector("#armado-radicar-facturas").addEventListener("click", function() {
                 console.log("armado-radicar-facturas.click");
@@ -832,15 +966,11 @@ app.monitor = {
             document.querySelector("#menuCuentasTodos").addEventListener("click", function() {
                 console.log("%c menuCuentasTodos.click", "background:red;color:#fff;font-size:11px");
 
-                const elements = document.querySelectorAll("table.table-robot-armado-cuenta");
-                for (let i = 0; i < elements.length; i++) {
-                    elements[i].style.display = "block";
-                }
-
-                const elements2 = document.querySelectorAll("table.table-robot-armado-cuenta-detail");
-                for (let i = 0; i < elements2.length; i++) {
-                    elements2[i].style.display = "block";
-                }
+                const fxOcultarResto = function () {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada").forEach(el => {
+                        el.style.display = "block";
+                    });
+                };
 
                 const cuentaCantidad = document.querySelector("#cuentas-cantidad");
                 const cuentaTitle = document.querySelector("#cuentas-title");
@@ -853,19 +983,18 @@ app.monitor = {
 
                 cuentaBadge.classList.remove("text-bg-danger", "text-bg-success");
                 cuentaBadge.classList.add("bg-dark");
+
+                fxOcultarResto();
             });
 
             document.querySelector("#menuCuentasSoportesPendientes").addEventListener("click", function() {
                 console.log("%c buttonCuentasSoportesPendientes.click", "background:red;color:#fff;font-size:11px");
 
-                const fxOcultarResto = function() {
-                    const elements = document.querySelectorAll("table.cuenta-radicar");
-                    let i;
-                    for (i = 0; i < elements.length; i++) {
-                        const element = elements[i];
-                        element.style.display = "none";
-                    }
-                }
+                const fxOcultarResto = function () {
+                    document.querySelectorAll("table.cuenta-radicar, table.cuenta-radicada").forEach(el => {
+                        el.style.display = "none";
+                    });
+                };
                 
                 const elements = document.querySelectorAll("table.cuenta-no-radicar");
 
@@ -892,14 +1021,11 @@ app.monitor = {
             document.querySelector("#menuCuentasRadicar").addEventListener("click", function() {
                 console.log("%c menuCuentasRadicar.click", "background:red;color:#fff;font-size:11px");
 
-                const fxOcultarResto = function() {
-                    const elements = document.querySelectorAll("table.cuenta-no-radicar");
-                    let i;
-                    for (i = 0; i < elements.length; i++) {
-                        const element = elements[i];
-                        element.style.display = "none";
-                    }
-                }
+                const fxOcultarResto = function () {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicada").forEach(el => {
+                        el.style.display = "none";
+                    });
+                };
 
                 let elements = document.querySelectorAll("table.cuenta-radicar");
 
@@ -930,6 +1056,45 @@ app.monitor = {
                     element.style.display = "block";
                 }
             });
+
+            document.querySelector("#menuCuentasRadicadas").addEventListener("click", function() {
+                console.log("%c menuCuentasRadicadas.click", "background:red;color:#fff;font-size:11px");
+
+                const fxOcultarResto = function () {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar").forEach(el => {
+                        el.style.display = "none";
+                    });
+                };
+
+                let elements = document.querySelectorAll("table.cuenta-radicada");
+
+                const cuentaCantidad = document.querySelector("#cuentas-cantidad");
+                const cuentaTitle = document.querySelector("#cuentas-title");
+                const cuentaBadge = document.querySelector("#cuentas-badge");
+
+                cuentaCantidad.innerText = session.radicada;
+                cuentaTitle.innerText = "Radicado";
+                cuentaCantidad.classList.remove("bg-dark", "text-bg-danger");
+                cuentaCantidad.classList.add("text-bg-success");
+
+                cuentaBadge.classList.remove("bg-dark", "text-bg-danger");
+                cuentaBadge.classList.add("text-bg-success");
+
+                if (elements.length === 0) {
+                    swal(app.config.title, "No hay cuentas radicadas", "info");
+                    document.querySelector("#box2-table").visibility = "hidden";
+                    fxOcultarResto();
+                    return false
+                }
+                fxOcultarResto();
+
+                elements = document.querySelectorAll("table.cuenta-radicada");
+                let i;
+                for (i = 0; i < elements.length; i++) {
+                    const element = elements[i];
+                    element.style.display = "block";
+                }
+            });
         };
 
         // Renderizar inicialmente
@@ -937,6 +1102,7 @@ app.monitor = {
 
         // Inicializar datepicker
         flatpickr("#datepicker", {
+            mode: "range",
             dateFormat: "Y-m-d",
             defaultDate: initialDate,
             minDate: new Date(2025, 4, 16),
@@ -952,25 +1118,28 @@ app.monitor = {
                     longhand: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
                 }
             },
-            onChange: function(selectedDates, selectedDate, instance) {
-                console.log("onChange");
-                console.log(selectedDates, selectedDate, instance);
-                session.date = selectedDate;
-                document.getElementById("datepicker").value = selectedDate;
-                const filteredData = filterDataByDate(dataDetalle, selectedDate);
+            onChange: function(selectedDates, selectedDate) {
+                console.log("onChange", selectedDates, selectedDate);
+        
+                session.dateRange = {
+                    start: selectedDates[0],
+                    end: selectedDates[1] || selectedDates[0]
+                };
+
+                const start = selectedDates[0]?.toISOString().split("T")[0];
+                const end = selectedDates[1]?.toISOString().split("T")[0] || start;
+
+                document.getElementById("datepicker").value = `${start} a ${end}`;
+
+                const filteredData = filterDataByDateRange(dataDetalle, start, end);
                 currentDetalle = filteredData.detalle;
                 session.data = currentDetalle;
 
-                let i;
-                for (i = 0; i < currentDetalle.length; i++) {
-                    console.log(currentDetalle[i].f);
-                }
-
                 currentResumen = filteredData.resumen;
                 currentResumenRegistros = filteredData.resumenRegistros;
-                updateChartsAndSummary(filteredData.resumen, filteredData.resumenRegistros);
+                updateChartsAndSummary(currentResumen, currentResumenRegistros);
 
-                renderMainTable(filteredData.detalle, true);
+                renderMainTable(currentDetalle, true);
             }
         });
 
@@ -992,7 +1161,7 @@ app.monitor = {
             }));
 
             const option = {
-                color: ['#C5E1A5', '#f8d7da'],
+                color: ['#f8d7da', '#C5E1A5', '#68ba6f'],
                 tooltip: { trigger: 'item' },
                 legend: { top: '5%', left: 'center' },
                 series: [{
@@ -1048,6 +1217,8 @@ app.monitor = {
                             <td class="text-center">
                                 {{? d.e == "Listas para radicar"}}
                                 <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                {{?? d.e == "Radicado"}}
+                                <div class="rounded-circle bg-success-2 d-inline-block icon-dot"></div>
                                 {{??}}
                                 <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                 {{?}}                                
@@ -1064,7 +1235,7 @@ app.monitor = {
                             </td>
                             <td class="text-end fw-bold">{{=it.detail.sum("c")}}</td>
                             <td class="text-end fw-bold">$ {{=numberDecimal.format( it.detail.sum("v") )}}</td>
-                            <td class="text-end">{{=numberDecimal.format(it.detail.sum("p"))}}.00%</td>
+                            <td class="text-end">{{=it.detail.reduce((a,b) => a + +b.p, 0).toFixed(2)}}%</td>
                         </tr>
                     </tbody>
                 </table>                
@@ -1084,9 +1255,13 @@ app.monitor = {
                 if(estado.e === "Listas para radicar"){
                     session.radicar = estado.c;
                 }
+
+                if(estado.e === "Radicado"){
+                    session.radicada = estado.c;
+                }
             });
 
-            session.totalFactura = session.pendientesSoportes + session.radicar;
+            session.totalFactura = session.pendientesSoportes + session.radicar + session.radicada;
 
             const box1 = document.getElementById("box1");
             if (box1) {
@@ -1134,6 +1309,8 @@ app.monitor = {
                             <td class="text-center">
                                 {{? d.e == "Listas para radicar"}}
                                 <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                {{?? d.e == "Radicado"}}
+                                <div class="rounded-circle bg-success-2 d-inline-block icon-dot"></div>
                                 {{??}}
                                 <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                 {{?}}                                
