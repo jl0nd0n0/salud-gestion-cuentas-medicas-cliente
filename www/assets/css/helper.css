@@ -198,6 +198,10 @@
     height:400px;
 }
 
+.min-width-300px {
+    min-width: 300px;
+}
+
 .border-right-none {
     border-right: solid #fff;
 }
@@ -231,4 +235,8 @@
 
 .max-width-400px {
     max-width: 420px;
+}
+
+.w-420px {
+    width: 420px;
 }

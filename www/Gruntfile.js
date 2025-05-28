@@ -627,10 +627,10 @@ module.exports = function (grunt) {
                     patterns: [
                         {
                             // replace web
-                            match: /v0.2.50/g,
+                            match: /v0.2.52/g,
                             //replacement: "<%= pkg.version %>"
                             replacement: function () {
-                                return "v0.2.51";
+                                return "v0.2.53";
                             }
                         }
                     ]

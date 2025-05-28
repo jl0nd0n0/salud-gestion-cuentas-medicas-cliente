@@ -438,19 +438,17 @@ a {
 }
 
 .container-1 {
-      display: flex;
       width: 100%;
       max-width: 1366px;
       min-height: 100vh;
     }
 
 .col-izquierda {
-    width: 420px;
+    width: 460px;
     padding: 0px;
-    box-sizing: border-box;
+    text-align: center;
 }
 
-.col-derecha {
-    flex: 1;
-    box-sizing: border-box;
-}
+#chart1 {
+    display: none!important;
+}	
