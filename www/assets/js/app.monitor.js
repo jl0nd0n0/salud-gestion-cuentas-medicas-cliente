@@ -541,7 +541,10 @@ app.monitor = {
             });
 
             function descargarExcelPorSoporte(soporteNombre) {
-                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantesExcel_v1&y=" + soporteNombre + "&ts=" + new Date().getTime())
+                const startDate = session.startDate || initialDate
+                const endDate = session.endDate || initialDate
+
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantesExcel_v1&y=" + soporteNombre + "&w=" + startDate + "&z=" + endDate + "&ts=" + new Date().getTime())
                     .then(function(response){
                         console.log(response.data);
 
