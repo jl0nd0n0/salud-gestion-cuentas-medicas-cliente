@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-/* globals app, nata, doT, flatpickr, session, iconChart, iconProcess, Jets, echarts, nataUIDialog, axios, swal, alasql */
+/* globals app, nata, doT, flatpickr, session, iconChart, iconExcel, iconProcess, Jets, echarts, nataUIDialog, axios, swal, alasql */
 
 app.monitor = {
     index: function () {
@@ -90,6 +90,9 @@ app.monitor = {
                 tr: tr
             }];
 
+            // const facturasRadicadas = detalle.filter(item => item.radicarOK == true && item.sr != "1");
+            // console.log("📦 Facturas radicadas:", facturasRadicadas.map(item => item.f));
+
             return { resumen, resumenRegistros };
         }
 
@@ -113,6 +116,9 @@ app.monitor = {
             const filteredDetalle = dataDetalle.filter(item => {
                 return item.fe >= startDate && item.fe <= endDate;
             });
+
+            session.startDate = startDate;
+            session.endDate = endDate;
 
             const processedDetalle = filteredDetalle.map(item => ({
                 ...item,
@@ -219,9 +225,12 @@ app.monitor = {
 
                                 <li><a class="dropdown-item" id="armado-radicar-facturas">Radicar Facturas</a></li>
                                 <li><a class="dropdown-item" id="menuSoportesFaltantes">Ver Soportes Faltantes</a></li>
-                                <li><a class="dropdown-item" id="menuExcelRadicar">Descargar Excel Facturas radicar</a></li>
-                                <li><a class="dropdown-item" id="menuExcelPreauditoria">Descargar Excel Preauditoria</a></li>
-                                <li><a class="dropdown-item" id="menuExcelSoportesFaltantes">Descargar Excel Soportes faltantes</a></li>
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <li><a class="dropdown-item" id="menuExcelRadicar">${iconExcel} Facturas radicar</a></li>
+                                <li><a class="dropdown-item" id="menuExcelPreauditoria">${iconExcel} Preauditoria</a></li>
+                                <li><a class="dropdown-item" id="menuExcelSoportesFaltantes">${iconExcel} Soportes faltantes</a></li>
                             </ul>
                         </div>
                     </div>
@@ -416,7 +425,7 @@ app.monitor = {
                                                     <td class="tableColorVerdeTr text-start">{{=dd.g}}</td>
                                                     <td class=" tableColorVerdeTr text-start">
                                                         <span class="badge 
-                                                            {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
+                                                            {{? dd.r == "1"}}text-bg-success{{?? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
                                                             {{=dd.s}}
                                                         </span>                                        
                                                     </td>
@@ -464,6 +473,8 @@ app.monitor = {
             const html = doT.template(tableTemplate)({ detail: filteredData, cantidad: session.totalFactura || filteredData.length});
             const box2 = document.getElementById("box2");
             box2.innerHTML = html;
+
+            console.log(filteredData);
 
             if (session.jets) {
                 session.jets.destroy();
@@ -541,7 +552,6 @@ app.monitor = {
                     });
             }
 
-
             const buttonSoportesFaltantes = document.getElementById("menuSoportesFaltantes");
 
             buttonSoportesFaltantes.addEventListener("click", function () {
@@ -549,7 +559,10 @@ app.monitor = {
 
                 document.getElementById("loader").style.display = "block";
 
-                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantes&ts=" + new Date().getTime())
+                const startDate = session.startDate || initialDate
+                const endDate = session.endDate || initialDate
+
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantes&y=" + startDate + "&z=" + endDate + "&ts=" + new Date().getTime())
                     .then(function(response){
                         console.log(response.data);
 
