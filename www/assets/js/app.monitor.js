@@ -527,7 +527,10 @@ app.monitor = {
             buttonExcelSoportesFaltantes.addEventListener("click", function(){
                 console.log("menuExcelSoportesFaltantes.click");
 
-                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantesExcel&ts=" + new Date().getTime())
+                const startDate = session.startDate || initialDate
+                const endDate = session.endDate || initialDate
+
+                axios.get(app.config.server.php1 + "x=cuentasMedicas&k=monitorSoportesFaltantesExcel&y=" + startDate + "&z=" + endDate + "&ts=" + new Date().getTime())
                     .then(function(response){
                         console.log(response.data);
 
