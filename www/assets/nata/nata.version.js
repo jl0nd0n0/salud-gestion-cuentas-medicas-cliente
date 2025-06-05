@@ -22,7 +22,7 @@ nata.version = {
                             dangerMode: true,
                         }).then((response) => {
                             if (response) {
-                                location.reload(true);
+                                location.href = location.pathname + '?reload=' + new Date().getTime();
                             }
                         });
                     }

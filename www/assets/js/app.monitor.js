@@ -29,7 +29,11 @@ app.monitor = {
 
                     if (item.sr == "1") {
                         estado = "Radicado";
-                    } else if (item.radicarOK) {
+                    } 
+                    else if(item.sa == "1") {
+                        estado = "Anulada";
+                    }
+                    else if (item.radicarOK) {
                         estado = "Listas para radicar";
                     }
 
@@ -45,8 +49,9 @@ app.monitor = {
             const tsg = statsArray.filter(s => s.estado === "Listas para radicar").length;
             const tsp = statsArray.filter(s => s.estado === "Pendiente Soportes").length;
             const tr  = statsArray.filter(s => s.estado === "Radicado").length;
+            const ta  = statsArray.filter(s => s.estado === "Anulada").length;
 
-            const totalFacturas = tsg + tsp + tr;
+            const totalFacturas = tsg + tsp + tr + ta;
 
             const listasParaRadicarValor = statsArray
                 .filter(s => s.estado === "Listas para radicar")
@@ -60,9 +65,19 @@ app.monitor = {
                 .filter(s => s.estado === "Radicado")
                 .reduce((sum, s) => sum + s.valor, 0);
 
+            const anuladaValor = statsArray
+                .filter(s => s.estado === "Anulada")
+                .reduce((sum, s) => sum + s.valor, 0);
+
             const totalValor = listasParaRadicarValor + pendienteSoportesValor + radicadoValor;
 
             const resumen = [
+                {
+                    e: "Anulada",
+                    c: ta,
+                    v: anuladaValor,
+                    p: ((anuladaValor / totalValor) * 100).toFixed(2)
+                },
                 {
                     e: "Pendiente Soportes",
                     c: tsp,
@@ -80,14 +95,15 @@ app.monitor = {
                     c: tr,
                     v: radicadoValor,
                     p: ((radicadoValor / totalValor) * 100).toFixed(2)
-                },
+                }
             ];
 
             const resumenRegistros = [{
                 tf: totalFacturas,
                 tsp: tsp,
                 tsg: tsg,
-                tr: tr
+                tr: tr,
+                ta: ta
             }];
 
             // const facturasRadicadas = detalle.filter(item => item.radicarOK == true && item.sr != "1");
@@ -95,7 +111,6 @@ app.monitor = {
 
             return { resumen, resumenRegistros };
         }
-
 
         function filterDataByDate(dataDetalle, date) {
             const filteredDetalle = dataDetalle.filter(item => item.fe === date);
@@ -133,7 +148,6 @@ app.monitor = {
                 resumenRegistros
             };
         }
-
 
         const initialDate = getTodayDate();
         const initialFilteredData = filterDataByDate(dataDetalle, initialDate);
@@ -178,8 +192,6 @@ app.monitor = {
             </div>
         `;
 
-        
-
         const container = document.getElementById("container");
         container.innerHTML = templateLayout;
 
@@ -204,6 +216,13 @@ app.monitor = {
                                         <div class="rounded-circle bg-dark d-inline-block icon-dot"></div>&nbsp;&nbsp;Ver todos
                                     </a>
                                 </li>
+
+                                <li>
+                                    <a class="dropdown-item" id="menuCuentasAnuladas">
+                                        <div class="rounded-circle bg-danger-2 d-inline-block icon-dot"></div>&nbsp;&nbsp;Cuentas anuladas
+                                    </a>
+                                </li>
+
                                 <li>
                                     <a class="dropdown-item" id="menuCuentasSoportesPendientes">
                                         <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>&nbsp;&nbsp;Cuentas con soportes pendientes
@@ -267,7 +286,7 @@ app.monitor = {
                             {{~it.detail: d:id}}
                             <div class="search-group mb-4">
                                 <table class="table table-bordered table-sm table-robot-armado-cuenta
-                                    {{? d.sr == "1"}}cuenta-radicada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                                    {{? d.sr == "1"}}cuenta-radicada{{?? d.sa == "1"}}cuenta-anulada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
                                     <colgroup>
                                         <col width="50"></col>
                                         <col width="100"></col>
@@ -277,7 +296,7 @@ app.monitor = {
                                         <col width="364"></col>
                                     </colgroup>
                                     <thead class="table-primary">
-                                        {{? d.sa == 1 }}
+                                        {{? d.sa == "1" }}
                                             <tr>
                                                 <th class="tableColorRojo text-center">Radicar</th>
                                                 <th class="tableColorRojo text-center">Factura</th>
@@ -287,7 +306,7 @@ app.monitor = {
                                                 <th class="tableColorRojo text-center">Paciente</th>
                                             </tr>
                                         {{??}}
-                                            {{? d.sr == 1 }}
+                                            {{? d.sr == "1" }}
                                                 <tr>
                                                     <th class="tableColorVerde text-center">Radicar</th>
                                                     <th class="tableColorVerde text-center">Factura</th>
@@ -310,70 +329,25 @@ app.monitor = {
                                     </thead>
                                     <tbody>
                                         <tr class="bg-table-row-1">
-                                            {{? d.sa == 1 }}
-                                                <td class="text-center {{? !d.radicarOK }}bg-danger text-white{{?}} border-right-none">
-                                                    <div class="rounded-circle d-inline-block" style="width: 14px; height: 14px; background-color: #f74260 !important;"></div>
-                                                </td>
-                                            {{??}}
-                                                {{? d.sr == 1 }}
-                                                    <td class="text-center border-right-none tableColorVerdeTd">
-                                                        <div class="rounded-circle d-inline-block" style="width: 14px; height: 14px; background-color: #66BB6A;"></div>
-                                                    </td>
+                                            <td class="text-center border-right-none">
+                                                {{? d.sr == "1"}}
+                                                    <div class="rounded-circle text-bg-success d-inline-block icon-dot"></div>
+                                                {{?? d.sa == "1"}}
+                                                    <span class="badge text-bg-danger text-sm">
+                                                        Anulada
+                                                    </span>
+                                                {{?? d.radicarOK }}
+                                                    <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
                                                 {{??}}
-                                                    <td class="text-center border-right-none">
-                                                        {{? d.radicarOK }}
-                                                            <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
-                                                        {{??}}
-                                                            <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
-                                                        {{?}}
-                                                    </td>
+                                                    <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                                 {{?}}
-                                            {{?}}
-                                            {{? d.sa == 1 }}
-                                                <td class="tableColorRojoTd text-start fw-bold">{{=d.f}}</td>
-                                            {{??}}
-                                                {{? d.sr == 1 }}
-                                                    <td class="tableColorVerdeTd text-start fw-bold">{{=d.f}}</td>
-                                                {{??}}
-                                                    <td class="text-start fw-bold">{{=d.f}}</td>
-                                                {{?}}
-                                            {{?}}
-                                            {{? d.sa == 1 }}
-                                                <td class="tableColorRojoTd text-center">{{=d.fe}}</td>
-                                            {{??}}
-                                                {{? d.sr == 1 }}
-                                                    <td class="tableColorVerdeTd text-center">{{=d.fe}}</td>
-                                                {{??}}
-                                                    <td class="text-center">{{=d.fe}}</td>
-                                                {{?}}
-                                            {{?}}
-                                            {{? d.sa == 1 }}
-                                                <td class="tableColorRojoTd text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
-                                            {{??}}
-                                                {{? d.sr == 1 }}
-                                                    <td class="tableColorVerdeTd text-center fw-bold"><span class="badge text-bg-success">{{=d.dv}}</span></td>
-                                                {{??}}
-                                                <td class="text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
-                                                {{?}} 
-                                            {{?}}
-                                            {{? d.sa == 1 }}
-                                                <td style="background-color: #F8D7DA;" class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
-                                            {{??}}
-                                                {{? d.sr == 1 }}
-                                                    <td class="tableColorVerdeTd text-end">$ {{=numberDecimal.format( d.v )}}</td>
-                                                {{??}}
-                                                    <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
-                                                {{?}}
-                                            {{?}}
-                                            {{? d.sa == 1 }}
-                                                <td style="background-color: #F8D7DA;" colspan="2" class="text-center">{{=d.p}}</td>
-                                            {{??}}
-                                                {{? d.sr == 1 }}
-                                                    <td colspan="2" class=" tableColorVerdeTd text-center">{{=d.p}}</td>
-                                                {{??}}
-                                                    <td colspan="2" class="text-center">{{=d.p}}</td>
-                                                {{?}}
-                                            {{?}}
+                                            </td>
+                                            
+                                            <td class="text-start fw-bold">{{=d.f}}</td>
+                                            <td class="text-center">{{=d.fe}}</td>
+                                            <td class="text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
+                                            <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
+                                            <td colspan="2" class="text-center">{{=d.p}}</td>                                              
                                         </tr>                                
                                     </tbody>
                                 </table>
@@ -383,86 +357,72 @@ app.monitor = {
                                     if (d.radicarOK) { lista = 1 } else { lista = 0 }
                                     console.log(d.f, lista);
                                 }}
-                                {{? d.sa == 1 }}
-                                    <table class="table table-bordered table-sm w-100">
-                                          <td class="text-center py-1" style="background-color: #F8D7DA">
-                                            <span class="badge text-bg-danger">Anulada</span>
-                                        </td>
-                                    </table>
-                                {{??}}
-                                    <table class="table table-bordered table-sm table-robot-armado-cuenta-detail 
-                                        {{? d.sr == "1"}}cuenta-radicada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
-                                        <colgroup>
-                                            <col width="254"></col>
-                                            <col width="180"></col>
-                                            <col width="80"></col>
-                                            <col width="100"></col>
-                                            <col width="200"></col>
-                                        </colgroup>
-                                        <thead class="table-primary">
-                                            {{? d.sr == 1 }}
-                                                <tr>
-                                                    <th class="tableColorVerdeTh text-center">Grupo</th>
-                                                    <th class="tableColorVerdeTh text-center">Soporte</th>
-                                                    <th class="tableColorVerdeTh text-center">Armado</th>
-                                                    <th class="tableColorVerdeTh text-center">Estado</th>
-                                                    <th class="tableColorVerdeTh text-center">Descripción</th>
-                                                </tr>
-                                            {{??}}
-                                                <tr>
-                                                    <th class="text-center">Grupo</th>
-                                                    <th class="text-center">Soporte</th>
-                                                    <th class="text-center">Armado</th>
-                                                    <th class="text-center">Estado</th>
-                                                    <th class="text-center">Descripción</th>
-                                                </tr>
-                                            {{?}}
+                                {{? d.sa != "1" }}
+                                <table class="table table-bordered table-sm table-robot-armado-cuenta-detail 
+                                    {{? d.sr == "1"}}cuenta-radicada{{?? d.sa == "1"}}cuenta-anulada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                                    <colgroup>
+                                        <col width="254"></col>
+                                        <col width="180"></col>
+                                        <col width="80"></col>
+                                        <col width="100"></col>
+                                        <col width="200"></col>
+                                    </colgroup>
+                                    <thead class="table-primary">
+                                        {{? d.sr == "1" }}
+                                            <tr>
+                                                <th class="tableColorVerdeTh text-center">Grupo</th>
+                                                <th class="tableColorVerdeTh text-center">Soporte</th>
+                                                <th class="tableColorVerdeTh text-center">Armado</th>
+                                                <th class="tableColorVerdeTh text-center">Estado</th>
+                                                <th class="tableColorVerdeTh text-center">Descripción</th>
+                                            </tr>
+                                        {{??}}
+                                            <tr>
+                                                <th class="text-center">Grupo</th>
+                                                <th class="text-center">Soporte</th>
+                                                <th class="text-center">Armado</th>
+                                                <th class="text-center">Estado</th>
+                                                <th class="text-center">Descripción</th>
+                                            </tr>
+                                        {{?}}
 
-                                        </thead>
-                                        {{~d.d: dd:idd}}
-                                            {{? d.sr == 1 }}
-                                            <tr {{? idd % 2 == 1}} class="tableColorVerdeTr bg-table-row-1"{{?}}>
-                                                    <td class="tableColorVerdeTr text-start">{{=dd.g}}</td>
-                                                    <td class=" tableColorVerdeTr text-start">
-                                                        <span class="badge 
-                                                            {{? dd.r == "1"}}text-bg-success{{?? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
-                                                            {{=dd.s}}
-                                                        </span>                                        
-                                                    </td>
-                                                    <td class="tableColorVerdeTr text-center">
-                                                        <div class="rounded-circle d-inline-block" style="width: 14px; height: 14px; background-color: #66BB6A;"></div>
-                                                    </td>
-                                                    <td class=" tableColorVerdeTr text-center">
-                                                        <div class="badge text-bg-success" >Radicado</div>
-                                                    </td>
-                                                    <td class="tableColorVerdeTr text-start">{{=dd.n}}</td>
-                                                </tr>
+                                    </thead>
+                                    {{~d.d: dd:idd}}
+                                        <tr {{? idd % 2 == 1}}class="bg-table-row-1"{{?}}>
+                                            <td class="text-start">{{=dd.g}}</td>
+                                            <td class="text-start">
+                                                <span class="badge 
+                                                    {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
+                                                    {{=dd.s}}
+                                                </span>                                        
+                                            </td>
+                                            <td class="text-center">
+                                                {{? dd.ge == "0"}}
+                                                <button type="button" class="btn btn-sm btn-outline-danger btn-ver-soporte" data-id="{{=d.f}}" data-s="{{=dd.s}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                    </svg>
+                                                </button>
+                                                {{?? d.sr == "1"}}
+                                                <div class="rounded-circle text-bg-success d-inline-block icon-dot"></div>
+                                                {{??}}
+                                                <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                                {{?}}
+                                            </td>
+                                            {{? d.sr == "1" }}                                            
+                                                <td class="text-center">
+                                                    <span class="badge text-bg-success">
+                                                        Radicado
+                                                    </span>
+                                                </td>
                                             {{??}}
-                                                <tr {{? idd % 2 == 1}}class="bg-table-row-1"{{?}}>
-                                                    <td class="text-start">{{=dd.g}}</td>
-                                                    <td class="text-start">
-                                                        <span class="badge 
-                                                            {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
-                                                            {{=dd.s}}
-                                                        </span>                                        
-                                                    </td>
-                                                    <td class="text-center">
-                                                        {{? dd.ge == "0"}}
-                                                        <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
-                                                        {{??}}
-                                                        <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
-                                                        {{?}}
-                                                    </td>
-                                                    {{? d.sr == 1 }}                                            
-                                                        <td class="badge text-bg-success text-center">Radicar</td>
-                                                    {{??}}
-                                                        <td class="text-start">{{=dd.o}}</td>
-                                                    {{?}}
-                                                    <td class="text-start">{{=dd.n}}</td>
-                                                </tr>
+                                                <td class="text-start">{{=dd.o}}</td>
                                             {{?}}
-                                        {{~}}                                
-                                    </table>
+                                            <td class="text-start">{{=dd.n}}</td>
+                                        </tr>
+                                    {{~}}                                
+                                </table>
                                 {{?}}
                             </div>
                             {{~}}
@@ -484,6 +444,34 @@ app.monitor = {
                 searchTag: "#txtSearch",
                 contentTag: "#searchTarget",
                 rowSelector: ".search-group"
+            });
+
+            document.querySelectorAll(".btn-ver-soporte").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const numeroFactura = this.getAttribute("data-id");
+                    const soporte = this.getAttribute("data-s");
+                    console.log(numeroFactura, soporte);
+
+                    axios.get(app.config.server.php1 + "x=cuentasMedicas&k=verSoportes&y=" + numeroFactura + "&z=" + soporte + "&ts=" + new Date().getTime())
+                        .then(function(response){
+                            console.log(response.data);
+
+                            if (response.data.soportes && response.data.soportes.length > 0) {
+                                response.data.soportes.forEach(nombreArchivo => {
+                                    const file = app.config.server.cdnPathBase + `homi/armado/${numeroFactura}/${nombreArchivo}`
+                                    window.open(file, '_blank');
+                                });
+                            } else if (response.data.error) {
+                                swal("Error", response.data.error, "error");
+                            } else {
+                                swal("Información", response.data.mensaje, "info");
+                                
+                            }
+                        })
+                        .catch(function(error){
+                            console.error(error);
+                        });
+                })
             });
 
             const buttonExcelRadicar = document.getElementById("menuExcelRadicar");
@@ -979,8 +967,8 @@ app.monitor = {
                 console.log("%c menuCuentasTodos.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada").forEach(el => {
-                        el.style.display = "block";
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada, table.cuenta-anulada").forEach(el => {
+                        el.style.display = "table";
                     });
                 };
 
@@ -1003,7 +991,7 @@ app.monitor = {
                 console.log("%c buttonCuentasSoportesPendientes.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-radicar, table.cuenta-radicada").forEach(el => {
+                    document.querySelectorAll("table.cuenta-radicar, table.cuenta-radicada, table.cuenta-anulada").forEach(el => {
                         el.style.display = "none";
                     });
                 };
@@ -1034,7 +1022,7 @@ app.monitor = {
                 console.log("%c menuCuentasRadicar.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicada").forEach(el => {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicada, table.cuenta-anulada").forEach(el => {
                         el.style.display = "none";
                     });
                 };
@@ -1073,7 +1061,7 @@ app.monitor = {
                 console.log("%c menuCuentasRadicadas.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar").forEach(el => {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-anulada").forEach(el => {
                         el.style.display = "none";
                     });
                 };
@@ -1107,6 +1095,45 @@ app.monitor = {
                     element.style.display = "block";
                 }
             });
+
+            document.querySelector("#menuCuentasAnuladas").addEventListener("click", function() {
+                console.log("%c menuCuentasAnuladas.click", "background:red;color:#fff;font-size:11px");
+
+                const fxOcultarResto = function () {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada").forEach(el => {
+                        el.style.display = "none";
+                    });
+                };
+
+                let elements = document.querySelectorAll("table.cuenta-anulada");
+
+                const cuentaCantidad = document.querySelector("#cuentas-cantidad");
+                const cuentaTitle = document.querySelector("#cuentas-title");
+                const cuentaBadge = document.querySelector("#cuentas-badge");
+
+                cuentaCantidad.innerText = session.anulada;
+                cuentaTitle.innerText = "Anulada";
+                cuentaCantidad.classList.remove("bg-dark", "text-bg-success");
+                cuentaCantidad.classList.add("text-bg-danger");
+
+                cuentaBadge.classList.remove("bg-dark", "text-bg-success");
+                cuentaBadge.classList.add("text-bg-danger");
+
+                if (elements.length === 0) {
+                    swal(app.config.title, "No hay cuentas anuladas", "info");
+                    document.querySelector("#box2-table").visibility = "hidden";
+                    fxOcultarResto();
+                    return false
+                }
+                fxOcultarResto();
+
+                elements = document.querySelectorAll("table.cuenta-anulada");
+                let i;
+                for (i = 0; i < elements.length; i++) {
+                    const element = elements[i];
+                    element.style.display = "table";
+                }
+            });
         };
 
         // Renderizar inicialmente
@@ -1116,7 +1143,7 @@ app.monitor = {
         flatpickr("#datepicker", {
             mode: "range",
             dateFormat: "Y-m-d",
-            defaultDate: initialDate,
+            showMonths: 2,
             minDate: new Date(2025, 4, 16),
             maxDate: new Date().toISOString().split("T")[0],
             locale: {
@@ -1225,12 +1252,15 @@ app.monitor = {
                     </thead>
                     <tbody>
                         {{~it.detail: d:id}}
+                        {{? d.c > 0}}
                         <tr class="bg-table-row-1">
                             <td class="text-center">
                                 {{? d.e == "Listas para radicar"}}
                                 <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
                                 {{?? d.e == "Radicado"}}
                                 <div class="rounded-circle bg-success-2 d-inline-block icon-dot"></div>
+                                {{?? d.e == "Anulada"}}
+                                <div class="rounded-circle bg-danger-2 d-inline-block icon-dot"></div>
                                 {{??}}
                                 <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                 {{?}}                                
@@ -1240,6 +1270,7 @@ app.monitor = {
                             <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
                             <td class="text-end">{{=d.p}}%</td>
                         </tr>
+                        {{?}}
                         {{~}}
                         <tr>
                             <td class="text-center fw-bold" colspan="2">
@@ -1271,9 +1302,13 @@ app.monitor = {
                 if(estado.e === "Radicado"){
                     session.radicada = estado.c;
                 }
+
+                if(estado.e === "Anulada"){
+                    session.anulada = estado.c;
+                }
             });
 
-            session.totalFactura = session.pendientesSoportes + session.radicar + session.radicada;
+            session.totalFactura = session.pendientesSoportes + session.radicar + session.radicada + session.anulada;
 
             const box1 = document.getElementById("box1");
             if (box1) {
@@ -1285,6 +1320,252 @@ app.monitor = {
         }
 
         updateChartsAndSummary(currentResumen, currentResumenRegistros);
+    },
+
+    buscar: {
+        index: function () {
+            console.log("app.monitor.buscar.index");
+
+            const elements = document.querySelectorAll(".ui-dialog");
+            console.log(elements);
+            let i;
+            for (i = 0; i < elements.length; i++) {
+                elements[i].remove();
+            }
+
+            const data = nata.localStorage.getItem("robot-armado-fecha");
+            const dataDetalle = data.detalles;
+
+            let html = `
+                <div class="text-center d-flex align-items-center">
+                    <input id="buscar-factura" class="form-control mr-2 outline-0 input-search" type="search" placeholder="Buscar..." aria-label="Search" autocomplete="off">
+                    <button id="btn-buscar-factura" class="btn btn-outline-primary btn-search" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </button>
+                </div>
+            `;
+            const optionsDialog = {
+                height: 150,
+                width: 300,
+                html: html,
+                title: "Buscar facturas",
+            };
+            new nataUIDialog(optionsDialog);
+
+            let dialogFacturaAbierto = false;
+
+            document.querySelector('#btn-buscar-factura').addEventListener('click', function () {
+                const factura = document.querySelector('#buscar-factura').value;
+                const facturaLimpia = factura.trim();
+                console.log(facturaLimpia);
+
+                const maxParFacturaLength = 12;
+
+                if (factura.length > maxParFacturaLength) {
+                    swal(app.config.title, "El valor es demasiado largo para la factura", "error");
+                    return false;
+                }
+
+                if (dialogFacturaAbierto) {
+                    return;
+                }
+        
+                dialogFacturaAbierto = true;
+
+                
+                const filteredDetalle = dataDetalle.filter(item => item.f === facturaLimpia);
+                const processedDetalle = filteredDetalle.map(item => ({
+                    ...item,
+                    radicarOK: item.d.every(dd => dd.ge !== "0")
+                }));
+                console.log(processedDetalle);
+
+                if(processedDetalle.length == 0){
+                    swal(app.config.title, "No se encontró la factura", "error");
+                    dialogFacturaAbierto = false;
+                    return false;
+                }
+
+                const tableTemplate = `
+                    <style>
+                        .table-robot-armado-cuenta {
+                            table-layout: fixed;
+                            width: 814px;
+                        }
+                        .table-robot-armado-cuenta-detail {
+                            table-layout: fixed;
+                            width: 814px;
+                        }
+                        .table-robot-armado-cuenta td,
+                        .table-robot-armado-cuenta-detail td {
+                            font-size: 12px
+                        }
+                        .table-robot-armado-cuenta-detail tr th {
+                            font-size: 11px
+                        }
+                    </style>
+                    {{~it.detail: d:id}}
+                    <div class="search-group mb-4">
+                        <table class="table table-bordered table-sm table-robot-armado-cuenta
+                            {{? d.sr == "1"}}cuenta-radicada{{?? d.sa == "1"}}cuenta-anulada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                            <colgroup>
+                                <col width="50"></col>
+                                <col width="100"></col>
+                                <col width="100"></col>
+                                <col width="100"></col>
+                                <col width="100"></col>
+                                <col width="364"></col>
+                            </colgroup>
+                            <thead class="table-primary">
+                                {{? d.sa == "1" }}
+                                    <tr>
+                                        <th class="tableColorRojo text-center">Radicar</th>
+                                        <th class="tableColorRojo text-center">Factura</th>
+                                        <th class="tableColorRojo text-center">Fecha</th>
+                                        <th class="tableColorRojo text-center">Días Vencimiento</th>
+                                        <th class="tableColorRojo text-center">Valor</th>
+                                        <th class="tableColorRojo text-center">Paciente</th>
+                                    </tr>
+                                {{??}}
+                                    {{? d.sr == "1" }}
+                                        <tr>
+                                            <th class="tableColorVerde text-center">Radicar</th>
+                                            <th class="tableColorVerde text-center">Factura</th>
+                                            <th class="tableColorVerde text-center">Fecha</th>
+                                            <th class="tableColorVerde text-center">Días Vencimiento</th>
+                                            <th class="tableColorVerde text-center">Valor</th>
+                                            <th class="tableColorVerde text-center">Paciente</th>
+                                        </tr>
+                                    {{??}}
+                                        <tr>
+                                            <th class="text-center">Radicar</th>
+                                            <th class="text-center">Factura</th>
+                                            <th class="text-center">Fecha</th>
+                                            <th class="text-center">Días Vencimiento</th>
+                                            <th class="text-center">Valor</th>
+                                            <th class="text-center">Paciente</th>
+                                        </tr>
+                                    {{?}}
+                                {{?}}                                        
+                            </thead>
+                            <tbody>
+                                <tr class="bg-table-row-1">
+                                    <td class="text-center border-right-none">
+                                        {{? d.sr == "1"}}
+                                            <div class="rounded-circle text-bg-success d-inline-block icon-dot"></div>
+                                        {{?? d.sa == "1"}}
+                                            <span class="badge text-bg-danger text-sm">
+                                                Anulada
+                                            </span>
+                                        {{?? d.radicarOK }}
+                                            <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                        {{??}}
+                                            <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
+                                        {{?}}
+                                    </td>
+                                    
+                                    <td class="text-start fw-bold">{{=d.f}}</td>
+                                    <td class="text-center">{{=d.fe}}</td>
+                                    <td class="text-center fw-bold"><span class="badge text-bg-danger">{{=d.dv}}</span></td>
+                                    <td class="text-end">$ {{=numberDecimal.format( d.v )}}</td>
+                                    <td colspan="2" class="text-center">{{=d.p}}</td>                                              
+                                </tr>                                
+                            </tbody>
+                        </table>
+                        {{
+                            console.log("******************************");
+                            let lista;
+                            if (d.radicarOK) { lista = 1 } else { lista = 0 }
+                            console.log(d.f, lista);
+                        }}
+                        {{? d.sa != "1" }}
+                        <table class="table table-bordered table-sm table-robot-armado-cuenta-detail 
+                            {{? d.sr == "1"}}cuenta-radicada{{?? d.sa == "1"}}cuenta-anulada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                            <colgroup>
+                                <col width="254"></col>
+                                <col width="180"></col>
+                                <col width="80"></col>
+                                <col width="100"></col>
+                                <col width="200"></col>
+                            </colgroup>
+                            <thead class="table-primary">
+                                {{? d.sr == "1" }}
+                                    <tr>
+                                        <th class="tableColorVerdeTh text-center">Grupo</th>
+                                        <th class="tableColorVerdeTh text-center">Soporte</th>
+                                        <th class="tableColorVerdeTh text-center">Armado</th>
+                                        <th class="tableColorVerdeTh text-center">Estado</th>
+                                        <th class="tableColorVerdeTh text-center">Descripción</th>
+                                    </tr>
+                                {{??}}
+                                    <tr>
+                                        <th class="text-center">Grupo</th>
+                                        <th class="text-center">Soporte</th>
+                                        <th class="text-center">Armado</th>
+                                        <th class="text-center">Estado</th>
+                                        <th class="text-center">Descripción</th>
+                                    </tr>
+                                {{?}}
+
+                            </thead>
+                            {{~d.d: dd:idd}}
+                                <tr {{? idd % 2 == 1}}class="bg-table-row-1"{{?}}>
+                                    <td class="text-start">{{=dd.g}}</td>
+                                    <td class="text-start">
+                                        <span class="badge 
+                                            {{? dd.ge == "1"}}text-bg-success{{??}}text-bg-danger{{?}}">
+                                            {{=dd.s}}
+                                        </span>                                        
+                                    </td>
+                                    <td class="text-center">
+                                        {{? dd.ge == "0"}}
+                                        <button type="button" class="btn btn-sm btn-outline-danger btn-ver-soporte" data-id="{{=d.f}}" data-s="{{=dd.s}}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                            </svg>
+                                        </button>
+                                        {{?? d.sr == "1"}}
+                                        <div class="rounded-circle text-bg-success d-inline-block icon-dot"></div>
+                                        {{??}}
+                                        <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
+                                        {{?}}
+                                    </td>
+                                    {{? d.sr == "1" }}                                            
+                                        <td class="text-center">
+                                            <span class="badge text-bg-success">
+                                                Radicado
+                                            </span>
+                                        </td>
+                                    {{??}}
+                                        <td class="text-start">{{=dd.o}}</td>
+                                    {{?}}
+                                    <td class="text-start">{{=dd.n}}</td>
+                                </tr>
+                            {{~}}                                
+                        </table>
+                        {{?}}
+                    </div>
+                    {{~}}
+                `;
+
+                const html = doT.template(tableTemplate)({ detail: processedDetalle});
+
+                new nataUIDialog({
+                    html: html,
+                    title: `${app.config.title} &nbsp;&nbsp;
+                        <span class="badge text-bg-primary">${facturaLimpia}</span>
+                    `,
+                    events: {
+                        render: function () { },
+                        close: function () {}
+                    }
+                });
+
+            });
+        }
     },
 
     consolidado: {
@@ -1323,6 +1604,8 @@ app.monitor = {
                                 <div class="rounded-circle bg-success d-inline-block icon-dot"></div>
                                 {{?? d.e == "Radicado"}}
                                 <div class="rounded-circle bg-success-2 d-inline-block icon-dot"></div>
+                                {{?? d.e == "Anulada"}}
+                                <div class="rounded-circle bg-danger-2 d-inline-block icon-dot"></div>
                                 {{??}}
                                 <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                 {{?}}                                

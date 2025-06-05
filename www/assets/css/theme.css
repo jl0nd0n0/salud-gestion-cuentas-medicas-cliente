@@ -288,6 +288,11 @@ tr.title td {
     color: red!important;
 }
 
+.bg-danger-2 {
+    background-color: #f54161!important;
+    color: red!important;
+}
+
 .bg-danger-light {
     background-color: #f2e3e3 !important;
     color:#000!important;

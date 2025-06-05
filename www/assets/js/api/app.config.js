@@ -138,7 +138,7 @@ app.config = {
             // app.config.version.check.login
             login: 20,
             // app.config.version.check.version
-            version: "v0.2.56"
+            version: "v0.2.60"
         }
     },
 
@@ -159,6 +159,7 @@ app.config.title = `
 
 //#region PRODUCCION
 app.config.server.path = "https://homi.artemisaips.com/";
+app.config.server.pathRobot = "https://robot.artemisaips.com/";
 //app.config.server.path = "https://172.26.0.4/";
 app.config.server.php1 = app.config.server.path + "server/php/index.php?";
 //#endregion PRODUCCION
@@ -233,7 +234,16 @@ app.config.menu = {
                         onclick: "app.monitor.index();"
                     }
                 ]
-            },           
+            },   
+            {
+                svg: iconProcess,
+                submenu: [                    
+                    {
+                        text: "Buscar",
+                        onclick: "app.monitor.buscar.index();"
+                    }    
+                ]
+            },
             {
                 svg: iconUpload,
                 submenu: [
