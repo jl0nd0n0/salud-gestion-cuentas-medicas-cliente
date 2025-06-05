@@ -33,6 +33,9 @@ app.monitor = {
                     else if(item.sa == "1") {
                         estado = "Anulada";
                     }
+                    else if(item.au == "1") {
+                        estado = "Auditar";
+                    }
                     else if (item.radicarOK) {
                         estado = "Listas para radicar";
                     }
@@ -50,8 +53,9 @@ app.monitor = {
             const tsp = statsArray.filter(s => s.estado === "Pendiente Soportes").length;
             const tr  = statsArray.filter(s => s.estado === "Radicado").length;
             const ta  = statsArray.filter(s => s.estado === "Anulada").length;
+            const tau  = statsArray.filter(s => s.estado === "Auditar").length;
 
-            const totalFacturas = tsg + tsp + tr + ta;
+            const totalFacturas = tsg + tsp + tr + ta + tau;
 
             const listasParaRadicarValor = statsArray
                 .filter(s => s.estado === "Listas para radicar")
@@ -68,8 +72,13 @@ app.monitor = {
             const anuladaValor = statsArray
                 .filter(s => s.estado === "Anulada")
                 .reduce((sum, s) => sum + s.valor, 0);
+                
+            const auditarValor = statsArray
+                .filter(s => s.estado === "Auditar")
+                .reduce((sum, s) => sum + s.valor, 0);
 
-            const totalValor = listasParaRadicarValor + pendienteSoportesValor + radicadoValor;
+
+            const totalValor = listasParaRadicarValor + pendienteSoportesValor + radicadoValor + auditarValor;
 
             const resumen = [
                 {
@@ -83,6 +92,12 @@ app.monitor = {
                     c: tsp,
                     v: pendienteSoportesValor,
                     p: ((pendienteSoportesValor / totalValor) * 100).toFixed(2)
+                },
+                {
+                    e: "Auditar",
+                    c: tau,
+                    v: auditarValor,
+                    p: ((auditarValor / totalValor) * 100).toFixed(2)
                 },
                 {
                     e: "Listas para radicar",
@@ -103,11 +118,12 @@ app.monitor = {
                 tsp: tsp,
                 tsg: tsg,
                 tr: tr,
-                ta: ta
+                ta: ta,
+                tau: tau
             }];
 
-            // const facturasRadicadas = detalle.filter(item => item.radicarOK == true && item.sr != "1");
-            // console.log("📦 Facturas radicadas:", facturasRadicadas.map(item => item.f));
+            const facturasRadicadas = detalle.filter(item => item.radicarOK == true && item.sr != "1");
+            console.log("📦 Facturas radicadas:", facturasRadicadas.map(item => item.f));
 
             return { resumen, resumenRegistros };
         }
@@ -125,6 +141,37 @@ app.monitor = {
                 resumen,
                 resumenRegistros
             };
+        }
+
+        function filterByDates() {
+            const start = document.getElementById("startDate").value;
+            const end = document.getElementById("endDate").value;
+
+            if (start && end) {
+                if (start > end) {
+                    swal(app.config.title, "La fecha de inicio no puede ser mayor que la de fin.", "error");
+                    return;
+                }
+                filterAndUpdate(start, end);
+            } else if (start) {
+                filterAndUpdate(start, start);
+            } else if (end) {
+                filterAndUpdate(end, end);
+            }
+        }
+
+        function filterAndUpdate(start, end) {
+            session.dateRange = { start, end };
+
+            const filteredData = filterDataByDateRange(dataDetalle, start, end);
+            currentDetalle = filteredData.detalle;
+            session.data = currentDetalle;
+
+            currentResumen = filteredData.resumen;
+            currentResumenRegistros = filteredData.resumenRegistros;
+            updateChartsAndSummary(currentResumen, currentResumenRegistros);
+
+            renderMainTable(currentDetalle, true);
         }
 
         function filterDataByDateRange(dataDetalle, startDate, endDate) {
@@ -161,7 +208,6 @@ app.monitor = {
         let currentResumen = initialFilteredData.resumen;
         console.log(currentResumen);
         let currentResumenRegistros = initialFilteredData.resumenRegistros;
-        let selectedDate = getTodayDate();
 
         let myChart = null;
 
@@ -178,8 +224,10 @@ app.monitor = {
                     <div class="card w-420px d-inline-block mt-3">
                         <div class="card-header position-relative">
                             Control Cuentas Médicas - Por Fecha
-                            <div class="w-100 text-end">
-                                <input id="datepicker" type="text" autocomplete="off" class="form-control d-inline-block max-width-250px control-highlight">
+                            <div class="w-100 text-end d-flex gap-2 flex-wrap">
+                                <input id="startDate" type="text" placeholder="Fecha inicio" autocomplete="off" class="form-control max-width-250px control-highlight">
+                                <input id="endDate" type="text" placeholder="Fecha fin" autocomplete="off" class="form-control max-width-250px control-highlight">
+                                <button id="btnVerTodo" class="btn btn-secondary">Ver todo</button>
                             </div>
                         </div>
                         <div class="card-body p-0 m-0">
@@ -228,6 +276,13 @@ app.monitor = {
                                         <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>&nbsp;&nbsp;Cuentas con soportes pendientes
                                     </a>
                                 </li>
+
+                                <li>
+                                    <a class="dropdown-item" id="menuCuentasAuditar">
+                                        <div class="rounded-circle bg-orange d-inline-block icon-dot"></div>&nbsp;&nbsp;Cuentas para auditar
+                                    </a>
+                                </li>
+
                                 <li>
                                     <a class="dropdown-item" id="menuCuentasRadicar">
                                         <div class="rounded-circle bg-success d-inline-block icon-dot"></div>&nbsp;&nbsp;Cuentas para radicar
@@ -286,7 +341,7 @@ app.monitor = {
                             {{~it.detail: d:id}}
                             <div class="search-group mb-4">
                                 <table class="table table-bordered table-sm table-robot-armado-cuenta
-                                    {{? d.sr == "1"}}cuenta-radicada{{?? d.sa == "1"}}cuenta-anulada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                                    {{? d.sr == "1"}}cuenta-radicada{{?? d.sa == "1"}}cuenta-anulada{{?? d.au == "1"}}cuenta-auditar{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
                                     <colgroup>
                                         <col width="50"></col>
                                         <col width="100"></col>
@@ -359,7 +414,7 @@ app.monitor = {
                                 }}
                                 {{? d.sa != "1" }}
                                 <table class="table table-bordered table-sm table-robot-armado-cuenta-detail 
-                                    {{? d.sr == "1"}}cuenta-radicada{{?? d.sa == "1"}}cuenta-anulada{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
+                                    {{? d.sr == "1"}}cuenta-radicada{{?? d.sa == "1"}}cuenta-anulada{{?? d.au == "1"}}cuenta-auditar{{?? d.radicarOK}}cuenta-radicar{{??}}cuenta-no-radicar{{?}}">
                                     <colgroup>
                                         <col width="254"></col>
                                         <col width="180"></col>
@@ -967,7 +1022,7 @@ app.monitor = {
                 console.log("%c menuCuentasTodos.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada, table.cuenta-anulada").forEach(el => {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada, table.cuenta-anulada, table.cuenta-auditar").forEach(el => {
                         el.style.display = "table";
                     });
                 };
@@ -978,10 +1033,10 @@ app.monitor = {
 
                 cuentaCantidad.innerText = session.totalFactura;
                 cuentaTitle.innerText = "Total";
-                cuentaCantidad.classList.remove("text-bg-danger", "text-bg-success");
+                cuentaCantidad.classList.remove("text-bg-danger", "text-bg-success", "bg-orange");
                 cuentaCantidad.classList.add("bg-dark");
 
-                cuentaBadge.classList.remove("text-bg-danger", "text-bg-success");
+                cuentaBadge.classList.remove("text-bg-danger", "text-bg-success", "bg-orange");
                 cuentaBadge.classList.add("bg-dark");
 
                 fxOcultarResto();
@@ -991,7 +1046,7 @@ app.monitor = {
                 console.log("%c buttonCuentasSoportesPendientes.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-radicar, table.cuenta-radicada, table.cuenta-anulada").forEach(el => {
+                    document.querySelectorAll("table.cuenta-radicar, table.cuenta-radicada, table.cuenta-anulada, table.cuenta-auditar").forEach(el => {
                         el.style.display = "none";
                     });
                 };
@@ -1004,10 +1059,10 @@ app.monitor = {
 
                 cuentaCantidad.innerText = session.pendientesSoportes;
                 cuentaTitle.innerText = "Pendiente Soportes";
-                cuentaCantidad.classList.remove("bg-dark", "text-bg-success");
+                cuentaCantidad.classList.remove("bg-dark", "text-bg-success", "bg-orange");
                 cuentaCantidad.classList.add("text-bg-danger");
 
-                cuentaBadge.classList.remove("bg-dark", "text-bg-success");
+                cuentaBadge.classList.remove("bg-dark", "text-bg-success", "bg-orange");
                 cuentaBadge.classList.add("text-bg-danger");
 
                 let i;
@@ -1022,7 +1077,7 @@ app.monitor = {
                 console.log("%c menuCuentasRadicar.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicada, table.cuenta-anulada").forEach(el => {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicada, table.cuenta-anulada, table.cuenta-auditar").forEach(el => {
                         el.style.display = "none";
                     });
                 };
@@ -1035,10 +1090,10 @@ app.monitor = {
 
                 cuentaCantidad.innerText = session.radicar;
                 cuentaTitle.innerText = "Listas para radicar";
-                cuentaCantidad.classList.remove("bg-dark", "text-bg-danger");
+                cuentaCantidad.classList.remove("bg-dark", "text-bg-danger", "bg-orange");
                 cuentaCantidad.classList.add("text-bg-success");
 
-                cuentaBadge.classList.remove("bg-dark", "text-bg-danger");
+                cuentaBadge.classList.remove("bg-dark", "text-bg-danger", "bg-orange");
                 cuentaBadge.classList.add("text-bg-success");
 
                 if (elements.length === 0) {
@@ -1061,7 +1116,7 @@ app.monitor = {
                 console.log("%c menuCuentasRadicadas.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-anulada").forEach(el => {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-anulada, table.cuenta-auditar").forEach(el => {
                         el.style.display = "none";
                     });
                 };
@@ -1074,10 +1129,10 @@ app.monitor = {
 
                 cuentaCantidad.innerText = session.radicada;
                 cuentaTitle.innerText = "Radicado";
-                cuentaCantidad.classList.remove("bg-dark", "text-bg-danger");
+                cuentaCantidad.classList.remove("bg-dark", "text-bg-danger", "bg-orange");
                 cuentaCantidad.classList.add("text-bg-success");
 
-                cuentaBadge.classList.remove("bg-dark", "text-bg-danger");
+                cuentaBadge.classList.remove("bg-dark", "text-bg-danger", "bg-orange");
                 cuentaBadge.classList.add("text-bg-success");
 
                 if (elements.length === 0) {
@@ -1100,7 +1155,7 @@ app.monitor = {
                 console.log("%c menuCuentasAnuladas.click", "background:red;color:#fff;font-size:11px");
 
                 const fxOcultarResto = function () {
-                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada").forEach(el => {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada, table.cuenta-auditar").forEach(el => {
                         el.style.display = "none";
                     });
                 };
@@ -1113,10 +1168,10 @@ app.monitor = {
 
                 cuentaCantidad.innerText = session.anulada;
                 cuentaTitle.innerText = "Anulada";
-                cuentaCantidad.classList.remove("bg-dark", "text-bg-success");
+                cuentaCantidad.classList.remove("bg-dark", "text-bg-success", "bg-orange");
                 cuentaCantidad.classList.add("text-bg-danger");
 
-                cuentaBadge.classList.remove("bg-dark", "text-bg-success");
+                cuentaBadge.classList.remove("bg-dark", "text-bg-success", "bg-orange");
                 cuentaBadge.classList.add("text-bg-danger");
 
                 if (elements.length === 0) {
@@ -1134,18 +1189,59 @@ app.monitor = {
                     element.style.display = "table";
                 }
             });
+
+            document.querySelector("#menuCuentasAuditar").addEventListener("click", function() {
+                console.log("%c menuCuentasAnuladas.click", "background:red;color:#fff;font-size:11px");
+
+                const fxOcultarResto = function () {
+                    document.querySelectorAll("table.cuenta-no-radicar, table.cuenta-radicar, table.cuenta-radicada, table.cuenta-anulada").forEach(el => {
+                        el.style.display = "none";
+                    });
+                };
+
+                let elements = document.querySelectorAll("table.cuenta-auditar");
+
+                const cuentaCantidad = document.querySelector("#cuentas-cantidad");
+                const cuentaTitle = document.querySelector("#cuentas-title");
+                const cuentaBadge = document.querySelector("#cuentas-badge");
+
+                cuentaCantidad.innerText = session.auditar;
+                cuentaTitle.innerText = "Auditar";
+                cuentaCantidad.classList.remove("bg-dark", "text-bg-success", "text-bg-danger");
+                cuentaCantidad.classList.add("bg-orange");
+
+                cuentaBadge.classList.remove("bg-dark", "text-bg-success", "text-bg-danger");
+                cuentaBadge.classList.add("bg-orange");
+
+                if (elements.length === 0) {
+                    swal(app.config.title, "No hay cuentas para auditar", "info");
+                    document.querySelector("#box2-table").visibility = "hidden";
+                    fxOcultarResto();
+                    return false
+                }
+                fxOcultarResto();
+
+                elements = document.querySelectorAll("table.cuenta-auditar");
+                let i;
+                for (i = 0; i < elements.length; i++) {
+                    const element = elements[i];
+                    element.style.display = "table";
+                }
+            });
         };
 
         // Renderizar inicialmente
         renderMainTable(currentDetalle);
 
         // Inicializar datepicker
-        flatpickr("#datepicker", {
-            mode: "range",
-            dateFormat: "Y-m-d",
-            showMonths: 2,
-            minDate: new Date(2025, 4, 16),
-            maxDate: new Date().toISOString().split("T")[0],
+        const minDate = new Date(2025, 4, 16);
+        const maxDate = new Date();
+        const dateFormat = "Y-m-d";
+
+        const flatpickrOptions = {
+            dateFormat: dateFormat,
+            minDate: minDate,
+            maxDate: maxDate.toISOString().split("T")[0],
             locale: {
                 firstDayOfWeek: 1,
                 weekdays: {
@@ -1157,32 +1253,37 @@ app.monitor = {
                     longhand: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
                 }
             },
-            onChange: function(selectedDates, selectedDate) {
-                console.log("onChange", selectedDates, selectedDate);
-        
-                session.dateRange = {
-                    start: selectedDates[0],
-                    end: selectedDates[1] || selectedDates[0]
-                };
+        };
 
-                const start = selectedDates[0]?.toISOString().split("T")[0];
-                const end = selectedDates[1]?.toISOString().split("T")[0] || start;
 
-                document.getElementById("datepicker").value = `${start} a ${end}`;
-
-                const filteredData = filterDataByDateRange(dataDetalle, start, end);
-                currentDetalle = filteredData.detalle;
-                session.data = currentDetalle;
-
-                currentResumen = filteredData.resumen;
-                currentResumenRegistros = filteredData.resumenRegistros;
-                updateChartsAndSummary(currentResumen, currentResumenRegistros);
-
-                renderMainTable(currentDetalle, true);
+        flatpickr("#startDate", {
+            ...flatpickrOptions,
+            onChange: function (selectedDates) {
+                if (selectedDates.length) {
+                    filterByDates();
+                }
             }
         });
 
-        document.getElementById("datepicker").value = initialDate;
+        flatpickr("#endDate", {
+            ...flatpickrOptions,
+            onChange: function (selectedDates) {
+                if (selectedDates.length) {
+                    filterByDates();
+                }
+            }
+        });
+
+        document.getElementById("btnVerTodo").addEventListener("click", () => {
+            const allDates = dataDetalle.map(item => item.fe);
+            const min = allDates.length ? allDates.reduce((a, b) => a < b ? a : b) : minDate.toISOString().split("T")[0];
+            const max = allDates.length ? allDates.reduce((a, b) => a > b ? a : b) : maxDate.toISOString().split("T")[0];
+
+            document.getElementById("startDate").value = min;
+            document.getElementById("endDate").value = max;
+
+            filterAndUpdate(min, max);
+        });
 
         function updateChartsAndSummary(resumen, resumenRegistros) {
             console.log("%c updateChartsAndSummary", "background:red;color:#fff;font-size:11px");
@@ -1261,6 +1362,8 @@ app.monitor = {
                                 <div class="rounded-circle bg-success-2 d-inline-block icon-dot"></div>
                                 {{?? d.e == "Anulada"}}
                                 <div class="rounded-circle bg-danger-2 d-inline-block icon-dot"></div>
+                                {{?? d.e == "Auditar"}}
+                                <div class="rounded-circle bg-orange d-inline-block icon-dot"></div>
                                 {{??}}
                                 <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                 {{?}}                                
@@ -1303,12 +1406,16 @@ app.monitor = {
                     session.radicada = estado.c;
                 }
 
+                if(estado.e === "Auditar"){
+                    session.auditar = estado.c;
+                }
+
                 if(estado.e === "Anulada"){
                     session.anulada = estado.c;
                 }
             });
 
-            session.totalFactura = session.pendientesSoportes + session.radicar + session.radicada + session.anulada;
+            session.totalFactura = session.pendientesSoportes + session.radicar + session.radicada + session.anulada + session.auditar;
 
             const box1 = document.getElementById("box1");
             if (box1) {
@@ -1606,6 +1713,8 @@ app.monitor = {
                                 <div class="rounded-circle bg-success-2 d-inline-block icon-dot"></div>
                                 {{?? d.e == "Anulada"}}
                                 <div class="rounded-circle bg-danger-2 d-inline-block icon-dot"></div>
+                                {{?? d.e == "Auditar"}}
+                                <div class="rounded-circle bg-orange d-inline-block icon-dot"></div>
                                 {{??}}
                                 <div class="rounded-circle bg-danger d-inline-block icon-dot"></div>
                                 {{?}}                                
